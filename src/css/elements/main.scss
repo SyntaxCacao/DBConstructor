@@ -1,0 +1,44 @@
+.main-container {
+  //margin-bottom: $main-margin-top*2;
+  //margin-top: $main-margin-top;
+}
+
+.main-header {
+  align-items: center;
+  border-bottom: 1px solid $color-border-primary;
+  display: flex;
+  margin-bottom: $spacer-3;
+  margin-top: $spacer-5;
+  padding-bottom: $spacer-2;
+}
+
+.main-heading {
+  font-size: 20px; // TODO prev 22px
+}
+
+.main-header-actions {
+  margin-left: auto;
+
+  .button:not(:first-child) {
+    margin-left: $spacer-1;
+  }
+}
+
+.main-subtitle {
+  color: $color-text-secondary;
+  margin-top: $spacer-1;
+}
+
+.main-subheading {
+  font-size: 18px;
+  margin-bottom: $spacer-3;
+  margin-top: $spacer-4;
+}
+
+.main-link {
+  color: $color-text-link;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

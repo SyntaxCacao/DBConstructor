@@ -1,0 +1,49 @@
+@mixin appearance($value) {
+  -moz-appearance: $value;
+  -webkit-appearance: $value;
+  appearance: $value;
+}
+
+// clearfix sorgt dafür, dass ein Element, dessen Kinder alle floaten, trotzdem die Höhe der Kinder hat
+@mixin clearfix() {
+  &::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+
+  &::before {
+    content: "";
+    display: table;
+  }
+}
+
+@mixin font-family-default() {
+  font-family: $font-family-default;
+
+  @supports (font-variation-settings: normal) {
+    & {
+      font-family: $font-family-default-var;
+    }
+  }
+}
+
+@mixin font-weight-bolder() {
+  @supports (font-variation-settings: normal) {
+    & {
+      font-weight: $font-weight-bolder;
+    }
+  }
+}
+
+@mixin one-line-text() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin user-select($value) {
+  -moz-user-select: $value;
+  -webkit-user-select: $value;
+  user-select: $value;
+}

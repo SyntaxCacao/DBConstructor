@@ -1,0 +1,93 @@
+// - base - //
+
+// fonts //
+
+$font-family-default: Inter, sans-serif;
+$font-family-default-var: "Inter var", sans-serif;
+// https://qwtel.com/posts/software/the-monospaced-system-ui-css-font-stack/
+// ui-monospace = SF Mono on Safari
+// Consolas, Cascadia Mono, Segoe UI Mono = Sometimes, but not always, installed on Windows
+$font-family-monospace: ui-monospace, Menlo, Monaco, Consolas, "Cascadia Mono", "Segoe UI Mono", monospace;
+
+$font-size-smaller: 12px;
+$font-size-base: 14px;
+$font-size-larger: 16px;
+
+$font-weight-normal: 400;
+$font-weight-bold: 600;
+//$font-weight-bold: 700;
+$font-weight-bolder: 700;
+
+$line-height-paragraph: 1.5;
+
+// colors //
+
+$color-brand: #026aa7; // TODO
+
+$color-text-primary: #24292e; // Primer
+$color-text-secondary: #586069; // Primer
+$color-text-danger: #cb2431; // Primer
+$color-text-white: #ffffff;
+
+$color-text-link: #0366d6; // Primer
+
+$color-background-button: #fafbfc; // Primer
+$color-background-gray: #f6f8fa; // Primer color-bg-tertiary
+
+$color-border-primary: #e1e4e8; // Primer
+
+// spacers //
+
+$spacer: 8px;
+
+$spacers: (
+  round(math.div($spacer, 2)),
+  $spacer,
+  $spacer * 2,
+  $spacer * 3,
+  $spacer * 4,
+  $spacer * 5,
+  $spacer * 6,
+  $spacer * 7
+);
+
+$spacer-1: nth($spacers, 1);
+$spacer-2: nth($spacers, 2);
+$spacer-3: nth($spacers, 3);
+$spacer-4: nth($spacers, 4);
+$spacer-5: nth($spacers, 5);
+$spacer-6: nth($spacers, 6);
+$spacer-7: nth($spacers, 7);
+$spacer-8: nth($spacers, 8);
+
+// - layout - //
+
+// breakpoints //
+
+$breakpoints: ( // max-width, inclusive
+  sm: 544px,
+  md: 768px,
+  lg: 1012px,
+  xl: 1280px
+);
+
+$breakpoint-sm: map-get($breakpoints, "sm");
+$breakpoint-md: map-get($breakpoints, "md");
+$breakpoint-lg: map-get($breakpoints, "lg");
+$breakpoint-xl: map-get($breakpoints, "xl");
+
+// container //
+
+$container-padding: $spacer-3;
+$container-width-default: 1200px; // TODO $breakpoint-xl ?
+$container-width-small: 900px;
+
+// grid //
+
+$column-padding: $spacer-5;
+
+// - elements - //
+
+// main //
+
+$main-margin-top: $spacer-5;

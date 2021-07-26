@@ -1,0 +1,12 @@
+# httpd.apache.org/docs/current/howto/htaccess.html
+# httpd.apache.org/docs/current/mod/mod_rewrite.html
+
+# Rewriting!
+RewriteEngine On
+
+# Allows direct access to static files, such as stylesheets
+RewriteCond %{REQUEST_FILENAME} !assets
+
+# Rewrites all other requests to the php entry script, including
+# the requested path as GET-parameter, retaining existing paramterss.
+RewriteRule ^(.*)$ php/entrypoint.php?path=$1 [QSA]

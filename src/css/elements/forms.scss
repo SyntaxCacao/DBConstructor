@@ -1,0 +1,202 @@
+// shared //
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: normal; // https://stackoverflow.com/questions/9323596/placeholder-text-is-not-vertically-centered-in-safari#37799250
+
+  @include appearance(none);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset;
+  display: inline-block;
+  max-width: 100%;
+  padding: ($spacer-2)-2 $spacer-3; // TODO Warum ist -3 nötig? Bei buttons geht es auch so
+  transition: 0.1s cubic-bezier(0.3, 0, 0.5, 1);
+  transition-property: border, box-shadow;
+
+  &:hover {
+    border-color: darken(#e1e4e8, 5%);
+  }
+
+  &:focus {
+    border: 1px solid #0366d6;
+    //box-shadow: 0px 0px 0px 3px rgba(3, 102, 214, 0.2);
+    box-shadow: 0px 0px 0px 1px lighten(#0366d6, 20%),
+              //0px 0px 0px 2px #ffffff,
+                0px 0px 0px 4px rgba(3, 102, 214, 0.15);
+    outline: none;
+  }
+}
+
+::placeholder {
+  color: $color-text-secondary;
+}
+
+// input and select //
+
+.form-input,
+.form-select {
+  width: 275px;
+}
+
+.form-block .form-field, // legacy for login page
+.form-block .form-input,
+.form-block .form-select {
+  width: 100%;
+}
+
+.form-input[disabled],
+.form-select[disabled] {
+  background-color: #f6f8fa; // Primer --color-input-disabled-bg
+  border-color: #e1e4e8; // normal .form-input border color to override :hover
+  color: #959da5; // Primer --color-text-disabled
+  cursor: not-allowed;
+}
+
+.form-input-monospace {
+  font-family: $font-family-monospace;
+}
+
+.form-input-small {
+  font-size: $font-size-smaller;
+  padding: ($spacer-2)-1.5 12px;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0iIzU4NjA2OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC40MjcgOS40MjdsMy4zOTYgMy4zOTZhLjI1MS4yNTEgMCAwMC4zNTQgMGwzLjM5Ni0zLjM5NkEuMjUuMjUgMCAwMDExLjM5NiA5SDQuNjA0YS4yNS4yNSAwIDAwLS4xNzcuNDI3ek00LjQyMyA2LjQ3TDcuODIgMy4wNzJhLjI1LjI1IDAgMDEuMzU0IDBMMTEuNTcgNi40N2EuMjUuMjUgMCAwMS0uMTc3LjQyN0g0LjZhLjI1LjI1IDAgMDEtLjE3Ny0uNDI3eiIgLz48L3N2Zz4="); // Primer
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 16px;
+  padding-right: ($spacer-3)*1.5; // $spacer-2 normal padding-right // *2 because of image
+  text-overflow: ellipsis; // Doesn't work with Safari
+}
+
+// input[type=number] - remove spin button //
+// https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
+
+.form-input::-webkit-outer-spin-button,
+.form-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+// textarea //
+
+.form-textarea {
+  height: 100px; // a bit higher than min-height, so that users can resize in both directions
+  line-height: $line-height-paragraph;
+  min-height: 90px;
+  resize: vertical;
+  width: 100%;
+}
+
+// checkbox //
+// TODO Focus (Chrome Windows: black)
+
+.form-checkbox-group {
+  display: block;
+  margin-bottom: 12px; // TODO not $spacer-3 = 16px;
+}
+
+.form-checkbox-group .form-checkbox { // BUG flickering (possibly because of label) in Safari macOS
+  display: inline-block;
+  margin: 0 12px 0 0;
+  vertical-align: top;
+
+  //-webkit-transform: translateZ(0); // https://stackoverflow.com/questions/30454423/safari-8-label-checkbox-hover-flicker-how-to-prevent
+}
+
+.form-checkbox {
+  @include appearance(checkbox); // auto doesn't work with Safari
+}
+
+.form-checkbox-label {
+  display: inline-block;
+}
+
+.form-checkbox-help {
+  color: $color-text-secondary;
+  font-size: 12px;
+}
+
+.form-checkboxes {
+  margin-bottom: 16px; // prev 24px
+  margin-top: 16px; // prev 24px
+}
+
+// TODO: Fixes checkbox line-break (also removes trailing whitespace = decreases margin):
+
+.form-checkbox {
+  align-items: flex-start; // TODO vertical-align top nicht mehr nötig
+  display: flex;
+}
+
+.form-checkbox input {
+  flex-shrink: 0;
+}
+
+// form-label //
+
+.form-label {
+  font-weight: 600; // TODO not 700
+}
+
+// form-group //
+
+.form-group {
+  display: block;
+  margin-bottom: 16px; // prev 12px // TODO not $spacer-3 = 16px;
+}
+
+.form-group-depend {
+  display: none;
+  padding-left: $spacer-5;
+}
+
+.form-group-depend-show {
+  display: block;
+}
+
+.form-group-header {
+  margin-bottom: $spacer-1;
+
+  .form-label {
+    display: inline-block;
+  }
+}
+
+.form-group-description {
+  color: $color-text-secondary;
+}
+
+@media (max-width: $breakpoint-sm) {
+  .form-group .form-input,
+  .form-group .form-select {
+    width: 100%;
+  }
+}
+
+.form-heading {
+//border-top: 1px solid $color-border-primary;
+  font-size: 18px;
+  font-weight: 600; // TODO
+  margin-bottom: 16px;
+  margin-top: 32px;
+//padding-top: 16px;
+}
+
+.form-error {
+  color: $color-text-danger;
+}

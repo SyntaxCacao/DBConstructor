@@ -1,0 +1,8 @@
+# httpd.apache.org/docs/current/howto/htaccess.html
+# httpd.apache.org/docs/current/mod/mod_rewrite.html
+
+# Rewriting!
+RewriteEngine On
+
+# Redirects everything to dist, as dist is meant to serve as runtime dir.
+RewriteRule ^(.*)$ dist/$1 [QSA]

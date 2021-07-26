@@ -1,0 +1,25 @@
+.markdown {
+  h2 {
+    font-size: $font-size-larger;
+    line-height: $line-height-paragraph;
+    margin-bottom: $spacer-2;
+    margin-top: $spacer-2;
+  }
+
+  p {
+    margin-bottom: $spacer-2;
+    margin-top: $spacer-2;
+  }
+
+  a {
+    color: $color-text-link;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  i {
+    font-style: italic;
+  }
+}

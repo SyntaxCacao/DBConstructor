@@ -1,0 +1,23 @@
+svg {
+  fill: currentColor;
+}
+
+/*
+.icon {
+  display: inline-block;
+  vertical-align: -3px;
+}
+
+p .icon {
+  vertical-align: -3px; // Bootstrap .bi styles
+}
+*/
+
+.bi {
+  vertical-align: -1px;
+}
+
+.icon-link:hover {
+  color: $color-text-link;
+  cursor: pointer;
+}

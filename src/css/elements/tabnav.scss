@@ -1,0 +1,37 @@
+.tabnav {
+  border-bottom: 1px solid $color-border-primary;
+}
+
+.tabnav .bi /* prev .icon */ {
+  font-size: 16px;
+  padding-right: $spacer-2;
+}
+
+.tabnav-tabs {
+  display: flex;
+  margin-bottom: -1px;
+  overflow: auto;
+}
+
+.tabnav-tab {
+  border-left: 1px solid rgba(0,0,0,0);
+  border-right: 1px solid rgba(0,0,0,0);
+  border-top: 1px solid rgba(0,0,0,0);
+  color: $color-text-secondary;
+  display: inline-block;
+  flex-shrink: 0;
+  float: left;
+  padding: 16px 20px //$spacer-3 20px;
+}
+
+.tabnav-tab.selected, .tabnav-tab:hover {
+  color: $color-text-primary;
+}
+
+.tabnav-tab.selected {
+  background-color: #fff;
+  border: 1px solid $color-border-primary;
+  border-bottom-color: #fff; // cover bottom border
+  border-top-left-radius: 4px; // prev 2px
+  border-top-right-radius: 4px; // prev 2px
+}

@@ -1,0 +1,119 @@
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  @include appearance(none);
+}
+
+.button {
+  background-color: $color-background-button;
+  border: 1px solid #e1e4e8; // = border-color-primary
+  border-radius: 4px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset;
+  color: $color-text-primary;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600; // TODO
+  line-height: 20px; // so that icons fit in
+  padding: ($spacer-2)-3 $spacer-3; // -3: compensate the increase in line-height, divided by half as there are padding-top and padding-bottom
+  transition: 0.1s cubic-bezier(0.3, 0, 0.5, 1);
+  transition-property: color, background-color, border-color, box-shadow;
+  white-space: nowrap;
+}
+
+.button:hover,
+[open] summary.button {
+  background-color: #f3f4f6;
+  border-color: #e1e4e8; // same as without hover, to override browser styles
+}
+
+.button:active,
+.button:focus {
+  background-color: hsla(220,14%,93%,1);
+}
+
+.button:focus-visible {
+  box-shadow: 0px 0px 0px 3px rgba(3, 102, 214, 0.6), rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset; // box-shadow von input:focus + normaler inset-box-shadow
+  outline: none;
+}
+
+.button .bi {
+  margin-right: 6px;
+  vertical-align: 0;
+}
+
+// button-danger //
+
+.button-danger {
+  color: #d73a49; // Primer
+
+  .bi/*.icon*/ {
+    fill: currentColor;
+  }
+}
+
+.button-danger:hover,
+[open] summary.button-danger {
+  background-color: #cb2431; // Primer
+  border-color: #cb2431; // Primer (background)
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.button-danger:active,
+.button-danger:focus {
+  background-color: hsla(354,66%,51%,1);
+  border-color: rgba(27,31,35,0.15);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.button-danger:focus-visible {
+  box-shadow: rgba(203, 36, 49, 0.4) 0px 0px 0px 3px; // Primer
+}
+
+// button-disabled //
+
+.button-disabled {
+  background-color: #fafbfc; // Primer
+  border-color: rgba(27,31,35,0.15); // Primer
+  color: #959da5; // Primer
+  cursor: not-allowed;
+
+  &:hover {
+    background-color: #fafbfc; // override change
+    border-color: rgba(27,31,35,0.15); // override change
+  }
+}
+
+// button-small, -smallest //
+
+.button-small { // TODO 1px too deep on Chrome
+  font-size: $font-size-smaller;
+  padding: ($spacer-2)-4 12px; // -3 same as .button, -1
+}
+
+.button-smallest {
+  font-size: $font-size-smaller;
+  padding: 0/*1px*/ 8px 0 8px;
+}
+
+// button-block //
+
+.button-block,
+.form-block .button {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+// icons //
+
+/*
+.button .icon { // TODO finalize or remove
+  fill: #6a737d; // Primer color-text-tertiary
+  margin-right: $spacer-2;
+  vertical-align: sub; // experimental, previously text-bottom
+}
+*/

@@ -1,0 +1,79 @@
+.navbar {
+  background-color: $color-brand;
+  color: $color-text-white;
+
+  > .container {
+    align-items: center;
+    display: flex;
+  }
+}
+
+.navbar-collapse {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+}
+
+/*
+@media (max-width: $breakpoint-sm) {
+  .navbar-collapse {
+    display: none;
+  }
+}
+*/
+
+.navbar-brand {
+  box-sizing: content-box; // so that height does not include paddings
+  display: inline-block;
+  height: 32px; // icon height
+  margin-left: -16px; // makes up for padding-left as this is the first element in the container
+  padding: 10px 16px;
+}
+
+.navbar-items {
+  margin-left: 16px;
+}
+
+$navbar-item-padding-x: $spacer-3;
+
+.navbar-item {
+  display: inline-block;
+}
+
+.navbar-link {
+  color: lighten($color-brand, 60%);
+  display: inline-block;
+  padding: $spacer-3 $navbar-item-padding-x;
+  transition: color 0.1s cubic-bezier(0.3, 0, 0.5, 1);
+
+  &:hover {
+    color: $color-text-white;
+    //text-decoration: underline;
+  }
+}
+
+/*
+.navbar-icon summary { // TODO
+  padding-left: $spacer-3;
+  padding-right: $spacer-3;
+  //padding: $spacer-3 $navbar-item-padding-x;
+}
+*/
+
+.navbar-icon {
+  font-size: 24px;
+  padding-left: $spacer-3;
+  padding-right: $spacer-3;
+}
+
+.navbar-right {
+  margin-left: auto;
+  margin-right: -($navbar-item-padding-x);
+}
+
+.navbar .dropdown-menu {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+  margin-top: 14px; // 13px with svg TODO
+}

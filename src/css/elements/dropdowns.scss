@@ -1,0 +1,58 @@
+.dropdown summary {
+  cursor: pointer;
+  list-style-type: none; // Removes caret on Firefox
+  outline: none; // Safari
+
+  &::-webkit-details-marker { // Removes caret on webkit
+    display: none;
+  }
+
+  &::marker { // Other browsers?
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  background-color: #ffffff;
+  border: 1px solid $color-border-primary;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); // Primer?
+  color: $color-text-primary;
+  margin: 16px 0 0 -185px; // TODO
+  padding-bottom: $spacer-1;
+  padding-top: $spacer-1;
+  position: absolute;
+  width: 225px;
+  z-index: 100; // previously issues with disabled inputs with Safari iOS
+}
+
+$dropdown-padding-x: $spacer-3;
+$dropdown-padding-y: $spacer-2;
+
+.dropdown-item-text {
+  color: $color-text-secondary;
+  font-size: $font-size-smaller;
+  line-height: $line-height-paragraph;
+  padding: $dropdown-padding-y $dropdown-padding-x;
+}
+
+.dropdown-divider {
+  margin-bottom: $spacer-1;
+  margin-top: $spacer-1;
+}
+
+.dropdown-link {
+  display: block;
+  padding: $dropdown-padding-y $dropdown-padding-x;
+
+  @include one-line-text;
+
+  &:hover {
+    background-color: $color-background-gray;
+  }
+
+  .bi {
+    font-size: 16px;
+    margin-right: $spacer-1;
+  }
+}

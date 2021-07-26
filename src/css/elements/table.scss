@@ -1,0 +1,67 @@
+.table-wrapper {
+  margin-right: -($container-padding);
+  max-width: 100%;
+  overflow-x: auto;
+  width: max-content;
+}
+
+.table {
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+/*:not(.table-row-heading)*/
+.table-row:hover .table-cell {
+  background-color: lighten($color-background-gray, 1%); // prev Primer --color-bg-secondary #fafbfc
+}
+
+.table-cell {
+  border: 1px solid $color-border-primary;
+  padding: $spacer-2 $spacer-3;
+  text-align: left; // reset th
+
+  &:not(.table-cell-actions) {
+    @include user-select(text);
+  }
+}
+
+.table-heading .table-cell {
+  background-color: $color-background-gray;
+  font-weight: 600; // TODO
+}
+
+.table-cell-code-addition {
+  background-color: #eceef0; // TODO var
+  border-radius: 2px;
+  font-family: $font-family-monospace;
+  font-size: 80%;
+  font-weight: $font-weight-normal;
+  margin-left: 4px;
+  padding: 2px;
+  position: relative;
+  top: -2px;
+}
+
+.table-cell-actions {
+  padding-bottom: 0.5px;
+  padding-top: 0;
+
+  .button:not(:last-child) {
+    margin-right: $spacer-2;
+  }
+}
+
+.table-cell-code {
+  font-family: $font-family-monospace;
+}
+
+.table-cell-numeric {
+  font-family: $font-family-monospace;
+  text-align: right;
+}
+
+.table-cell-invalid {
+  text-decoration: underline;
+  text-decoration-color: $color-text-danger;
+  text-decoration-style: wavy;
+}

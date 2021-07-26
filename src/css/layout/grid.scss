@@ -1,0 +1,45 @@
+// parent element for columns
+
+.row {
+  display: table;
+  width: 100%;
+}
+
+// .break-x, class for .row, defines when columns within extend to full width
+
+@each $breakpoint, $width in $breakpoints {
+  @media (max-width: $width) {
+    .break-#{$breakpoint} .column {
+      margin-left: 0 !important; // negative margin-left and margin-right set for :first-child and :last-child
+      margin-right: 0 !important; // TODO use of !important is not ideal
+      padding: 0;
+      width: 100%;
+    }
+  }
+}
+
+// element in a row, width is defined by .width-X
+
+.column {
+  float: left;
+  padding-left: round(math.div($column-padding, 2));
+  padding-right: round(math.div($column-padding, 2));
+
+  // previously padding-left: 0 for &:first-child and padding-right: 0 for &:last-child,
+  // which caused the first and last column to be less wide than those in between
+  &:first-child {
+    margin-left: -(round(math.div($column-padding, 2)));
+  }
+
+  &:last-child {
+    margin-right: -(round(math.div($column-padding, 2)));
+  }
+}
+
+// defines width of columns
+
+@for $index from 1 through 12 {
+  .width-#{$index} {
+    width: (math.div($index, 12) * 100%);
+  }
+}
