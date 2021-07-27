@@ -21,7 +21,7 @@
 <?php       foreach ($data["relationalcolumns"] as $column) {
               if (isset($data["relationalfields"][$row->id]) && isset($data["relationalfields"][$row->id][$column->id])) {
                 if (is_null($data["relationalfields"][$row->id][$column->id])) { ?>
-            <td class="table-cell"><i>null</i></td>
+            <td class="table-cell"><i>NULL</i></td>
 <?php           } else { ?>
             <td class="table-cell"><i>Beziehung: </i><?php $str = ""; foreach ($data["relationalfields"][$row->id][$column->id]["target"] as $value) $str .= $value["obj"]->value."; "; echo htmlentities($str); /* echo htmlentities($data["relationalfields"][$row->id][$column->id]["target"][0]["obj"]->value);*/ ?></td>
 <?php           }
@@ -32,7 +32,7 @@
             foreach ($data["textualcolumns"] as $column) {
               if (isset($data["textualfields"][$row->id]) && isset($data["textualfields"][$row->id][$column->id])) {
                 if (is_null($data["textualfields"][$row->id][$column->id]->value)) { ?>
-      <td class="table-cell<?php if ($data["textualfields"][$row->id][$column->id]->isInvalid()) echo " table-cell-invalid"; ?>"><i>null</i></td>
+      <td class="table-cell<?php if ($data["textualfields"][$row->id][$column->id]->isInvalid()) echo " table-cell-invalid"; ?>"><i>NULL</i></td>
 <?php           } else { ?>
       <td class="table-cell<?php if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_INTEGER) echo " table-cell-numeric"; if ($data["textualfields"][$row->id][$column->id]->isInvalid()) echo " table-cell-invalid"; ?>"><?php echo htmlentities($data["textualfields"][$row->id][$column->id]->value); ?></td>
 <?php           }
