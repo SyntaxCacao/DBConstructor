@@ -51,7 +51,7 @@ class Application
         }
 
         if (! is_writable("../tmp/exports")) {
-            die("<code>tmp/sessions</code> is not writable.");
+            die("<code>tmp/exports</code> is not writable.");
         }
 
         // Load up configuration file
