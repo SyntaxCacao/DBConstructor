@@ -102,7 +102,7 @@ class TextualColumnCreateForm extends Form
         $this->addField($field);
 
         $field = new CheckboxField("rule-null-allowed", "Angabe ist optional");
-        $field->description = "Wenn kein Wert angegeben wird, wird null gespeichert.";
+        $field->description = "Wenn kein Wert angegeben wird, wird NULL gespeichert.";
         $this->addField($field);
 
         $field = new TextareaField("description", "Erläuterung");
