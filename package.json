@@ -13,13 +13,11 @@
     "build": "grunt"
   },
   "dependencies": {
-    "bootstrap-icons": "1.5.0",
-    "jquery": "3.6.0"
+    "bootstrap-icons": "1.5.0"
   },
   "devDependencies": {
     "grunt": "^1.4.1",
     "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^5.0.1",
     "grunt-contrib-watch": "^1.1.0",
