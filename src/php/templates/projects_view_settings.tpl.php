@@ -1,4 +1,4 @@
-<main class="container main-container">
+<main class="container container-small main-container">
 <?php if ($data["saved"]) { ?>
   <div class="alerts">
     <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>

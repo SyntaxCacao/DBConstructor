@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Settings;
 
 use DBConstructor\Forms\Form;
+use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\TextField;
-use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Models\Project;
 
 class ProjectSettingsForm extends Form
@@ -29,7 +29,7 @@ class ProjectSettingsForm extends Form
         $field->maxLength = 30;
         $this->addField($field);
 
-        $field = new TextareaField("description", "Beschreibung");
+        $field = new MarkdownField("description", "Beschreibung", false);
         $field->defaultValue = $project->description;
         $field->maxLength = 1000;
         $field->required = false;

@@ -102,6 +102,14 @@ textarea {
   width: 100%;
 }
 
+.form-textarea-larger {
+  height: 300px;
+}
+
+.form-textarea-monospace {
+  font-family: $font-family-monospace;
+}
+
 // checkbox //
 // TODO Focus (Chrome Windows: black)
 
@@ -195,6 +203,11 @@ textarea {
   margin-bottom: 16px;
   margin-top: 32px;
 //padding-top: 16px;
+}
+
+.form-footer {
+  color: $color-text-secondary;
+  font-size: $font-size-smaller;
 }
 
 .form-error {

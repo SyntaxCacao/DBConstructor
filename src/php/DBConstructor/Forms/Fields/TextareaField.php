@@ -6,11 +6,17 @@ namespace DBConstructor\Forms\Fields;
 
 class TextareaField extends GroupableField
 {
+    /** @var bool */
+    public $larger = false;
+
     /** @var int|null */
     public $maxLength;
 
     /** @var int|null */
     public $minLength;
+
+    /** @var bool */
+    public $monospace = false;
 
     /**
      * @param string|null $label
@@ -22,7 +28,17 @@ class TextareaField extends GroupableField
 
     public function generateField(bool $placeholderLabel = false): string
     {
-        $html = '<textarea class="form-textarea" name="field-'.htmlentities($this->name).'"';
+        $html = '<textarea class="form-textarea';
+
+        if ($this->larger) {
+            $html .= " form-textarea-larger";
+        }
+
+        if ($this->monospace) {
+            $html .= " form-textarea-monospace";
+        }
+
+        $html .= '" name="field-'.htmlentities($this->name).'"';
 
         if (isset($this->dependsOn)) {
             $html .= ' data-depends-on="'.$this->dependsOn.'" data-depends-on-value="'.$this->dependsOnValue.'"';

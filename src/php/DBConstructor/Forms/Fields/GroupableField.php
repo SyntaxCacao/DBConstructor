@@ -6,6 +6,9 @@ namespace DBConstructor\Forms\Fields;
 
 abstract class GroupableField extends Field
 {
+    /** @var string|null */
+    public $footer;
+
     /**
      * @param array|string[] $errorMessages
      */
@@ -28,6 +31,10 @@ abstract class GroupableField extends Field
         }
 
         $html .= '</div><div class="form-group-body">'.$this->generateField(false);
+
+        if (isset($this->footer)) {
+            $html .= '<p class="form-footer">'.htmlentities($this->footer).'</p>';
+        }
 
         foreach ($errorMessages as $errorMessage) {
             $html .= '<p class="form-error">'.htmlentities($errorMessage).'</p>';
