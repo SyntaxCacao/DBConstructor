@@ -25,7 +25,9 @@ class NameChangeForm extends Form
         $field->maxLength = 20;
         $field->minLength = 3;
 
-        if (! Application::$instance->hasAdminPermissions()) {
+        if (Application::$instance->hasAdminPermissions()) {
+            $field->description = "Der Benutzername wird bei der Anmeldung verwendet.";
+        } else {
             $field->disabled = true;
             $field->required = false;
             $field->description = "Nur Administratoren können Benutzernamen ändern";

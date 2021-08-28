@@ -39,7 +39,7 @@ class UserForm extends Form
 
         // username
         $field = new TextField("username", "Benutzername");
-        $field->description = "Der Benutzername wird zur Anmeldung benötigt.";
+        $field->description = "Der Benutzername wird bei der Anmeldung verwendet.";
         $field->maxLength = 20;
         $field->minLength = 3;
         $field->validationClosures[] = new UsernamePatternClosure();
