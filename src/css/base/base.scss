@@ -34,6 +34,11 @@ b, strong {
   font-weight: $font-weight-bold;
 }
 
+i, em, cite,
+var, dfn {
+  font-style: italic;
+}
+
 a {
   color: inherit;
   text-decoration: none;

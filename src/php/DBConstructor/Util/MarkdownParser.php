@@ -7,7 +7,7 @@ namespace DBConstructor\Util;
 class MarkdownParser
 {
     /** @var int */
-    public $headings = 6;
+    public $headings = 3;
 
     /** @var bool */
     public $newTab = true;
@@ -63,7 +63,7 @@ class MarkdownParser
             return $this->parseInline($matches[1])."<strong>".$this->parseInline($matches[2])."</strong>".$this->parseInline($matches[3]);
         } else if (preg_match("/^(.*)\*(.+)\*(.*)$/", $str, $matches) || preg_match("/^(.*)_(.+)_(.*)$/", $str, $matches)) {
             // italic
-            return $this->parseInline($matches[1])."<i>".$this->parseInline($matches[2])."</i>".$this->parseInline($matches[3]);
+            return $this->parseInline($matches[1])."<em>".$this->parseInline($matches[2])."</em>".$this->parseInline($matches[3]);
         } else {
             return htmlspecialchars($str);
         }

@@ -1,14 +1,30 @@
 .markdown {
-  h2 {
-    font-size: $font-size-larger;
+  hyphens: auto;
+  text-align: justify;
+
+  h1, h2, h3,
+  h4, h5, h6,
+  p {
     line-height: $line-height-paragraph;
     margin-bottom: $spacer-2;
     margin-top: $spacer-2;
   }
 
-  p {
-    margin-bottom: $spacer-2;
-    margin-top: $spacer-2;
+  h1 {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  h4 {
+    font-size: 14px;
+    font-style: italic;
   }
 
   a {
@@ -17,9 +33,5 @@
     &:hover {
       text-decoration: underline;
     }
-  }
-
-  i {
-    font-style: italic;
   }
 }
