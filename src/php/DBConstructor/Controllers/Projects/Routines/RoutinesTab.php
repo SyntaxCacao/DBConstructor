@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DBConstructor\Controllers\Projects\Routines;
 
 use DBConstructor\Controllers\NotFoundController;
@@ -7,7 +9,8 @@ use DBConstructor\Controllers\TabController;
 
 class RoutinesTab extends TabController
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct("Eingaberoutinen", "routines", "pencil");
     }
 

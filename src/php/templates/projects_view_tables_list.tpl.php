@@ -12,9 +12,9 @@
           <p class="main-subtitle"><?php echo count($data["tables"]); ?> angelegte Tabellen</p>
         </div>
 <?php if (isset($data["user"]) && $data["user"]->admin) /* TODO Manager */ { ?>
-          <div class="main-header-actions">
-            <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/create/">Neue Tabelle</a>
-          </div>
+        <div class="main-header-actions">
+          <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/create/">Neue Tabelle</a>
+        </div>
 <?php } ?>
       </header>
 <?php if (count($data["tables"]) > 0) { ?>
