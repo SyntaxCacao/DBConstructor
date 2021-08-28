@@ -6,6 +6,9 @@ namespace DBConstructor\Forms\Fields;
 
 abstract class GroupableField extends Field
 {
+    /** @var bool */
+    public $expand = false;
+
     /** @var string|null */
     public $footer;
 
@@ -18,6 +21,10 @@ abstract class GroupableField extends Field
 
         if (isset($this->dependsOn)) {
             $html .= ' form-group-depend';
+        }
+
+        if ($this->expand) {
+            $html .= ' form-block';
         }
 
         $html .= '"><div class="form-group-header"><span class="form-label">'.htmlentities($this->label).'</span>';
