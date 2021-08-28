@@ -17,6 +17,7 @@
 }
 
 .main-header-actions {
+  flex-shrink: 0;
   margin-left: auto;
 
   .button:not(:first-child) {
