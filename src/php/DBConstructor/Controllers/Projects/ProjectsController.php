@@ -13,6 +13,7 @@ use DBConstructor\Controllers\Projects\Participants\ParticipantsTab;
 use DBConstructor\Controllers\Projects\Routines\RoutinesTab;
 use DBConstructor\Controllers\Projects\Settings\SettingsTab;
 use DBConstructor\Controllers\Projects\Tables\TablesTab;
+use DBConstructor\Controllers\Projects\Wiki\WikiTab;
 use DBConstructor\Controllers\TabRouter;
 use DBConstructor\Models\Project;
 
@@ -69,6 +70,7 @@ class ProjectsController extends Controller
         // tabs
         $tabRouter = new TabRouter();
         $tabRouter->register(new TablesTab(), true);
+        $tabRouter->register(new WikiTab());
         $tabRouter->register(new RoutinesTab());
         $tabRouter->register(new ExportsTab());
         $tabRouter->register(new ParticipantsTab());

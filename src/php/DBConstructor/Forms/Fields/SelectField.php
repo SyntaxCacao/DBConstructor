@@ -58,7 +58,13 @@ class SelectField extends GroupableField
             $html .= '<option';
 
             if (! is_null($value)) {
-                $html .= ' value="'.htmlentities($value).'"';
+                // TODO Why is this necessary?
+                // Exception thrown with mainpage defaultValue in ProjectSettingsForm, $value somehow becomes int
+                if (is_int($value)) {
+                    $html .= ' value="'.htmlentities((string) $value).'"';
+                } else {
+                    $html .= ' value="'.htmlentities($value).'"';
+                }
             }
 
             if ($this->hasValue() && $this->value == $value) {

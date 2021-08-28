@@ -52,6 +52,9 @@ class Project
     /** @var string */
     public $id;
 
+    /** @var string|null */
+    public $mainPageId;
+
     /** @var string */
     public $label;
 
@@ -67,6 +70,7 @@ class Project
     public function __construct(array $data)
     {
         $this->id = $data["id"];
+        $this->mainPageId = $data["mainpage_id"];
         $this->label = $data["label"];
         $this->description = $data["description"];
         $this->created = $data["created"];
@@ -80,5 +84,11 @@ class Project
         MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=? WHERE `id`=?", [$label, $description, $this->id]);
         $this->label = $label;
         $this->description = $description;
+    }
+
+    public function setMainPage(string $pageId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `mainpage_id`=? WHERE `id`=?", [$pageId, $this->id]);
+        $this->mainPageId = $pageId;
     }
 }
