@@ -4,7 +4,7 @@
     <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>
   </div>
 <?php } ?>
-  <div class="row break-lg">
+  <div class="row break-lg" style="display: block"><?php // display:tables causes overflow issues on small devices ?>
     <div class="column width-3">
       <header class="main-header">
         <div class="main-header-header">
