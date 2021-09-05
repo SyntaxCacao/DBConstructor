@@ -2,9 +2,11 @@
   hyphens: auto;
   text-align: justify;
 
+  @include user-select(text);
+
   h1, h2, h3,
   h4, h5, h6,
-  p {
+  p, ul, ol {
     line-height: $line-height-paragraph;
     margin-bottom: $spacer-2;
     margin-top: $spacer-2;
@@ -33,5 +35,66 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  hr {
+    margin-bottom: $spacer-3;
+    margin-top: $spacer-3;
+  }
+
+  ul, ol {
+    margin-left: $spacer-5;
+  }
+
+  li {
+    line-height: $line-height-paragraph;
+  }
+
+  ul li {
+    list-style: disc;
+  }
+
+  ol li {
+    list-style: decimal;
+  }
+
+  blockquote {
+    border-bottom-right-radius: 4px;
+    border-left: 4px solid $color-background-gray;
+    border-top-right-radius: 4px;
+    color: $color-text-secondary;
+    margin-bottom: $spacer-2;
+    margin-top: $spacer-2;
+    padding: $spacer-1 $spacer-3;
+
+    > p:first-child {
+      margin-top: 0;
+    }
+
+    > p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  code, pre {
+    background-color: $color-background-gray;
+    hyphens: none;
+  }
+
+  code {
+    border-radius: 2px;
+    font-size: 85%;
+    padding: 1px 4px 2px 4px;
+
+    @include user-select(all);
+  }
+
+  pre {
+    border-radius: 4px;
+    line-height: $line-height-code;
+    margin-bottom: $spacer-3;
+    margin-top: $spacer-3;
+    overflow: auto;
+    padding: $spacer-3;
   }
 }

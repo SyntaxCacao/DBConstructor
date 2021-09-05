@@ -14,34 +14,87 @@ class MarkdownParser
 
     public function parse(string $str): string
     {
-        // replace any whitespace character except \n with a singl espace
-        $str = preg_replace("/(?:\s(?<!\n))+/", " ", $str);
+        // remove \r
+        $str = preg_replace("/\r/", "", $str);
 
-        // remove trailing spaces
-        $str = preg_replace("/^ +/m", "", $str);
-        $str = preg_replace("/ +$/m", "", $str);
+        $matches = [];
 
-        // remove multiple newlines
-        $str = preg_replace("/\n{2,}/", "\n", $str);
+        if ($str == "") {
+            return "";
+        } else if (preg_match("/^(\X*?)(?:\A|\n)`{3,}\n(\X*?)\n`{3,}(?:\n|\z)(\X*)$/", $str, $matches)) {
+            // code block
+            return $this->parse($matches[1])."<pre>".htmlspecialchars($matches[2])."</pre>".$this->parse($matches[3]);
+        } else {
+            // replace any whitespace character except \n with a single space
+            $str = preg_replace("/(?:\s(?<!\n))+/", " ", $str);
 
-        $blocks = explode("\n", $str);
-        $html = "";
+            // remove trailing spaces
+            $str = preg_replace("/^ +/m", "", $str);
+            $str = preg_replace("/ +$/m", "", $str);
 
-        foreach ($blocks as $block) {
-            $html .= $this->parseBlock($block);
+            // remove multiple newlines
+            $str = preg_replace("/\n{3,}/", "\n\n", $str);
+
+            return $this->parseLines($str);
         }
-
-        return $html;
     }
 
-    public function parseBlock(string $str): string
+    public function parseLines(string $str): string
     {
         $matches = [];
 
-        if ($this->headings > 0 && preg_match("/^(#{1,6}) (.*)$/", $str, $matches) && strlen($matches[1]) <= $this->headings) {
-            return "<h".strlen($matches[1]).">".$this->parseInline($matches[2])."</h".strlen($matches[1]).">";
+        if ($str == "") {
+            return "";
+        } else if ($this->headings > 0 && preg_match("/^(\X*?)(?:\A|\n)(#{1,".$this->headings."}) (.*)(?:\n|\z)(\X*)$/", $str, $matches)) {
+            // heading
+            return $this->parseLines($matches[1])."<h".strlen($matches[2]).">".$this->parseInline($matches[3])."</h".strlen($matches[2]).">".$this->parseLines($matches[4]);
+        } else if (preg_match("/^(\X*?)(?:\A|\n)((?:>.*(?:\n|\z))+)(\X*)$/", $str, $matches)) { // prev /^((?:(?:[^>\n].*)?\n)*)((?:>.*(?:\n|\z))+)((?:[^>](?:.|\n)*)?)$/
+            // blockquote
+            return $this->parseLines($matches[1])."<blockquote>".$this->parseLines(preg_replace("/^> ?/m", "", $matches[2]))."</blockquote>".$this->parseLines($matches[3]);
+        } else if (preg_match("/^(\X*?)(?:\A|\n)((?:[*\-+] .*(?:\n|\z))+)(\X*)$/", $str, $matches)) {
+            // unordered list
+            $lines = explode("\n", preg_replace("/^[*\-+] /m", "", trim($matches[2], "\n")));
+            $html = "";
+
+            foreach ($lines as $line) {
+                $html .= "<li>".$this->parseInline($line)."</li>";
+            }
+
+            return $this->parseLines($matches[1])."<ul>".$html."</ul>".$this->parseLines($matches[3]);
+        } else if (preg_match("/^(\X*?)(?:\A|\n)((?:[0-9]+\. .*(?:\n|\z))+)(\X*)$/", $str, $matches)) {
+            // ordered list
+            $lines = explode("\n", preg_replace("/^[0-9]+\. /m", "", trim($matches[2], "\n")));
+            $html = "";
+
+            foreach ($lines as $line) {
+                $html .= "<li>".$this->parseInline($line)."</li>";
+            }
+
+            return $this->parseLines($matches[1])."<ol>".$html."</ol>".$this->parseLines($matches[3]);
+        } else if (preg_match("/^(\X*?)(?:\A|\n)(?:_{3,}|-{3,})(?:\n|\z)(\X*)$/", $str, $matches)) {
+            // horizontal rule
+            return $this->parseLines($matches[1])."<hr>".$this->parseLines($matches[2]);
         } else {
-            return "<p>".$this->parseInline($str)."</p>";
+            // paragraph
+            $paragraphs = explode("\n\n", $str);
+            $html = "";
+
+            foreach ($paragraphs as $paragraph) {
+                $lines = explode("\n", trim($paragraph, "\n"));
+                $html .= "<p>";
+
+                for ($i = 0; $i < count($lines); $i++) {
+                    $html .= $this->parseInline($lines[$i]);
+
+                    if ($i < count($lines) - 1) {
+                        $html .= "<br>";
+                    }
+                }
+
+                $html .= "</p>";
+            }
+
+            return $html;
         }
     }
 
@@ -51,19 +104,29 @@ class MarkdownParser
 
         if ($str == "") {
             return "";
-        } else if (preg_match("/^(.*)\[(.+)]\((.+)\)(.*)$/", $str, $matches)) {
-            // link
+        } else if (preg_match("/^(.*)\[(.+)]\((https?:\/\/[a-zA-ZÄÖÜäöü0-9:\-.]+(?:\/[a-zA-ZÄÖÜäöü0-9.\/=\-_~?&#:+]*)?)\)(.*)$/", $str, $matches)) {
+            // link - previously /^(.*)\[(.+)]\((.+)\)(.*)$/
             if ($this->newTab) {
                 return $this->parseInline($matches[1]).'<a href="'.htmlspecialchars($matches[3]).'" target="_blank">'.$this->parseInline($matches[2])."</a>".$this->parseInline($matches[4]);
             } else {
                 return $this->parseInline($matches[1]).'<a href="'.htmlspecialchars($matches[3]).'">'.$this->parseInline($matches[2])."</a>".$this->parseInline($matches[4]);
             }
-        } else if (preg_match("/^(.*)\*\*(.+)\*\*(.*)$/", $str, $matches) || preg_match("/^(.*)__(.+)__(.*)$/", $str, $matches)) {
+        } else if (preg_match("/^(.*)\*\*(.+)\*\*(.*)$/U", $str, $matches) || preg_match("/^(.*)__(.+)__(.*)$/U", $str, $matches)) {
             // bold
             return $this->parseInline($matches[1])."<strong>".$this->parseInline($matches[2])."</strong>".$this->parseInline($matches[3]);
-        } else if (preg_match("/^(.*)\*(.+)\*(.*)$/", $str, $matches) || preg_match("/^(.*)_(.+)_(.*)$/", $str, $matches)) {
+        } else if (preg_match("/^(.*)\*(.+)\*(.*)$/U", $str, $matches) || preg_match("/^(.*)_(.+)_(.*)$/U", $str, $matches)) {
             // italic
             return $this->parseInline($matches[1])."<em>".$this->parseInline($matches[2])."</em>".$this->parseInline($matches[3]);
+        } else if (preg_match("/^(.*)~~(.+)~~(.*)$/U", $str, $matches)) {
+            // strikethrough
+            return $this->parseInline($matches[1])."<s>".$this->parseInline($matches[2])."</s>".$this->parseInline($matches[3]);
+        } else if (preg_match("/^(.*)`(.+)`(.*)$/U", $str, $matches)) {
+            // code
+            return $this->parseInline($matches[1])."<code>".htmlspecialchars($matches[2])."</code>".$this->parseInline($matches[3]);
+        } else if (preg_match("/^(.*)(https?:\/\/[a-zA-ZÄÖÜäöü0-9:\-.]+(?:\/[a-zA-ZÄÖÜäöü0-9.\/=\-_~?&#:+]*)?)(.*)$/", $str, $matches)) {
+            // automatic linking
+            // last check, not necessary to do recursion again for surrounding parts, calling htmlspecialchars directly instead
+            return htmlspecialchars($matches[1]).'<a href="'.htmlspecialchars($matches[2]).'" target="blank">'.htmlspecialchars($matches[2])."</a>".htmlspecialchars($matches[3]);
         } else {
             return htmlspecialchars($str);
         }
