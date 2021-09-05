@@ -6,7 +6,7 @@ namespace DBConstructor\Controllers;
 
 class TabRouter
 {
-    /** @var string */
+    /** @var TabController */
     public $current;
 
     /** @var string */
