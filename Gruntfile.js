@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 
     copy: {
       favicon: {
-        src: 'src/favicon.svg',
+        src: 'src/misc/favicon.svg',
         dest: 'dist/assets/favicon.svg'
       },
       'fonts-inter': {
@@ -30,6 +30,10 @@ module.exports = function(grunt) {
         cwd: 'node_modules/bootstrap-icons/font/fonts',
         src: '**',
         dest: 'dist/assets/fonts'
+      },
+      htaccess: {
+        src: 'src/misc/htaccess',
+        dest: 'dist/.htaccess'
       },
       php: {
         expand: true,
@@ -94,11 +98,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-dart-sass');
 
   grunt.registerTask('css', ['dart-sass']);
-  grunt.registerTask('favicon', ['copy:favicon']);
   grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts-inter', 'copy:fonts-icons']);
   grunt.registerTask('js', ['uglify']);
+  grunt.registerTask('misc', ['copy:favicon', 'copy:htaccess']);
   grunt.registerTask('php', ['clean:php', 'copy:php']);
   grunt.registerTask('sql', ['clean:sql', 'copy:sql']);
 
-  grunt.registerTask('default', ['css', 'favicon', 'fonts', 'js', 'php', 'sql']);
+  grunt.registerTask('default', ['css', 'fonts', 'js', 'misc', 'php', 'sql']);
 }
