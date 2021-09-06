@@ -27,6 +27,13 @@ class Table
         return MySQLConnection::$instance->getLastInsertId();
     }
 
+    public static function isNameAvailable(string $name): bool
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_table` WHERE `name`=?", [$name]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        return $result[0]["count"] === "0";
+    }
+
     /**
      * @return Table|null
      */
@@ -104,5 +111,13 @@ class Table
         $this->description = $data["description"];
         $this->position = $data["position"];
         $this->created = $data["created"];
+    }
+
+    public function edit(string $name, string $label, string $description = null)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `label`=?, `name`=?, `description`=? WHERE `id`=?", [$label, $name, $description, $this->id]);
+        $this->label = $label;
+        $this->name = $name;
+        $this->description = $description;
     }
 }

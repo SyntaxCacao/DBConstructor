@@ -30,7 +30,7 @@ class TablesTab extends TabController
         }
 
         if (count($path) == 4 && $path[3] == "create") {
-            $form = new TableCreateForm();
+            $form = new TableForm();
             $form->init($data["project"]->id);
             $form->process();
             $data["form"] = $form;
