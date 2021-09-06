@@ -33,7 +33,7 @@
 <?php if ($data["isAdmin"]) { ?><th class="table-cell"></th><?php } ?>
       </tr>
 <?php foreach ($data["users"] as $user) { ?>
-      <tr>
+      <tr class="table-row">
         <td class="table-cell"><?php echo $user["obj"]->id; ?></td>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php echo htmlentities($user["obj"]->username); ?></td><?php } ?>
         <td class="table-cell"><?php echo htmlentities($user["obj"]->lastname).", ".htmlentities($user["obj"]->firstname); ?></td>

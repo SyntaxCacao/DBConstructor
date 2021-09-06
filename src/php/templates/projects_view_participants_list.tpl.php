@@ -23,7 +23,7 @@
 <?php } ?>
       </tr>
 <?php foreach($data["participants"] as $participant) { ?>
-      <tr>
+      <tr class="table-row">
         <td class="table-cell"><?php echo htmlentities($participant->userFirstName." ".$participant->userLastName); ?></td>
         <td class="table-cell"><?php if ($participant->isManager) { ?>Manager<?php } else { ?>Beteiligter<?php } ?></td>
         <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->added))); ?></td>
