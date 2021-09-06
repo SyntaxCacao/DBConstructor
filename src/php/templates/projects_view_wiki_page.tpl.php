@@ -9,7 +9,7 @@
       <header class="main-header">
         <div class="main-header-header">
           <h1 class="main-heading">Wiki</h1>
-          <p class="main-subtitle"><?php echo count($data["pages"]) ?> Seite<?php if ($data["pages"] != 1) echo "n" ?> angelegt</p>
+          <p class="main-subtitle"><?php echo count($data["pages"]) ?> Seite<?php if (count($data["pages"]) != 1) echo "n" ?> angelegt</p>
         </div>
         <div class="main-header-actions">
           <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/wiki/create/"><span class="bi bi-file-earmark-plus"></span>Neue Seite</a>
