@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Settings;
 
 use DBConstructor\Controllers\NotFoundController;
+use DBConstructor\Controllers\Projects\ProjectForm;
 use DBConstructor\Controllers\TabController;
 
 class SettingsTab extends TabController
@@ -20,7 +21,7 @@ class SettingsTab extends TabController
             return false;
         }
 
-        $form = new ProjectSettingsForm();
+        $form = new ProjectForm();
         $form->init($data["project"]);
         $data["saved"] = $form->process();
         $data["form"] = $form;

@@ -36,17 +36,34 @@ class Project
     /**
      * @return Project[]
      */
-    public static function loadList(): array
+    public static function loadAll(): array
     {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_project` ORDER BY `label`");
+        return Project::loadList("SELECT * FROM `dbc_project` ORDER BY `label`");
+    }
+
+    /**
+     * @return Project[]
+     */
+    private static function loadList(string $sql, array $params = []): array
+    {
+        MySQLConnection::$instance->execute($sql, $params);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new Project($row);
+            $project = new Project($row);
+            $list[$project->id] = new Project($row);
         }
 
         return $list;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public static function loadParticipating(string $userId): array
+    {
+        return Project::loadList("SELECT pr.* FROM `dbc_project` pr LEFT JOIN `dbc_participant` pa ON pr.`id` = pa.`project_id` WHERE pa.`user_id`=? ORDER BY pr.`label`", [$userId]);
     }
 
     /** @var string */

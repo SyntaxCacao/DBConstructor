@@ -23,7 +23,11 @@ class ProjectsController extends Controller
     {
         // /projects/
         if (count($path) == 1) {
-            $data["projects"] = Project::loadList();
+            $data["participatingProjects"] = Project::loadParticipating(Application::$instance->user->id);
+
+            if (Application::$instance->hasAdminPermissions()) {
+                $data["allProjects"] = Project::loadAll();
+            }
 
             $data["page"] = "projects_list";
             $data["title"] = "Projekte";
@@ -39,7 +43,7 @@ class ProjectsController extends Controller
                 return;
             }
 
-            $form = new ProjectCreateForm();
+            $form = new ProjectForm();
             $form->init();
             $form->process();
             $data["form"] = $form;

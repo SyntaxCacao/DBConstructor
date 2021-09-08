@@ -23,7 +23,7 @@
 
 .box-row-flex {
   align-items: center;
-  display: flex;
+  display: flex !important; // !important because of .page-project-list-box
 }
 
 .box-row-flex-extend {

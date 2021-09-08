@@ -34,15 +34,15 @@
         $count = 0;
         foreach ($data["tables"] as $table) {
           $count += 1; ?>
-            <tr class="table-row">
-              <td class="table-cell"><?php echo $table["obj"]->position; ?></td>
-              <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table["obj"]->id ?>/"><?php echo htmlentities($table["obj"]->label); ?></a></td>
-              <td class="table-cell table-cell-code"><?php echo htmlentities($table["obj"]->name); ?></td>
-              <td class="table-cell"><?php echo $table["rows"]; ?></td>
+          <tr class="table-row">
+            <td class="table-cell"><?php echo $table["obj"]->position; ?></td>
+            <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table["obj"]->id ?>/"><?php echo htmlentities($table["obj"]->label); ?></a></td>
+            <td class="table-cell table-cell-code"><?php echo htmlentities($table["obj"]->name); ?></td>
+            <td class="table-cell"><?php echo $table["rows"]; ?></td>
 <?php     if (isset($data["user"]) && $data["user"]->admin) /* TODO Manager */ { ?>
-              <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>nach oben</a><a class="button <?php if ($count == $all) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>nach unten</a></td>
+            <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>nach oben</a><a class="button <?php if ($count == $all) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>nach unten</a></td>
 <?php     } ?>
-            </tr>
+          </tr>
 <?php   } ?>
         </table>
       </div>
@@ -54,7 +54,7 @@
       <header class="main-header">
         <h1 class="main-heading">Beschreibung</h1>
       </header>
-      <div class="markdown"><?php if (is_null($data["project"]->description)) { ?><p>Es ist keine Beschreibung angegeben.</p><?php } else { echo /*\DBConstructor\Util\SimpleMarkdown::format($data["project"]->description);*/(new \DBConstructor\Util\MarkdownParser())->parse($data["project"]->description); } ?></div>
+      <div class="markdown"><p><?php if (is_null($data["project"]->description)) { ?>Es ist keine Beschreibung angegeben.<?php } else { echo htmlentities($data["project"]->description); } ?></p></div>
       <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
     </div>
   </div>
