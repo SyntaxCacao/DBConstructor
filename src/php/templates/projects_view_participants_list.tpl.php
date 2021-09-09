@@ -2,11 +2,11 @@
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading">Beteiligte</h1>
-      <p class="main-subtitle"><?php echo count($data["participants"]); ?> Beteiligte<?php if (count($data["participants"]) == 1) echo "r"; ?></p>
+      <p class="main-subtitle"><?php echo count($data["participants"]) ?> Benutzer hinzugefügt</p>
     </div>
 <?php if (\DBConstructor\Application::$instance->hasAdminPermissions()) { // TODO: Manager? ?>
     <div class="main-header-actions">
-      <a class="button button-small" href="#"><span class="bi bi-person-plus"></span>Benutzer hinzufügen</a>
+      <a class="button button-small<?php if ($data["notParticipatingCount"] == 0) { ?> button-disabled"<?php } else { ?>" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/participants/add/"<?php } ?>><span class="bi bi-person-plus"></span>Benutzer hinzufügen</a>
     </div>
 <?php } ?>
   </header>
@@ -24,17 +24,17 @@
       </tr>
 <?php foreach($data["participants"] as $participant) { ?>
       <tr class="table-row">
-        <td class="table-cell"><?php echo htmlentities($participant->userFirstName." ".$participant->userLastName); ?></td>
+        <td class="table-cell"><?php echo htmlentities($participant->lastName.", ".$participant->firstName); if ($participant->locked) echo " <em>(gesperrt)</em>" ?></td>
         <td class="table-cell"><?php if ($participant->isManager) { ?>Manager<?php } else { ?>Beteiligter<?php } ?></td>
-        <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->added))); ?></td>
+        <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->added))) ?></td>
 <?php   if (\DBConstructor\Application::$instance->hasAdminPermissions()) { // TODO: Manager? ?>
         <td class="table-cell table-cell-actions">
-<?php     if ($participant->isManager) { // TODO: Manager? ?>
-          <a class="button <?php if ($participant->userId == $data["user"]->id) echo "button-disabled "; ?>button-smallest"><span class="bi bi-arrow-down"></span>Zurückstufen</a>
+<?php     if ($participant->isManager) { ?>
+          <a class="button <?php if ($participant->userId == $data["user"]->id) echo "button-disabled " ?>button-smallest js-confirm"<?php if ($participant->userId != $data["user"]->id) echo ' href="?demote='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> nicht weiter Manager sein soll?"><span class="bi bi-arrow-down"></span>Zurückstufen</a>
 <?php     } else {?>
-          <a class="button button-smallest"><span class="bi bi-arrow-up"></span>Befördern</a>
+          <a class="button button-smallest js-confirm" href="?promote=<?php echo $participant->id ?>" data-confirm-message="Sind Sie sicher, dass Sie <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> zum Manager machen wollen?"><span class="bi bi-arrow-up"></span>Befördern</a>
 <?php     } ?>
-          <a class="button <?php if ($participant->userId == $data["user"]->id) echo "button-disabled "; ?>button-smallest"><span class="bi bi-person-x"></span>Entfernen</a>
+          <a class="button <?php if ($participant->userId == $data["user"]->id) echo "button-disabled " ?>button-smallest js-confirm"<?php if ($participant->userId != $data["user"]->id) echo ' href="?remove='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass Sie <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> aus diesem Projekt entfernen möchten?"><span class="bi bi-person-x"></span>Entfernen</a>
         </td>
 <?php   } ?>
       </tr>

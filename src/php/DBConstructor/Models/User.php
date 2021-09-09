@@ -12,6 +12,12 @@ class User
 
     const HASH_ALGO = PASSWORD_BCRYPT;
 
+    public static function countNotParticipating(string $projectId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = 1) = 0", [$projectId]);
+        return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
+    }
+
     public static function create(string $username, string $firstname, string $lastname, string $password, bool $admin): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_user` (`username`, `firstname`, `lastname`, `password`, `admin`) VALUES (?, ?, ?, ?, ?)", [$username, $firstname, $lastname, password_hash($password, User::HASH_ALGO), intval($admin)]);
@@ -34,6 +40,9 @@ class User
         return User::loadSingle("id", $id);
     }
 
+    /**
+     * @return User[]
+     */
     public static function loadList(): array
     {
         MySQLConnection::$instance->execute("SELECT u.*, (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id`) AS `count` FROM `dbc_user` u ORDER BY u.`lastname`, u.`firstname`");
@@ -42,6 +51,22 @@ class User
 
         foreach ($result as $row) {
             $list[] = ["obj" => new User($row), "projects" => $row["count"]];
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return User[]
+     */
+    public static function loadNotParticipatingList(string $projectId): array
+    {
+        MySQLConnection::$instance->execute("SELECT u.* FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = 1) = 0 ORDER BY u.`lastname`, u.`firstname`", [$projectId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $list = [];
+
+        foreach ($result as $row) {
+            $list[] = new User($row);
         }
 
         return $list;
