@@ -26,8 +26,8 @@
         <th class="table-cell">ID</th>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell">Benutzername</th><?php } ?>
         <th class="table-cell">Name</th>
-        <th class="table-cell">Projekte</th>
         <th class="table-cell">Rolle</th>
+        <th class="table-cell">Projekte</th>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell">Erste Anmeldung</th><?php } ?>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell">Letze Anmeldung</th><?php } ?>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell"></th><?php } ?>
@@ -37,8 +37,8 @@
         <td class="table-cell"><?php echo $user["obj"]->id; ?></td>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php echo htmlentities($user["obj"]->username); ?></td><?php } ?>
         <td class="table-cell"><?php echo htmlentities($user["obj"]->lastname).", ".htmlentities($user["obj"]->firstname); ?></td>
-        <td class="table-cell"><?php echo $user["projects"]; ?></td>
         <td class="table-cell"><?php if ($user["obj"]->admin) { ?>Administrator<?php } else { ?>Benutzer<?php } if ($user["obj"]->locked) { ?> <i>(gesperrt)</i><?php } ?></td>
+        <td class="table-cell"><?php echo $user["projects"]; ?></td>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php if (isset($user["obj"]->firstLogin)) { echo htmlentities(date("d.m.Y H:i", strtotime($user["obj"]->firstLogin))); } else { ?>&ndash;<?php } ?></td><?php } ?>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php if (isset($user["obj"]->lastLogin)) { echo htmlentities(date("d.m.Y H:i", strtotime($user["obj"]->lastLogin))); } else { ?>&ndash;<?php } ?></td><?php } ?>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?php echo $data["baseurl"]; ?>/users/<?php echo $user["obj"]->id; ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td><?php } ?>
