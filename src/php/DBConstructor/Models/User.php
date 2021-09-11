@@ -61,7 +61,7 @@ class User
      */
     public static function loadNotParticipatingList(string $projectId): array
     {
-        MySQLConnection::$instance->execute("SELECT u.* FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ?) = 0 ORDER BY u.`lastname`, u.`firstname`", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT DISTINCT u.* FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ?) = 0 ORDER BY u.`lastname`, u.`firstname`", [$projectId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
