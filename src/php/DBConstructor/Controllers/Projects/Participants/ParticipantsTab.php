@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Participants;
 
+use DBConstructor\Application;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Participant;
@@ -11,7 +12,8 @@ use DBConstructor\Models\User;
 
 class ParticipantsTab extends TabController
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct("Beteiligte", "participants", "people");
     }
 
@@ -34,14 +36,16 @@ class ParticipantsTab extends TabController
         }
 
         // Participants list
+        $data["managerCount"] = Participant::countManagers($data["project"]->id);
 
         // Perform updates
         // TODO: Permission check
         if (isset($_REQUEST["demote"]) && intval($_REQUEST["demote"]) != 0) {
             $participant = Participant::load($data["project"]->id, $_REQUEST["demote"]);
 
-            if (! is_null($participant)) {
+            if (! is_null($participant) && $data["managerCount"] > 1) {
                 $participant->demote();
+                $data["managerCount"] -= 1;
             }
         }
 
@@ -50,14 +54,16 @@ class ParticipantsTab extends TabController
 
             if (! is_null($participant)) {
                 $participant->promote();
+                $data["managerCount"] += 1;
             }
         }
 
         if (isset($_REQUEST["remove"]) && intval($_REQUEST["remove"]) != 0) {
             $participant = Participant::load($data["project"]->id, $_REQUEST["remove"]);
 
-            if (! is_null($participant)) {
+            if (! is_null($participant) && (! $participant->isManager || $data["managerCount"] > 1)) {
                 $participant->delete();
+                $data["managerCount"] -= 1;
             }
         }
 

@@ -8,6 +8,12 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Participant
 {
+    public static function countManagers(string $projectId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_participant` WHERE `project_id`=? AND `manager`=TRUE", [$projectId]);
+        return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
+    }
+
     public static function create(string $userId, string $projectId, bool $manager): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_participant` (`user_id`, `project_id`, `manager`) VALUES (?, ?, ?)", [$userId, $projectId, intval($manager)]);
