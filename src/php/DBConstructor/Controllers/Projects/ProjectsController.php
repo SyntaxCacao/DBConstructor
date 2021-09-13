@@ -100,7 +100,7 @@ class ProjectsController extends Controller
         if ($tabRouter->route($path, 2, $data)) {
             $data["project-tabs"] = $tabRouter;
 
-            $data["page"] = "projects_view";
+            $data["page"] = "project";
 
             if (isset($data["title"])) {
                 $data["title"] .= " · ".$project->label;

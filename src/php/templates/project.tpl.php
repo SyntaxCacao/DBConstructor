@@ -18,8 +18,8 @@
 
 <?php
 if (isset($data["tabpage"])) {
-  require "projects_view_".$data["project-tabs"]->current->link."_".$data["tabpage"].".tpl.php";
+  require "project_".$data["project-tabs"]->current->link."_".$data["tabpage"].".tpl.php";
 } else {
-  require "projects_view_".$data["project-tabs"]->current->link.".tpl.php";
+  require "project_".$data["project-tabs"]->current->link.".tpl.php";
 }
 ?>
