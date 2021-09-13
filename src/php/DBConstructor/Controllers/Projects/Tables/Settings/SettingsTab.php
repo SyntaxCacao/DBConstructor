@@ -22,6 +22,11 @@ class SettingsTab extends TabController
             return false;
         }
 
+        if (! $data["isManager"]) {
+            $data["forbidden"] = true;
+            return true;
+        }
+
         $form = new TableForm();
         $form->init($data["project"]->id, $data["table"]);
         $data["saved"] = $form->process();

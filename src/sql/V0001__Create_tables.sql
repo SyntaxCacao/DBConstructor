@@ -26,7 +26,8 @@ CREATE TABLE `dbc_participant` (
   `manager` BOOLEAN NOT NULL DEFAULT FALSE,
   `added` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (`user_id`),
-  INDEX (`project_id`)
+  INDEX (`project_id`),
+  INDEX `user_project` (`user_id`, `project_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_page` (

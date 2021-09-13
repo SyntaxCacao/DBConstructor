@@ -15,6 +15,7 @@ use DBConstructor\Controllers\Projects\Settings\SettingsTab;
 use DBConstructor\Controllers\Projects\Tables\TablesTab;
 use DBConstructor\Controllers\Projects\Wiki\WikiTab;
 use DBConstructor\Controllers\TabRouter;
+use DBConstructor\Models\Participant;
 use DBConstructor\Models\Project;
 
 class ProjectsController extends Controller
@@ -70,6 +71,22 @@ class ProjectsController extends Controller
             (new NotFoundController())->request($path);
             return;
         }
+
+        // check if user is participant
+        $participant = Participant::loadFromUser($project->id, Application::$instance->user->id);
+
+        if (is_null($participant)) {
+            if (isset($_GET["join"]) && Application::$instance->hasAdminPermissions()) {
+                $participantId = Participant::create(Application::$instance->user->id, $project->id, true);
+                $participant = Participant::loadFromId($project->id, $participantId);
+                $data["joined"] = true;
+            } else {
+                (new ForbiddenController())->request($path);
+                return;
+            }
+        }
+
+        $data["isManager"] = $participant->isManager;
 
         // tabs
         $tabRouter = new TabRouter();

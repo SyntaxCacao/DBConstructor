@@ -2,5 +2,5 @@
   <header class="main-header">
     <h1 class="main-heading">Zugriff nicht gestattet</h1>
   </header>
-  <p>Ihnen ist der Zugriff auf die angeforderte Seite nicht gestattet.</p>
+  <p>Der Zugriff auf die angeforderte Seite ist Ihnen nicht gestattet.</p>
 </main>

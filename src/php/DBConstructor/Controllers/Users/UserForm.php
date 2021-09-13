@@ -96,7 +96,7 @@ class UserForm extends Form
         $field->description = "Kann Projekte anlegen und Benutzer verwalten";
 
         if (! is_null($user)) {
-            $field->defaultValue = $user->admin;
+            $field->defaultValue = $user->isAdmin;
         }
 
         $this->addField($field);

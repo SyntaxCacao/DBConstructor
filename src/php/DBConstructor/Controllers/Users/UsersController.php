@@ -18,7 +18,6 @@ class UsersController extends Controller
             $data["page"] = "users_list";
             $data["title"] = "Benutzer";
             $data["users"] = User::loadList();
-            $data["isAdmin"] = Application::$instance->hasAdminPermissions();
 
             Application::$instance->callTemplate($data);
         } else if (count($path) == 2 && $path[1] == "create") {

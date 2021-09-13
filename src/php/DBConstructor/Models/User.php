@@ -111,7 +111,7 @@ class User
     public $password;
 
     /** @var bool */
-    public $admin;
+    public $isAdmin;
 
     /** @var bool */
     public $locked;
@@ -129,7 +129,7 @@ class User
         $this->firstname = $data["firstname"];
         $this->lastname = $data["lastname"];
         $this->password = $data["password"];
-        $this->admin = $data["admin"] == "1";
+        $this->isAdmin = $data["admin"] == "1";
         $this->locked = $data["locked"] == "1";
         $this->firstLogin = $data["firstlogin"];
         $this->lastLogin = $data["lastlogin"];

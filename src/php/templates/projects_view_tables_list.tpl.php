@@ -3,6 +3,10 @@
   <div class="alerts">
     <div class="alert"><p>Das Projekt wurde angelegt.</p></div>
   </div>
+<?php } else if (isset($data["joined"]) && $data["joined"]) { ?>
+  <div class="alerts">
+    <div class="alert"><p>Sie sind dem Projekt beigetreten.</p></div>
+  </div>
 <?php } ?>
   <div class="row break-md" style="display: block"><?php /* BUG: issue with width on small devices with display=table */ ?>
     <div class="column width-9">
@@ -11,7 +15,7 @@
           <h1 class="main-heading">Tabellen</h1>
           <p class="main-subtitle"><?php echo count($data["tables"]); ?> angelegte Tabellen</p>
         </div>
-<?php if (isset($data["user"]) && $data["user"]->admin) /* TODO Manager */ { ?>
+<?php if ($data["isManager"]) { ?>
         <div class="main-header-actions">
           <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/create/">Neue Tabelle</a>
         </div>
@@ -26,7 +30,7 @@
             <th class="table-cell">Bezeichnung</th>
             <th class="table-cell">Technischer Name</th>
             <th class="table-cell">Datensätze</th>
-<?php   if (isset($data["user"]) && $data["user"]->admin) /* TODO Manager */ { ?>
+<?php   if ($data["isManager"]) { ?>
             <th class="table-cell"></th>
 <?php   } ?>
           </tr>
@@ -39,7 +43,7 @@
             <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table["obj"]->id ?>/"><?php echo htmlentities($table["obj"]->label); ?></a></td>
             <td class="table-cell table-cell-code"><?php echo htmlentities($table["obj"]->name); ?></td>
             <td class="table-cell"><?php echo $table["rows"]; ?></td>
-<?php     if (isset($data["user"]) && $data["user"]->admin) /* TODO Manager */ { ?>
+<?php     if ($data["isManager"]) { ?>
             <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>nach oben</a><a class="button <?php if ($count == $all) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>nach unten</a></td>
 <?php     } ?>
           </tr>

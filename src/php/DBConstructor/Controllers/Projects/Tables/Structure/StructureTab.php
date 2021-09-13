@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Tables\Structure;
 
+use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\RelationalColumn;
@@ -28,6 +29,11 @@ class StructureTab extends TabController
         }
 
         if (count($path) == 6 && $path[5] == "create") {
+            if (! $data["isManager"]) {
+                (new ForbiddenController())->request($path);
+                return false;
+            }
+
             if (isset($_REQUEST["type"]) && $_REQUEST["type"] == "relational") {
                 $form = new RelationalColumnCreateForm();
                 $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position);

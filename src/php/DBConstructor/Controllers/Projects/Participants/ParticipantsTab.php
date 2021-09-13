@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Participants;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Participant;
@@ -20,6 +21,11 @@ class ParticipantsTab extends TabController
     public function request(array $path, &$data): bool
     {
         if (count($path) == 4 && $path[3] == "add") {
+            if (! $data["isManager"]) {
+                (new ForbiddenController())->request($path);
+                return false;
+            }
+
             $form = new ParticipantAddForm();
             $form->init($data["project"]->id);
             $form->process();
@@ -39,41 +45,48 @@ class ParticipantsTab extends TabController
         $data["managerCount"] = Participant::countManagers($data["project"]->id);
 
         // Perform updates
-        // TODO: Permission check
-        if (isset($_REQUEST["demote"]) && intval($_REQUEST["demote"]) != 0) {
-            $participant = Participant::load($data["project"]->id, $_REQUEST["demote"]);
+        if ($data["isManager"]) {
+            // Demotion
+            if (isset($_REQUEST["demote"]) && intval($_REQUEST["demote"]) != 0) {
+                $participant = Participant::loadFromId($data["project"]->id, $_REQUEST["demote"]);
 
-            if (! is_null($participant) && $data["managerCount"] > 1) {
-                $participant->demote();
-                $data["managerCount"] -= 1;
+                if (! is_null($participant) && $data["managerCount"] > 1) {
+                    $participant->demote();
+                    $data["managerCount"] -= 1;
+                }
             }
-        }
 
-        if (isset($_REQUEST["promote"]) && intval($_REQUEST["promote"]) != 0) {
-            $participant = Participant::load($data["project"]->id, $_REQUEST["promote"]);
+            // Promotion
+            if (isset($_REQUEST["promote"]) && intval($_REQUEST["promote"]) != 0) {
+                $participant = Participant::loadFromId($data["project"]->id, $_REQUEST["promote"]);
 
-            if (! is_null($participant)) {
-                $participant->promote();
-                $data["managerCount"] += 1;
+                if (! is_null($participant)) {
+                    $participant->promote();
+                    $data["managerCount"] += 1;
+                }
             }
-        }
 
-        if (isset($_REQUEST["remove"]) && intval($_REQUEST["remove"]) != 0) {
-            $participant = Participant::load($data["project"]->id, $_REQUEST["remove"]);
+            // Removal
+            if (isset($_REQUEST["remove"]) && intval($_REQUEST["remove"]) != 0) {
+                $participant = Participant::loadFromId($data["project"]->id, $_REQUEST["remove"]);
 
-            if (! is_null($participant) && (! $participant->isManager || $data["managerCount"] > 1)) {
-                $participant->delete();
-                $data["managerCount"] -= 1;
+                if (! is_null($participant) && (! $participant->isManager || $data["managerCount"] > 1)) {
+                    $participant->delete();
+                    $data["managerCount"] -= 1;
+
+                    if ($participant->userId == Application::$instance->user->id) {
+                        Application::$instance->redirect(null, "left");
+                    }
+                }
             }
         }
 
         // Show list
-        /* TODO: Permission check
-        if ($data["isManager"]) {*/
-            $data["notParticipatingCount"] = User::countNotParticipating($data["project"]->id);
-        //}
-
         $data["participants"] = Participant::loadList($data["project"]->id);
+
+        if ($data["isManager"]) {
+            $data["notParticipatingCount"] = User::countNotParticipating($data["project"]->id);
+        }
 
         $data["tabpage"] = "list";
         return true;

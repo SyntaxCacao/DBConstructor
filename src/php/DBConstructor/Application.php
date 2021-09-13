@@ -143,6 +143,7 @@ class Application
     {
         $data["baseurl"] = $this->config["baseurl"];
         $data["user"] = $this->user;
+        $data["isAdmin"] = $this->hasAdminPermissions();
         $data["request"] = $_REQUEST;
 
         require "templates/base.tpl.php";
@@ -150,7 +151,7 @@ class Application
 
     public function hasAdminPermissions(): bool
     {
-        return isset($this->user) && $this->user->admin;
+        return isset($this->user) && $this->user->isAdmin;
     }
 
     public function redirect(string $page=null, string $get="")

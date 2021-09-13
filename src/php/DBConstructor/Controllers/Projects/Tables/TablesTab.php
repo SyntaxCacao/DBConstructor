@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Tables;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\Tables\Insert\InsertTab;
 use DBConstructor\Controllers\Projects\Tables\Issues\IssuesTab;
@@ -21,7 +22,7 @@ class TablesTab extends TabController
         parent::__construct("Übersicht", "tables", "signpost-split");
     }
 
-    public function request(array $path, &$data)
+    public function request(array $path, &$data): bool
     {
         if (count($path) <= 3) { // <= because this can be access with /projects/x/ and /projects/x/tables
             $data["tables"] = Table::loadList($data["project"]->id);
@@ -30,6 +31,11 @@ class TablesTab extends TabController
         }
 
         if (count($path) == 4 && $path[3] == "create") {
+            if (! $data["isManager"]) {
+                (new ForbiddenController())->request($path);
+                return false;
+            }
+
             $form = new TableForm();
             $form->init($data["project"]->id);
             $form->process();

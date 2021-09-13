@@ -36,9 +36,9 @@ class Participant
     /**
      * @return Participant|null
      */
-    public static function load(string $projectId, string $participantId)
+    public static function load(string $sql, array $params)
     {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_participant` WHERE `id`=? AND `project_id`=?", [$participantId, $projectId]);
+        MySQLConnection::$instance->execute($sql, $params);
         $result = MySQLConnection::$instance->getSelectedRows();
 
         if (count($result) != 1) {
@@ -46,6 +46,22 @@ class Participant
         }
 
         return new Participant($result[0]);
+    }
+
+    /**
+     * @return Participant|null
+     */
+    public static function loadFromId(string $projectId, string $participantId)
+    {
+        return Participant::load("SELECT * FROM `dbc_participant` WHERE `id`=? AND `project_id`=?", [$participantId, $projectId]);
+    }
+
+    /**
+     * @return Participant|null
+     */
+    public static function loadFromUser(string $projectId, string $userId)
+    {
+        return Participant::load("SELECT * FROM `dbc_participant` WHERE `user_id`=? AND `project_id`=?", [$userId, $projectId]);
     }
 
     /**

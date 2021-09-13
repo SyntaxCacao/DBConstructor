@@ -4,7 +4,7 @@
       <h1 class="main-heading">Beteiligte</h1>
       <p class="main-subtitle"><?php echo count($data["participants"]) ?> Benutzer hinzugefügt</p>
     </div>
-<?php if (\DBConstructor\Application::$instance->hasAdminPermissions()) { // TODO: Manager? ?>
+<?php if ($data["isManager"]) { ?>
     <div class="main-header-actions">
       <a class="button button-small<?php if ($data["notParticipatingCount"] == 0) { ?> button-disabled"<?php } else { ?>" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/participants/add/"<?php } ?>><span class="bi bi-person-plus"></span>Benutzer hinzufügen</a>
     </div>
@@ -18,7 +18,7 @@
         <th class="table-cell">Name</th>
         <th class="table-cell">Rolle</th>
         <th class="table-cell">Hinzugefügt</th>
-<?php if (\DBConstructor\Application::$instance->hasAdminPermissions()) { // TODO: Manager? ?>
+<?php if ($data["isManager"]) { ?>
         <th class="table-cell"></th>
 <?php } ?>
       </tr>
@@ -27,7 +27,7 @@
         <td class="table-cell"><?php echo htmlentities($participant->lastName.", ".$participant->firstName); if ($participant->locked) echo " <em>(gesperrt)</em>" ?></td>
         <td class="table-cell"><?php if ($participant->isManager) { ?>Manager<?php } else { ?>Beteiligter<?php } ?></td>
         <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->added))) ?></td>
-<?php   if (\DBConstructor\Application::$instance->hasAdminPermissions()) { // TODO: Manager? ?>
+<?php   if ($data["isManager"]) { ?>
         <td class="table-cell table-cell-actions">
 <?php     if ($participant->isManager) { ?>
           <a class="button <?php if ($data["managerCount"] <= 1) echo "button-disabled " ?>button-smallest js-confirm"<?php if ($data["managerCount"] > 1) echo ' href="?demote='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> nicht weiter Manager sein soll?"><span class="bi bi-arrow-down"></span>Zurückstufen</a>
