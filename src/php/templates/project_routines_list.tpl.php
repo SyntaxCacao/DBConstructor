@@ -1,7 +1,5 @@
-<main class="container main-container">
-  <header class="main-header">
-    <div class="main-header-header">
-      <h1 class="main-heading">Eingaberoutinen</h1>
-    </div>
-  </header>
+<main class="blankslate">
+  <span class="blankslate-icon bi bi-pencil"></span>
+  <h1 class="blankslate-heading">Es sind keine Eingaberoutinen angelegt.</h1>
+  <p class="blankslate-text">Komplexe Erfassungsvorgänge können als Eingaberoutinen gespeichert werden.</p>
 </main>
