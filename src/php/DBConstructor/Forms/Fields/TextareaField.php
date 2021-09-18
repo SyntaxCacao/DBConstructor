@@ -18,10 +18,7 @@ class TextareaField extends GroupableField
     /** @var bool */
     public $monospace = false;
 
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
     }

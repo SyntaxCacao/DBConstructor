@@ -12,10 +12,7 @@ class IntegerField extends GroupableField
     /** @var int|null */
     public $minValue;
 
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
     }

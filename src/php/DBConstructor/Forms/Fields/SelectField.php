@@ -6,13 +6,10 @@ namespace DBConstructor\Forms\Fields;
 
 class SelectField extends GroupableField
 {
-    /** @var array */
+    /** @var string[] */
     public $options = [];
 
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
     }

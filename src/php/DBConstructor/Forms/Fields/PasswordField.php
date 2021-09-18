@@ -6,12 +6,7 @@ namespace DBConstructor\Forms\Fields;
 
 class PasswordField extends TextField
 {
-    //public $callback;
-
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
         $this->type = "password";
@@ -23,17 +18,4 @@ class PasswordField extends TextField
         $this->value = null;
         return parent::generateField($placeholderLabel);
     }
-
-    /*
-    public function validate()
-    {
-        $callback = $this->callback;
-
-        if (! is_null($callback) && ! $callback($this->value)) {
-            return ["Das eingegebene Passwort ist falsch."];
-        }
-
-        return parent::validate();
-    }
-    */
 }

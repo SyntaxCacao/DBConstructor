@@ -37,29 +37,24 @@ abstract class Field
      */
     public $validationClosures = [];
 
-    /*
-    public $validationClosure;
-
-    public $validationClosureErrorMessage;
-    */
-
     /**
      * Use setter!
      *
-     * @var string
+     * @var string|null
+     * @see Field::insertValue()
      */
     public $value;
 
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         $this->name = $name;
         $this->label = $label;
     }
 
-    public function callClosures(&$issues)
+    /**
+     * @param string[] $issues
+     */
+    public function callClosures(array &$issues)
     {
         foreach ($this->validationClosures as $validationClosure) {
             $closure = $validationClosure->closure;
@@ -93,5 +88,8 @@ abstract class Field
         $this->value = $value;
     }
 
+    /**
+     * @return string[] contains error messages, empty if valid
+     */
     public abstract function validate(): array;
 }

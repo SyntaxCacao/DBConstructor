@@ -8,10 +8,7 @@ class CheckboxField extends Field
 {
     const VALUE = "checked";
 
-    /**
-     * @param string|null $label
-     */
-    public function __construct(string $name, $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
         $this->required = false;
