@@ -124,7 +124,7 @@ class TextualColumnForm extends Form
             $field->validationClosures[] = new ValidationClosure(function ($value) {
                 // https://stackoverflow.com/a/12941133/5489107
                 // @ to suppress error messages resulting from invalid regex
-                return ! (@preg_match("/".$value."/", null) === false);
+                return ! (@preg_match("/".$value."/", "") === false);
             }, "Geben Sie einen gültigen regulären Ausdruck ein.");
             $this->addField($field);
 
