@@ -10,13 +10,9 @@ use ReflectionClass;
 class Validator
 {
     /**
-     * @param bool|null $notNull
-     * @param bool|null $unsigned
-     * @param int|null $minValue
-     * @param int|null $maxValue
      * @throws Exception
      */
-    public static function createIntegerValidator($notNull, $unsigned, $minValue, $maxValue): Validator
+    public static function createIntegerValidator(bool $notNull = null, bool $unsigned = null, string $minValue = null, string $maxValue = null): Validator
     {
         $validator = new Validator();
 
@@ -39,10 +35,7 @@ class Validator
         return $validator;
     }
 
-    /**
-     * @param bool|null $notNull
-     */
-    public static function createRelationValidator($notNull): Validator
+    public static function createRelationValidator(bool $notNull = null): Validator
     {
         $validator = new Validator();
 
@@ -56,13 +49,9 @@ class Validator
     }
 
     /**
-     * @param bool|null $notNull
-     * @param int|null $minLength
-     * @param int|null $maxLength
-     * @param string|null $regex
      * @throws Exception
      */
-    public static function createTextValidator($notNull, $minLength, $maxLength, $regex): Validator
+    public static function createTextValidator(bool $notNull = null, string $minLength = null, string $maxLength = null, string $regex = null): Validator
     {
         $validator = new Validator();
 
@@ -89,7 +78,7 @@ class Validator
      * @param string|null $type null for relational columns
      * @throws Exception
      */
-    public static function fromJSON(string $json, $type = null): Validator
+    public static function fromJSON(string $json, string $type = null): Validator
     {
         $validator = new Validator();
         $rules = json_decode($json);
@@ -144,7 +133,7 @@ class Validator
      * target row does not exist an empty string must be inserted as value instead of the actual row id
      * @throws Exception
      */
-    public function validate($value): ValidationResult
+    public function validate(string $value = null): ValidationResult
     {
         $result = new ValidationResult();
         $validType = true;

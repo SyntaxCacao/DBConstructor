@@ -28,7 +28,7 @@ class NotNullRule extends Rule
         }
     }
 
-    public function validate(string $value): bool
+    public function validate(string $value = null): bool
     {
         return $this->ruleValue == NotNullRule::FALSE || ! is_null($value);
     }

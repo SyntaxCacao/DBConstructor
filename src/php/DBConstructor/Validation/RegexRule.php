@@ -19,6 +19,6 @@ class RegexRule extends Rule
     public function validate(string $value): bool
     {
         //var_dump($this->ruleValue);exit;
-        return preg_match("/".$this->ruleValue."/", $value);
+        return preg_match("/".$this->ruleValue."/", $value) === 1;
     }
 }

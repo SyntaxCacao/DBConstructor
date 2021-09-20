@@ -26,7 +26,7 @@ class TargetRowExistsRule extends Rule
         }
     }
 
-    public function validate($value): bool
+    public function validate(string $value = null): bool
     {
         // Target row check must be performed before validating, if target row
         // does not exist an empty string must be inserted as value instead of
