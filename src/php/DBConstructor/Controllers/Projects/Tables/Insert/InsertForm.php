@@ -57,7 +57,7 @@ class InsertForm extends Form
                     $str .= $value->value."; ";
                 }
 
-                $field->addOption($id, $str);
+                $field->addOption((string) $id, $str);
             }
 
             $this->addField($field);
