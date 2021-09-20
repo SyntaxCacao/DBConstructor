@@ -80,7 +80,7 @@ class TableForm extends Form
         if (is_null($this->table)) {
             // create
             $id = Table::create($this->projectId, $data["name"], $data["label"], $data["description"]);
-            Application::$instance->redirect("projects/$this->projectId/tables/$id", "created");
+            Application::$instance->redirect("projects/$this->projectId/tables/$id");
         } else {
             // edit
             $this->table->edit($data["name"], $data["label"], $data["description"]);

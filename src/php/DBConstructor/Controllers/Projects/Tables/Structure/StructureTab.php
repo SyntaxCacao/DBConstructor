@@ -20,38 +20,113 @@ class StructureTab extends TabController
     public function request(array $path, &$data): bool
     {
         if (count($path) <= 5) { // '<=' because this can be access with /projects/x/tables/x/ and /projects/x/tables/x/structure/
-            $data["relationalcolumns"] = RelationalColumn::loadList($data["table"]->id);
-            $data["textualcolumns"] = TextualColumn::loadList($data["table"]->id);
+            $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
+            $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
+
+            if (count($data["relationalColumns"]) == 0 && count($data["textualColumns"]) == 0) {
+                $data["tabpage"] = "blank";
+                return true;
+            }
 
             $data["tabpage"] = "view";
-
             return true;
         }
 
-        if (count($path) == 6 && $path[5] == "create") {
-            if (! $data["isManager"]) {
-                (new ForbiddenController())->request($path);
-                return false;
-            }
+        if (count($path) > 6 && $path[5] == "relational") {
+            // relational
 
-            if (isset($_REQUEST["type"]) && $_REQUEST["type"] == "relational") {
-                $form = new RelationalColumnCreateForm();
+            if (count($path) == 7 && $path[6] == "create") {
+                // create
+
+                if (! $data["isManager"]) {
+                    (new ForbiddenController())->request($path);
+                    return false;
+                }
+
+                $form = new RelationalColumnForm();
                 $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position);
                 $form->process();
                 $data["form"] = $form;
 
-                $data["tabpage"] = "create";
-                $data["title"] = "Spalte anlegen";
+                $data["heading"] = "Relationsfeld anlegen";
+                $data["tabpage"] = "form";
+                $data["title"] = "Feld anlegen";
 
                 return true;
-            } else if (isset($_REQUEST["type"]) && $_REQUEST["type"] == "textual") {
-                $form = new TextualColumnCreateForm();
-                $form->init($data["project"]->id, $data["table"]->id);
+            }
+
+            if (count($path) == 8 && intval($path[6]) != 0 && $path[7] == "edit") {
+                // edit
+
+                $column = RelationalColumn::load($path[6]);
+
+                if (is_null($column) || $column->tableId != $data["table"]->id) {
+                    (new NotFoundController())->request($path);
+                    return false;
+                }
+
+                if (! $data["isManager"]) {
+                    (new ForbiddenController())->request($path);
+                    return false;
+                }
+
+                $form = new RelationalColumnForm();
+                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $column);
                 $form->process();
                 $data["form"] = $form;
 
-                $data["tabpage"] = "create";
-                $data["title"] = "Spalte anlegen";
+                $data["heading"] = "Relationsfeld bearbeiten";
+                $data["tabpage"] = "form";
+                $data["title"] = "Feld bearbeiten";
+
+                return true;
+            }
+        } else if ($path[5] == "textual") {
+            // textual
+
+            if (count($path) == 7 && $path[6] == "create") {
+                // create
+
+                if (! $data["isManager"]) {
+                    (new ForbiddenController())->request($path);
+                    return false;
+                }
+
+                $form = new TextualColumnForm();
+                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position);
+                $form->process();
+                $data["form"] = $form;
+
+                $data["heading"] = "Wertfeld anlegen";
+                $data["tabpage"] = "form";
+                $data["title"] = "Feld anlegen";
+
+                return true;
+            }
+
+            if (count($path) == 8 && intval($path[6]) != 0 && $path[7] == "edit") {
+                // edit
+
+                $column = TextualColumn::load($path[6]);
+
+                if (is_null($column) || $column->tableId != $data["table"]->id) {
+                    (new NotFoundController())->request($path);
+                    return false;
+                }
+
+                if (! $data["isManager"]) {
+                    (new ForbiddenController())->request($path);
+                    return false;
+                }
+
+                $form = new TextualColumnForm();
+                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $column);
+                $form->process();
+                $data["form"] = $form;
+
+                $data["heading"] = "Wertfeld bearbeiten";
+                $data["tabpage"] = "form";
+                $data["title"] = "Feld bearbeiten";
 
                 return true;
             }

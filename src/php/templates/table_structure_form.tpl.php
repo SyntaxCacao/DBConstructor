@@ -1,6 +1,6 @@
 <main class="container container-small main-container">
   <header class="main-header">
-    <h1 class="main-heading">Spalte anlegen</h1>
+    <h1 class="main-heading"><?php echo $data["heading"] ?></h1>
   </header>
   <?php echo $data["form"]->generate(); ?>
 </main>

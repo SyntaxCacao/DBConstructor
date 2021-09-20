@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Validation\NotNullRule;
 use DBConstructor\Validation\Validator;
+use Exception;
 
 class TextualColumn
 {
@@ -29,11 +31,7 @@ class TextualColumn
         TextualColumn::TYPE_DATE => "Datum"
     ];
 
-    /**
-     * @param string|null $description
-     * @param string|null $rules
-     */
-    public static function create(string $tableId, string $name, string $label, $description, string $type, $rules): string
+    public static function create(string $tableId, string $name, string $label, string $description = null, string $type, string $rules = null): string
     {
         MySQLConnection::$instance->execute("SELECT `position` FROM `dbc_column_textual` WHERE `table_id`=? ORDER BY `position` DESC LIMIT 1", [$tableId]);
 
@@ -63,7 +61,6 @@ class TextualColumn
         return $result[0]["count"] === "0";
     }
 
-    /*
     public static function load($id)
     {
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_column_textual` WHERE `id`=?", [$id]);
@@ -75,7 +72,6 @@ class TextualColumn
 
         return new TextualColumn($result[0]);
     }
-    */
 
     /**
      * @return TextualColumn[]
@@ -136,11 +132,22 @@ class TextualColumn
         $this->created = $data["created"];
     }
 
+    public function edit(string $name, string $label, string $description = null)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `name`=?, `label`=?, `description`=? WHERE `id`=?", [$name, $label, $description, $this->id]);
+        $this->name = $name;
+        $this->label = $label;
+        $this->description = $description;
+    }
+
     public function getTypeLabel(): string
     {
         return TextualColumn::TYPES[$this->type];
     }
 
+    /**
+     * @throws Exception
+     */
     public function getValidator(): Validator
     {
         return Validator::fromJSON($this->rules, $this->type);
