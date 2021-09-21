@@ -21,8 +21,8 @@
     </div>
 <?php if ($data["isManager"]) { ?>
     <div class="main-header-actions">
-      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/relational/create/">Relationsfeld anlegen</a>
-      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/textual/create/">Wertfeld anlegen</a>
+      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/relational/create/"><span class="bi bi-arrow-up-right"></span>Relationsfeld anlegen</a>
+      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/textual/create/"><span class="bi bi-input-cursor-text"></span>Wertfeld anlegen</a>
     </div>
 <?php } ?>
   </header>
