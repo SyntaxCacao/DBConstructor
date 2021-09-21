@@ -23,6 +23,11 @@ class RelationalField
         }
     }
 
+    public static function delete(string $columnId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `column_id`=?", [$columnId]);
+    }
+
     /**
      * @return Table[]
      */

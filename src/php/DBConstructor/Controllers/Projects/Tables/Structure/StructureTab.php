@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Tables\Structure;
 
+use DBConstructor\Application;
 use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
@@ -70,6 +71,13 @@ class StructureTab extends TabController
                     return false;
                 }
 
+                if (isset($_GET["delete"])) {
+                    // delete
+                    $column->delete();
+                    Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id, "deleted");
+                    exit;
+                }
+
                 $form = new RelationalColumnForm();
                 $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $column);
                 $form->process();
@@ -117,6 +125,13 @@ class StructureTab extends TabController
                 if (! $data["isManager"]) {
                     (new ForbiddenController())->request($path);
                     return false;
+                }
+
+                if (isset($_GET["delete"])) {
+                    // delete
+                    $column->delete();
+                    Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id, "deleted");
+                    exit;
                 }
 
                 $form = new TextualColumnForm();

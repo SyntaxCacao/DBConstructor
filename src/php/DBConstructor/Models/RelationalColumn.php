@@ -109,6 +109,12 @@ class RelationalColumn
         $this->created = $data["created"];
     }
 
+    public function delete()
+    {
+        RelationalField::delete($this->id);
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_column_relational` WHERE `id`=?", [$this->id]);
+    }
+
     public function edit(string $targetTableId, string $name, string $label, string $description = null, string $rules = null)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `rules`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, $rules, $this->id]);

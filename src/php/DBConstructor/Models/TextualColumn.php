@@ -132,6 +132,12 @@ class TextualColumn
         $this->created = $data["created"];
     }
 
+    public function delete()
+    {
+        TextualField::delete($this->id);
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_column_textual` WHERE `id`=?", [$this->id]);
+    }
+
     public function edit(string $name, string $label, string $description = null)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `name`=?, `label`=?, `description`=? WHERE `id`=?", [$name, $label, $description, $this->id]);

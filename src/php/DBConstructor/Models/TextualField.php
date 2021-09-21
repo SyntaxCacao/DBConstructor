@@ -23,6 +23,11 @@ class TextualField
         }
     }
 
+    public static function delete(string $columnId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_field_textual` WHERE `column_id`=?", [$columnId]);
+    }
+
     public static function loadRow(string $rowId): array
     {
         MySQLConnection::$instance->execute("SELECT f.*, c.`name` AS `column_name` FROM `dbc_field_textual` f LEFT JOIN `dbc_column_textual` c ON f.`column_id`=c.`id` WHERE `row_id`=?", [$rowId]);
