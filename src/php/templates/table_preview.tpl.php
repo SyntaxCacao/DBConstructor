@@ -8,10 +8,10 @@
     <tr class="table-heading">
       <th class="table-cell">ID</th>
 <?php   foreach ($data["relationalcolumns"] as $column) { ?>
-      <th class="table-cell"><!--<span class="bi bi-arrow-up-right"></span>--><?php echo htmlentities($column->label); ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span></th>
+      <th class="table-cell"><!--<span class="bi bi-arrow-up-right"></span>--><?php echo htmlentities($column->label); if ($column->label != $column->name) { ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span><?php } ?></th>
 <?php   } ?>
 <?php   foreach ($data["textualcolumns"] as $column) { ?>
-      <th class="table-cell"><?php echo htmlentities($column->label); ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span></th>
+      <th class="table-cell"><?php echo htmlentities($column->label); if ($column->label != $column->name) { ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span><?php } ?></th>
 <?php   } ?>
     </tr>
 <?php   if (count($data["rows"]) > 0) {
