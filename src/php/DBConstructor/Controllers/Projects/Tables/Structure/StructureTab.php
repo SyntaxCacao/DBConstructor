@@ -124,6 +124,12 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
+                // TODO: Interim solution
+                $form = new TextualColumnOverwriteForm();
+                $form->init($column, $data["project"]->id, $data["table"]->id);
+                $form->process();
+                $data["overwriteForm"] = $form;
+
                 $data["heading"] = "Wertfeld bearbeiten";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld bearbeiten";

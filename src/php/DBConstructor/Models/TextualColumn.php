@@ -140,6 +140,13 @@ class TextualColumn
         $this->description = $description;
     }
 
+    public function editRules(string $type, string $rules = null)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `type`=?, `rules`=? WHERE `id`=?", [$type, $rules, $this->id]);
+        $this->type = $type;
+        $this->rules = $rules;
+    }
+
     public function getTypeLabel(): string
     {
         return TextualColumn::TYPES[$this->type];
