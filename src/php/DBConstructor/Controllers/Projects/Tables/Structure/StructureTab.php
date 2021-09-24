@@ -49,6 +49,7 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
+                $data["deletable"] = false;
                 $data["heading"] = "Relationsfeld anlegen";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld anlegen";
@@ -83,6 +84,7 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
+                $data["deletable"] = true;
                 $data["heading"] = "Relationsfeld bearbeiten";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld bearbeiten";
@@ -105,6 +107,7 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
+                $data["deletable"] = false;
                 $data["heading"] = "Wertfeld anlegen";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld anlegen";
@@ -145,6 +148,7 @@ class StructureTab extends TabController
                 $form->process();
                 $data["overwriteForm"] = $form;
 
+                $data["deletable"] = true;
                 $data["heading"] = "Wertfeld bearbeiten";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld bearbeiten";
