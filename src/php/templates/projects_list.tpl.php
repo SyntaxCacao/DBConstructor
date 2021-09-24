@@ -12,7 +12,7 @@
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading">Projekte</h1>
-      <p class="main-subtitle"><?php if ($data["isAdmin"]) { echo count($data["allProjects"])." Projekt"; if (count($data["allProjects"]) != 1) echo "e"; echo " angelegt"; } else { echo "An ".count($data["participatingProjects"])." Projekt"; if (count($data["participatingProjects"]) != 1) echo "en"; echo " beteiligt"; } ?></p>
+      <p class="main-subtitle"><?php if ($data["isAdmin"]) { echo count($data["allProjects"])." Projekt"; if (count($data["allProjects"]) != 1) echo "e"; echo " angelegt"; } else { echo count($data["participatingProjects"])." Projekt"; if (count($data["participatingProjects"]) != 1) echo "e"; echo " verfügbar"; } ?></p>
     </div>
 <?php   if ($data["isAdmin"]) { ?>
     <div class="main-header-actions">
