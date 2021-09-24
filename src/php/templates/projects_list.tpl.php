@@ -16,7 +16,7 @@
     </div>
 <?php   if ($data["isAdmin"]) { ?>
     <div class="main-header-actions">
-      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/create/">Projekt anlegen</a>
+      <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/create/"><span class="bi bi-folder-plus"></span>Projekt anlegen</a>
     </div>
 <?php   } ?>
   </header>
