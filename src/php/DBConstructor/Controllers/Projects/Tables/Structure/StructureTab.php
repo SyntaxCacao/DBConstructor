@@ -49,7 +49,6 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
-                $data["deletable"] = false;
                 $data["heading"] = "Relationsfeld anlegen";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld anlegen";
@@ -61,6 +60,7 @@ class StructureTab extends TabController
                 // edit
 
                 $column = RelationalColumn::load($path[6]);
+                $data["column"] = $column;
 
                 if (is_null($column) || $column->tableId != $data["table"]->id) {
                     (new NotFoundController())->request($path);
@@ -84,7 +84,6 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
-                $data["deletable"] = true;
                 $data["heading"] = "Relationsfeld bearbeiten";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld bearbeiten";
@@ -107,7 +106,6 @@ class StructureTab extends TabController
                 $form->process();
                 $data["form"] = $form;
 
-                $data["deletable"] = false;
                 $data["heading"] = "Wertfeld anlegen";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld anlegen";
@@ -119,6 +117,7 @@ class StructureTab extends TabController
                 // edit
 
                 $column = TextualColumn::load($path[6]);
+                $data["column"] = $column;
 
                 if (is_null($column) || $column->tableId != $data["table"]->id) {
                     (new NotFoundController())->request($path);
@@ -148,7 +147,6 @@ class StructureTab extends TabController
                 $form->process();
                 $data["overwriteForm"] = $form;
 
-                $data["deletable"] = true;
                 $data["heading"] = "Wertfeld bearbeiten";
                 $data["tabpage"] = "form";
                 $data["title"] = "Feld bearbeiten";
