@@ -103,6 +103,9 @@ class TextualColumnForm extends Form
 
         // description
         $this->addField(new ColumnDescriptionField($column));
+
+        // position
+        $this->addField(new ColumnPositionField(TextualColumn::loadList($tableId), $column));
     }
 
     /**
@@ -120,10 +123,14 @@ class TextualColumnForm extends Form
                 $rules = Validator::createTextValidator(! $data["rule-null-allowed"], $data["rule-text-minlength"], $data["rule-text-maxlength"], $data["rule-text-regex"])->toJSON();
             }
 
-            TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["description"], $data["type"], $rules);
+            TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["position"], $data["type"], $data["description"], $rules);
         }  else {
             // edit
             $this->column->edit($data["name"], $data["label"], $data["description"]);
+
+            if ($this->column->position != $data["position"]) {
+                $this->column->move(intval($data["position"]));
+            }
 
             // TODO: Rerun validation
         }

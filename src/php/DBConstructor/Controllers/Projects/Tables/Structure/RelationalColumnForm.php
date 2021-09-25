@@ -71,6 +71,9 @@ class RelationalColumnForm extends Form
 
         // description
         $this->addField(new ColumnDescriptionField($column));
+
+        // position
+        $this->addField(new ColumnPositionField(RelationalColumn::loadList($tableId), $column));
     }
 
     /**
@@ -82,11 +85,15 @@ class RelationalColumnForm extends Form
 
         if (is_null($this->column)) {
             // create
-            RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["description"], $rules);
+            RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["position"], $data["description"], $rules);
         } else {
             // edit
             $targetTableChanged = $data["target-table"] != $this->column->targetTableId;
             $this->column->edit($data["target-table"], $data["name"], $data["label"], $data["description"], $rules);
+
+            if ($this->column->position != $data["position"]) {
+                $this->column->move(intval($data["position"]));
+            }
 
             if ($targetTableChanged) {
                 // TODO: !!!

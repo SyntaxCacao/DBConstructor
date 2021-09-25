@@ -11,16 +11,9 @@ use Exception;
 
 class RelationalColumn extends Column
 {
-    public static function create(string $tableId, string $targetTableId, /*$labelColumnId, */ string $name, string $label, string $description = null, string $rules = null): string
+    public static function create(string $tableId, string $targetTableId, /*$labelColumnId, */ string $name, string $label, string $position, string $description = null, string $rules = null): string
     {
-        MySQLConnection::$instance->execute("SELECT `position` FROM `dbc_column_relational` WHERE `table_id`=? ORDER BY `position` DESC LIMIT 1", [$tableId]);
-
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $position = 1;
-
-        if (count($result) > 0) {
-            $position = intval($result[0]["position"]) + 1;
-        }
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
 
         MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `description`, `position`, `rules`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $description, $position, $rules]);
 
@@ -122,5 +115,10 @@ class RelationalColumn extends Column
     public function invalidateFields()
     {
 
+    }
+
+    public function move(int $newPosition)
+    {
+        parent::move_internal("dbc_column_relational", $newPosition);
     }
 }

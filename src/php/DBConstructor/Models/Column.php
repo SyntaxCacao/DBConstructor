@@ -57,4 +57,20 @@ abstract class Column
         $this->rules = $data["rules"];
         $this->created = $data["created"];
     }
+
+    protected function move_internal(string $tableName, int $newPosition)
+    {
+        $oldPosition = intval($this->position);
+
+        if ($oldPosition > $newPosition) {
+            // move down
+            MySQLConnection::$instance->execute("UPDATE `".$tableName."` SET `position`=`position`+1 WHERE `table_id`=? AND `position`<? AND `position`>=?", [$this->tableId, $oldPosition, $newPosition]);
+        } else {
+            // move up
+            MySQLConnection::$instance->execute("UPDATE `".$tableName."` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>? AND `position`<=?", [$this->tableId, $oldPosition, $newPosition]);
+        }
+
+        MySQLConnection::$instance->execute("UPDATE `".$tableName."` SET `position`=? WHERE `id`=?", [$newPosition, $this->id]);
+        $this->position = (string) $newPosition;
+    }
 }

@@ -44,11 +44,11 @@
         foreach ($data["relationalColumns"] as $column) {
           $count += 1;?>
       <tr class="table-row">
-        <td class="table-cell"><?php echo htmlentities($column->position); ?></td>
-        <td class="table-cell"><?php echo htmlentities($column->label); ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span></td>
-        <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $column->targetTableId; ?>/"><?php echo htmlentities($column->targetTableLabel); ?></a> <span class="table-cell-code-addition"><?php echo htmlentities($column->targetTableName) ?></span></td>
+        <td class="table-cell"><?php echo htmlentities($column->position) ?></td>
+        <td class="table-cell"><?php echo htmlentities($column->label) ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name) ?></span></td>
+        <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $column->targetTableId ?>/"><?php echo htmlentities($column->targetTableLabel) ?></a> <span class="table-cell-code-addition"><?php echo htmlentities($column->targetTableName) ?></span></td>
 <?php     if ($data["isManager"]) { ?>
-        <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>Nach oben</a><a class="button <?php if ($count == count($data["relationalColumns"])) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>Nach unten</a><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/relational/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+        <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/relational/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
       </tr>
 <?php   } ?>
@@ -75,11 +75,11 @@
         foreach ($data["textualColumns"] as $column) {
           $count += 1;?>
     <tr class="table-row">
-      <td class="table-cell"><?php echo htmlentities($column->position); ?></td>
-      <td class="table-cell"><?php echo htmlentities($column->label); ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name); ?></span></td>
-      <td class="table-cell"><?php echo htmlentities($column->getTypeLabel()); ?></td>
+      <td class="table-cell"><?php echo htmlentities($column->position) ?></td>
+      <td class="table-cell"><?php echo htmlentities($column->label) ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name) ?></span></td>
+      <td class="table-cell"><?php echo htmlentities($column->getTypeLabel()) ?></td>
 <?php     if ($data["isManager"]) { ?>
-      <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>Nach oben</a><a class="button <?php if ($count == count($data["textualColumns"])) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>Nach unten</a><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/textual/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+      <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/textual/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
     </tr>
 <?php   } ?>
