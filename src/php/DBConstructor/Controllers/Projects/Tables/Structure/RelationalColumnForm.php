@@ -6,10 +6,7 @@ namespace DBConstructor\Controllers\Projects\Tables\Structure;
 
 use DBConstructor\Application;
 use DBConstructor\Forms\Fields\CheckboxField;
-use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
-use DBConstructor\Forms\Fields\TextField;
-use DBConstructor\Forms\Fields\ValidationClosure;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\Table;
@@ -42,41 +39,10 @@ class RelationalColumnForm extends Form
         $this->column = $column;
 
         // label
-        $field = new TextField("label", "Bezeichnung");
-        $field->minLength = 3;
-        $field->maxLength = 30;
-
-        if (! is_null($column)) {
-            $field->defaultValue = $column->label;
-        }
-
-        $this->addField($field);
+        $this->addField(new ColumnLabelField($column));
 
         // name
-        $field = new TextField("name", "Technischer Name");
-        $field->maxLength = 30;
-        $field->monospace = true;
-
-        $field->validationClosures[] = new ValidationClosure(static function ($value) {
-            return strtolower($value) != "id";
-        }, 'Der Name "id" ist reserviert.', true);
-        $field->validationClosures[] = new ValidationClosure(static function ($value) {
-            return preg_match("/^[A-Za-z0-9-_]+$/", $value);
-        }, "Spaltennamen dürfen nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.", true);
-
-        if (is_null($column)) {
-            $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return RelationalColumn::isNameAvailable($this->tableId, $value);
-            }, "Die Tabelle enthält bereits eine Spalte mit diesem Namen.");
-        } else {
-            $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return $value == $this->column->name || RelationalColumn::isNameAvailable($this->tableId, $value);
-            }, "Die Tabelle enthält bereits eine Spalte mit diesem Namen.");
-
-            $field->defaultValue = $column->name;
-        }
-
-        $this->addField($field);
+        $this->addField(new ColumnNameField($tableId, $column));
 
         // target table
         $field = new SelectField("target-table", "Zieltabelle");
@@ -99,22 +65,12 @@ class RelationalColumnForm extends Form
 
         if (! is_null($column)) {
             $field->defaultValue = $column->isOptional();
-            //var_dump($field->defaultValue);exit;
         }
 
         $this->addField($field);
 
         // description
-        $field = new MarkdownField("description", "Erläuterung");
-        $field->larger = false;
-        $field->maxLength = 1000;
-        $field->required = false;
-
-        if (! is_null($column)) {
-            $field->defaultValue = $column->description;
-        }
-
-        $this->addField($field);
+        $this->addField(new ColumnDescriptionField($column));
     }
 
     /**

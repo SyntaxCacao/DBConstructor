@@ -9,7 +9,7 @@ use DBConstructor\Validation\NotNullRule;
 use DBConstructor\Validation\Validator;
 use Exception;
 
-class RelationalColumn
+class RelationalColumn extends Column
 {
     public static function create(string $tableId, string $targetTableId, /*$labelColumnId, */ string $name, string $label, string $description = null, string $rules = null): string
     {
@@ -58,12 +58,6 @@ class RelationalColumn
     }
 
     /** @var string */
-    public $id;
-
-    /** @var string */
-    public $tableId;
-
-    /** @var string */
     public $targetTableId;
 
     /** @var string */
@@ -75,38 +69,13 @@ class RelationalColumn
     /** @var string */
     public $labelColumnId;
 
-    /** @var string */
-    public $name;
-
-    /** @var string */
-    public $label;
-
-    /** @var string|null */
-    public $description;
-
-    /** @var string */
-    public $position;
-
-    /** @var string|null */
-    public $rules;
-
-    /** @var string */
-    public $created;
-
     public function __construct(array $data)
     {
-        $this->id = $data["id"];
-        $this->tableId = $data["table_id"];
+        parent::__construct($data);
         $this->targetTableId = $data["target_table_id"];
         $this->targetTableName = $data["target_table_name"];
         $this->targetTableLabel = $data["target_table_label"];
         $this->labelColumnId = $data["label_column_id"];
-        $this->name = $data["name"];
-        $this->label = $data["label"];
-        $this->description = $data["description"];
-        $this->position = $data["position"];
-        $this->rules = $data["rules"];
-        $this->created = $data["created"];
     }
 
     public function delete()

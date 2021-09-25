@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
-use DBConstructor\Validation\NotNullRule;
 use DBConstructor\Validation\Validator;
 use Exception;
 
-class TextualColumn
+class TextualColumn extends Column
 {
     const TYPE_BOOLEAN = "boolean";
 
@@ -47,20 +46,6 @@ class TextualColumn
         return MySQLConnection::$instance->getLastInsertId();
     }
 
-    public static function isNameAvailable(string $tableId, string $name): bool
-    {
-        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_column_relational` WHERE `table_id`=? AND `name`=?", [$tableId, $name]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-
-        if ($result[0]["count"] !== "0") {
-            return false;
-        }
-
-        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_column_textual` WHERE `table_id`=? AND `name`=?", [$tableId, $name]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        return $result[0]["count"] === "0";
-    }
-
     public static function load($id)
     {
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_column_textual` WHERE `id`=?", [$id]);
@@ -90,46 +75,15 @@ class TextualColumn
     }
 
     /** @var string */
-    public $id;
-
-    /** @var string */
-    public $tableId;
-
-    /** @var string */
-    public $name;
-
-    /** @var string */
-    public $label;
-
-    /** @var string|null */
-    public $description;
-
-    /** @var string */
-    public $position;
-
-    /** @var string */
     public $type;
-
-    /** @var string|null */
-    public $rules;
-
-    /** @var string */
-    public $created;
 
     /**
      * @param string[] $data
      */
     public function __construct(array $data)
     {
-        $this->id = $data["id"];
-        $this->tableId = $data["table_id"];
-        $this->name = $data["name"];
-        $this->label = $data["label"];
-        $this->description = $data["description"];
-        $this->position = $data["position"];
+        parent::__construct($data);
         $this->type = $data["type"];
-        $this->rules = $data["rules"];
-        $this->created = $data["created"];
     }
 
     public function delete()
