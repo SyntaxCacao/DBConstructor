@@ -178,6 +178,7 @@ textarea {
 }
 
 .form-group-header {
+  line-height: 1.2;
   margin-bottom: $spacer-1;
 
   .form-label {
@@ -187,6 +188,8 @@ textarea {
 
 .form-group-description {
   color: $color-text-secondary;
+  line-height: inherit;
+  margin-top: 2px;
 }
 
 @media (max-width: $breakpoint-sm) {
