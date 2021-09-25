@@ -1,7 +1,7 @@
 <main class="container main-container">
 <?php if (isset($data["request"]["saved"])) { ?>
   <div class="alerts">
-    <div class="alert"><p>Die Spalte wurde gespeichert.</p></div>
+    <div class="alert"><p>Das Feld wurde gespeichert.</p></div>
   </div>
 
 <?php } ?>
