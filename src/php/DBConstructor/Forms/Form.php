@@ -92,21 +92,17 @@ abstract class Form
         $data = [];
 
         foreach ($this->fields as $name => $field) {
-            if ($field->disabled) {
-                if (isset($field->defaultValue)) {
-                    $field->insertValue($field->defaultValue);
-                }
-
-                continue;
-            }
-
             if (isset($field->dependsOn)) {
                 if ($field->dependsOnValue != $this->fields[$field->dependsOn]->value) {
                     continue;
                 }
             }
 
-            if (isset($_REQUEST["field-$name"])) {
+            if ($field->disabled) {
+                if (isset($field->defaultValue)) {
+                    $field->insertValue($field->defaultValue);
+                }
+            } else if (isset($_REQUEST["field-$name"])) {
                 $field->insertValue($_REQUEST["field-$name"]);
             }
 
