@@ -12,6 +12,7 @@ class ColumnLabelField extends TextField
     public function __construct(Column $column = null)
     {
         parent::__construct("label", "Bezeichnung");
+        $this->description = "Diese Bezeichnung wird auf der Plattform verwendet, der Technische Name für den Export";
         $this->minLength = 3;
         $this->maxLength = 30;
 

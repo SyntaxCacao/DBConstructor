@@ -22,6 +22,7 @@ class ColumnNameField extends TextField
         $this->column = $column;
         $this->tableId = $tableId;
 
+        $this->description = "Verwendbar sind alphanumerische Zeichen, Bindestriche und Unterstriche";
         $this->maxLength = 30;
         $this->monospace = true;
 
