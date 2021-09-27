@@ -32,7 +32,7 @@ class TextualColumn extends Column
 
     public static function create(string $tableId, string $name, string $label, string $position, string $type, string $description = null, string $rules = null): string
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
 
         MySQLConnection::$instance->execute("INSERT INTO `dbc_column_textual` (`table_id`, `name`, `label`, `description`, `position`, `type`, `rules`) VALUES (?, ?, ?, ?, ?, ?, ?)", [$tableId, $name, $label, $description, $position, $type, $rules]);
 
@@ -83,6 +83,7 @@ class TextualColumn extends Column
     {
         TextualField::delete($this->id);
         MySQLConnection::$instance->execute("DELETE FROM `dbc_column_textual` WHERE `id`=?", [$this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>=?", [$this->tableId, $this->position]);
     }
 
     public function edit(string $name, string $label, string $description = null)

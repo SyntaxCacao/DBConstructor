@@ -75,6 +75,7 @@ class RelationalColumn extends Column
     {
         RelationalField::delete($this->id);
         MySQLConnection::$instance->execute("DELETE FROM `dbc_column_relational` WHERE `id`=?", [$this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>=?", [$this->tableId, $this->position]);
     }
 
     public function edit(string $targetTableId, string $name, string $label, string $description = null, string $rules = null)
