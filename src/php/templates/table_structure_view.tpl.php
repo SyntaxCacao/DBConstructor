@@ -3,7 +3,10 @@
   <div class="alerts">
     <div class="alert"><p>Das Feld wurde gespeichert.</p></div>
   </div>
-
+<?php } else if (isset($data["request"]["deleted"])) { ?>
+  <div class="alerts">
+    <div class="alert"><p>Das Feld wurde gelöscht.</p></div>
+  </div>
 <?php } ?>
   <header class="main-header">
     <div class="main-header-header">
