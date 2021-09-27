@@ -12,6 +12,12 @@ class User
 
     const HASH_ALGO = PASSWORD_BCRYPT;
 
+    public static function countAdministrators(): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_user` WHERE `admin` = TRUE");
+        return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
+    }
+
     public static function countNotParticipating(string $projectId): int
     {
         MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = 1) = 0", [$projectId]);

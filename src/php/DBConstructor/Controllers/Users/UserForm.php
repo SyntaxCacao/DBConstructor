@@ -97,6 +97,10 @@ class UserForm extends Form
 
         if (! is_null($user)) {
             $field->defaultValue = $user->isAdmin;
+
+            if ($user->isAdmin && User::countAdministrators() < 2) {
+                $field->disabled = true;
+            }
         }
 
         $this->addField($field);
