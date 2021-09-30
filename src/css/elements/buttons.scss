@@ -28,8 +28,7 @@ button {
   border-color: #e1e4e8; // same as without hover, to override browser styles
 }
 
-.button:active,
-.button:focus {
+.button:active {
   background-color: hsla(220,14%,93%,1);
 }
 
@@ -65,8 +64,7 @@ button {
   color: #ffffff;
 }
 
-.button-danger:active,
-.button-danger:focus {
+.button-danger:active {
   background-color: hsla(354,66%,51%,1);
   border-color: rgba(27,31,35,0.15);
   box-shadow: none;
