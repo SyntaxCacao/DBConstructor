@@ -68,7 +68,7 @@ abstract class Field
         }
     }
 
-    public abstract function generateField(bool $placeholderLabel): string;
+    public abstract function generateField(): string;
 
     /**
      * @param string[] $errorMessages

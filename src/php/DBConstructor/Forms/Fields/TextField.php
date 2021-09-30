@@ -15,6 +15,9 @@ class TextField extends GroupableField
     /** @var bool */
     public $monospace = false;
 
+    /** @var string|null */
+    public $placeholder;
+
     /**
      * To be overriden by child-classes.
      *
@@ -27,7 +30,7 @@ class TextField extends GroupableField
         parent::__construct($name, $label);
     }
 
-    public function generateField(bool $placeholderLabel = false): string
+    public function generateField(): string
     {
         $html = '<input class="form-input';
 
@@ -37,12 +40,12 @@ class TextField extends GroupableField
 
         $html .= '" type="'.$this->type.'" name="field-'.htmlentities($this->name).'"';
 
-        if (isset($this->dependsOn)) {
-            $html .= ' data-depends-on="'.$this->dependsOn.'" data-depends-on-value="'.$this->dependsOnValue.'"';
+        if (isset($this->placeholder)) {
+            $html .= ' placeholder="'.htmlentities($this->placeholder).'"';
         }
 
-        if ($placeholderLabel) {
-            $html .= ' placeholder="'.htmlentities($this->label).'"';
+        if (isset($this->dependsOn)) {
+            $html .= ' data-depends-on="'.$this->dependsOn.'" data-depends-on-value="'.$this->dependsOnValue.'"';
         }
 
         if (isset($this->maxLength)) {

@@ -12,10 +12,10 @@ class PasswordField extends TextField
         $this->type = "password";
     }
 
-    public function generateField(bool $placeholderLabel = false): string
+    public function generateField(): string
     {
         // passwords must not to be inserted as default values
         $this->value = null;
-        return parent::generateField($placeholderLabel);
+        return parent::generateField();
     }
 }

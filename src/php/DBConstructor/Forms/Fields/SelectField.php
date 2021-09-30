@@ -33,7 +33,7 @@ class SelectField extends GroupableField
         }
     }
 
-    public function generateField(bool $placeholderLabel = false): string
+    public function generateField(): string
     {
         $html = '<select class="form-select" name="field-'.htmlentities($this->name).'"';
 

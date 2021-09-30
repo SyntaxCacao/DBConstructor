@@ -18,6 +18,9 @@ class TextareaField extends GroupableField
     /** @var bool */
     public $monospace = false;
 
+    /** @var string|null */
+    public $placeholder;
+
     public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
@@ -37,12 +40,12 @@ class TextareaField extends GroupableField
 
         $html .= '" name="field-'.htmlentities($this->name).'"';
 
-        if (isset($this->dependsOn)) {
-            $html .= ' data-depends-on="'.$this->dependsOn.'" data-depends-on-value="'.$this->dependsOnValue.'"';
+        if (isset($this->placeholder)) {
+            $html .= ' placeholder="'.htmlentities($this->placeholder).'"';
         }
 
-        if ($placeholderLabel) {
-            $html .= ' placeholder="'.htmlentities($this->label).'"';
+        if (isset($this->dependsOn)) {
+            $html .= ' data-depends-on="'.$this->dependsOn.'" data-depends-on-value="'.$this->dependsOnValue.'"';
         }
 
         if (isset($this->maxLength)) {

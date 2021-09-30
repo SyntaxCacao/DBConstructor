@@ -37,7 +37,7 @@ abstract class GroupableField extends Field
             $html .= '<p class="form-group-description">'.htmlentities($this->description).'</p>';
         }
 
-        $html .= '</div><div class="form-group-body">'.$this->generateField(false);
+        $html .= '</div><div class="form-group-body">'.$this->generateField();
 
         if (isset($this->footer)) {
             $html .= '<p class="form-footer">'.htmlentities($this->footer).'</p>';

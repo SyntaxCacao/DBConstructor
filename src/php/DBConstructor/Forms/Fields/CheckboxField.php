@@ -15,7 +15,7 @@ class CheckboxField extends Field
         $this->value = false;
     }
 
-    public function generateField(bool $placeholderLabel = false): string
+    public function generateField(): string
     {
         $html = '<input class="form-checkbox" name="field-'.htmlentities($this->name).'" type="checkbox" value="'.CheckboxField::VALUE.'"';
 
