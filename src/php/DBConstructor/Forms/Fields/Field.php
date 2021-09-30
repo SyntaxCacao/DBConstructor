@@ -40,7 +40,7 @@ abstract class Field
     /**
      * Use setter!
      *
-     * @var string|null
+     * @var mixed
      * @see Field::insertValue()
      */
     public $value;
