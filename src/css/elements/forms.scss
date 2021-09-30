@@ -92,6 +92,16 @@ textarea {
   -moz-appearance: textfield;
 }
 
+// list //
+
+.form-list-row {
+  margin-bottom: $spacer-2;
+
+  input {
+    margin-right: $spacer-2;
+  }
+}
+
 // textarea //
 
 .form-textarea {
