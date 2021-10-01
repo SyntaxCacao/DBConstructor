@@ -40,9 +40,6 @@ abstract class Column
     /** @var string */
     public $position;
 
-    /** @var string|null */
-    public $rules;
-
     /** @var string */
     public $created;
 
@@ -54,7 +51,6 @@ abstract class Column
         $this->label = $data["label"];
         $this->description = $data["description"];
         $this->position = $data["position"];
-        $this->rules = $data["rules"];
         $this->created = $data["created"];
     }
 

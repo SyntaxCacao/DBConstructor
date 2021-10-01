@@ -8,18 +8,12 @@ use DBConstructor\SQL\MySQLConnection;
 
 class RelationalField
 {
-    const VALIDITY_INVALID = "invalid";
-
-    const VALIDITY_UNCHECKED = "unchecked";
-
-    const VALIDITY_VALID = "valid";
-
     public static function createAll(string $rowId, array $fields)
     {
-        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `validity`) VALUES (?, ?, ?, ?)");
+        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) VALUES (?, ?, ?, ?)");
 
         foreach ($fields as $field) {
-            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], $field["validity"]]);
+            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], intval($field["valid"])]);
         }
     }
 
@@ -41,7 +35,11 @@ class RelationalField
             $field = new RelationalField($row);
             $table[$field->rowId][$field->columnId]["obj"] = $field;
             // TODO: Anders machen!!!!
-            $table[$field->rowId][$field->columnId]["target"] = TextualField::loadRow($field->targetRowId);
+            if (is_null($field->targetRowId)) {
+                $table[$field->rowId][$field->columnId]["target"] = null;
+            } else {
+                $table[$field->rowId][$field->columnId]["target"] = TextualField::loadRow($field->targetRowId);
+            }
         }
 
         return $table;
@@ -73,9 +71,9 @@ class RelationalField
     public $targetRowExportId;
 
     /**
-     * @var string
+     * @var bool|null
      */
-    public $validity;
+    public $valid;
 
     /**
      * @param string[] $data
@@ -87,6 +85,9 @@ class RelationalField
         $this->columnId = $data["column_id"];
         $this->targetRowId = $data["target_row_id"];
         $this->targetRowExportId = $data["target_row_exportid"];
-        $this->validity = $data["validity"];
+
+        if ($data["valid"] !== null) {
+            $this->valid = $data["valid"] == "1";
+        }
     }
 }

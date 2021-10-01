@@ -8,18 +8,12 @@ use DBConstructor\SQL\MySQLConnection;
 
 class TextualField
 {
-    const VALIDITY_INVALID = "invalid";
-
-    const VALIDITY_UNCHECKED = "unchecked";
-
-    const VALIDITY_VALID = "valid";
-
     public static function createAll(string $rowId, array $fields)
     {
-        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_textual` (`row_id`, `column_id`, `value`, `validity`) VALUES (?, ?, ?, ?)");
+        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_textual` (`row_id`, `column_id`, `value`, `valid`) VALUES (?, ?, ?, ?)");
 
         foreach ($fields as $field) {
-            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["value"], $field["validity"]]);
+            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["value"], intval($field["valid"])]);
         }
     }
 
@@ -72,8 +66,8 @@ class TextualField
     /** @var string|null */
     public $value;
 
-    /** @var string */
-    public $validity;
+    /** @var bool|null */
+    public $valid;
 
     /**
      * @param string[] $data
@@ -84,11 +78,9 @@ class TextualField
         $this->rowId = $data["row_id"];
         $this->columnId = $data["column_id"];
         $this->value = $data["value"];
-        $this->validity = $data["validity"];
-    }
 
-    public function isInvalid(): bool
-    {
-        return $this->validity == TextualField::VALIDITY_INVALID;
+        if ($data["valid"] !== null) {
+            $this->valid = $data["valid"] == "1";
+        }
     }
 }

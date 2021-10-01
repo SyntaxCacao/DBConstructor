@@ -59,9 +59,9 @@ class Row
         MySQLConnection::$instance->execute("SET @i=0; UPDATE `dbc_row` SET `exportid`=@i:=@i+1 WHERE `table_id`=? AND `deleted`=FALSE ORDER BY `created`", [$tableId]);
     }
 
-    public static function setValidity(string $rowId, string $validity)
+    public static function setValidity(string $rowId, bool $valid = null)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `validity`=? WHERE `id`=?", [$validity, $rowId]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid`=? WHERE `id`=?", [intval($valid), $rowId]);
     }
 
     /** @var string */
@@ -79,8 +79,8 @@ class Row
     /** @var string|null */
     public $lasteditorId;
 
-    /** @var string */
-    public $validity;
+    /** @var bool|null */
+    public $valid;
 
     /** @var bool */
     public $flagged;
@@ -107,7 +107,11 @@ class Row
         $this->creatorId = $data["creator_id"];
         $this->assigneeId = $data["assignee_id"];
         $this->lasteditorId = $data["lasteditor_id"];
-        $this->validity = $data["validity"];
+
+        if ($data["valid"] !== null) {
+            $this->valid = $data["valid"] == "1";
+        }
+
         $this->flagged = $data["flagged"] == "1";
         $this->deleted = $data["deleted"] == "1";
         $this->exportId = $data["exportid"];

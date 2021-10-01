@@ -77,7 +77,7 @@ CREATE TABLE `dbc_row` (
   `creator_id` INT UNSIGNED NOT NULL,
   `assignee_id` INT UNSIGNED NULL DEFAULT NULL,
   `lasteditor_id` INT UNSIGNED NULL DEFAULT NULL,
-  `validity` ENUM('invalid', 'unchecked', 'valid') NOT NULL DEFAULT 'unchecked',
+  `valid` BOOLEAN NULL DEFAULT NULL,
   `flagged` BOOLEAN NOT NULL DEFAULT FALSE,
   `deleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `exportid` INT UNSIGNED NULL DEFAULT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE `dbc_row` (
   INDEX (`table_id`),
   INDEX (`table_id`, `creator_id`),
   INDEX (`table_id`, `assignee_id`),
-  INDEX (`table_id`, `validity`),
+  INDEX (`table_id`, `valid`),
   INDEX (`table_id`, `flagged`)
 ) DEFAULT CHARSET=utf8mb4;
 
@@ -131,7 +131,7 @@ CREATE TABLE `dbc_column_textual` (
   `label` VARCHAR(30) NOT NULL,
   `description` VARCHAR(1000) NULL,
   `position` INT UNSIGNED NOT NULL,
-  `type` ENUM('text', 'boolean', 'integer', 'double', 'date', 'enum', 'set') NOT NULL,
+  `type` ENUM('bool', 'date', 'int', 'select', 'text') NOT NULL,
   `rules` LONGTEXT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (`table_id`)
@@ -146,7 +146,7 @@ CREATE TABLE `dbc_column_relational` (
   `label` VARCHAR(30) NOT NULL,
   `description` VARCHAR(1000) NULL,
   `position` INT UNSIGNED NOT NULL,
-  `rules` LONGTEXT NULL,
+  `nullable` BOOLEAN NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (`table_id`)
 ) DEFAULT CHARSET=utf8mb4;
@@ -156,7 +156,7 @@ CREATE TABLE `dbc_field_textual` (
   `row_id` INT UNSIGNED NOT NULL,
   `column_id` INT UNSIGNED NOT NULL,
   `value` VARCHAR(10000) NULL,
-  `validity` ENUM ('invalid', 'unchecked', 'valid') NOT NULL DEFAULT 'unchecked',
+  `valid` BOOLEAN NULL DEFAULT NULL,
   INDEX (`row_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
@@ -164,8 +164,8 @@ CREATE TABLE `dbc_field_relational` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `row_id` INT UNSIGNED NOT NULL,
   `column_id` INT UNSIGNED NOT NULL,
-  `target_row_id` INT UNSIGNED NOT NULL,
-  `validity` ENUM ('invalid', 'unchecked', 'valid') NOT NULL DEFAULT 'unchecked',
+  `target_row_id` INT UNSIGNED NULL,
+  `valid` BOOLEAN NULL DEFAULT NULL,
   INDEX (`row_id`),
   INDEX (`target_row_id`)
 ) DEFAULT CHARSET=utf8mb4;

@@ -5,24 +5,16 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
-use DBConstructor\Validation\NotNullRule;
-use DBConstructor\Validation\Validator;
-use Exception;
 
 class RelationalColumn extends Column
 {
-    public static function create(string $tableId, string $targetTableId, /*$labelColumnId, */ string $name, string $label, string $position, string $description = null, string $rules = null): string
+    public static function create(string $tableId, string $targetTableId, /*string $labelColumnId, */ string $name, string $label, string $description = null, string $position, bool $nullable): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
 
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `description`, `position`, `rules`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $description, $position, $rules]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `description`, `position`, `nullable`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $description, $position, intval($nullable)]);
 
         return MySQLConnection::$instance->getLastInsertId();
-    }
-
-    public static function isNameAvailable(string $tableId, string $name): bool
-    {
-        return TextualColumn::isNameAvailable($tableId, $name);
     }
 
     public static function load(string $id)
@@ -62,6 +54,9 @@ class RelationalColumn extends Column
     /** @var string */
     public $labelColumnId;
 
+    /** @var bool */
+    public $nullable;
+
     public function __construct(array $data)
     {
         parent::__construct($data);
@@ -69,6 +64,7 @@ class RelationalColumn extends Column
         $this->targetTableName = $data["target_table_name"];
         $this->targetTableLabel = $data["target_table_label"];
         $this->labelColumnId = $data["label_column_id"];
+        $this->nullable = $data["nullable"] == "1";
     }
 
     public function delete()
@@ -78,44 +74,14 @@ class RelationalColumn extends Column
         MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>=?", [$this->tableId, $this->position]);
     }
 
-    public function edit(string $targetTableId, string $name, string $label, string $description = null, string $rules = null)
+    public function edit(string $targetTableId, string $name, string $label, string $description = null, bool $nullable)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `rules`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, $rules, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, $nullable, $this->id]);
         $this->targetTableId = $targetTableId;
         $this->name = $name;
         $this->label = $label;
         $this->description = $description;
-        $this->rules = $rules;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getValidator(): Validator
-    {
-        return Validator::fromJSON($this->rules);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function isOptional(): bool
-    {
-        // TODO: Do this in a totally different way
-        $validator = $this->getValidator();
-
-        foreach ($validator->rules as $rule) {
-            if ($rule instanceof NotNullRule) {
-                return ! $rule->ruleValue;
-            }
-        }
-
-        return true;
-    }
-
-    public function invalidateFields()
-    {
-
+        $this->nullable = $nullable;
     }
 
     public function move(int $newPosition)

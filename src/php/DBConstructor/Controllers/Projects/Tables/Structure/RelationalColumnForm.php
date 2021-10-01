@@ -10,7 +10,6 @@ use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\Table;
-use DBConstructor\Validation\Validator;
 use Exception;
 
 class RelationalColumnForm extends Form
@@ -44,7 +43,7 @@ class RelationalColumnForm extends Form
         // name
         $this->addField(new ColumnNameField($tableId, $column));
 
-        // target table
+        // target-table
         $field = new SelectField("target-table", "Zieltabelle");
 
         $tables = Table::loadListAbove($this->projectId, $tablePosition);
@@ -59,12 +58,12 @@ class RelationalColumnForm extends Form
 
         $this->addField($field);
 
-        // rule-null-allowed
-        $field = new CheckboxField("rule-null-allowed", "Angabe ist optional");
+        // null-allowed
+        $field = new CheckboxField("null-allowed", "Angabe ist optional");
         $field->description = "Wenn kein Wert angegeben wird, wird NULL gespeichert.";
 
         if (! is_null($column)) {
-            $field->defaultValue = $column->isOptional();
+            $field->defaultValue = $column->nullable;
         }
 
         $this->addField($field);
@@ -81,24 +80,21 @@ class RelationalColumnForm extends Form
      */
     public function perform(array $data)
     {
-        $rules = Validator::createRelationValidator(! $data["rule-null-allowed"])->toJSON();
-
         if (is_null($this->column)) {
             // create
-            RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["position"], $data["description"], $rules);
+            RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["description"], $data["position"], $data["null-allowed"]);
         } else {
             // edit
             $targetTableChanged = $data["target-table"] != $this->column->targetTableId;
-            $this->column->edit($data["target-table"], $data["name"], $data["label"], $data["description"], $rules);
+            $this->column->edit($data["target-table"], $data["name"], $data["label"], $data["description"], $data["null-allowed"]);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));
             }
 
-            if ($targetTableChanged) {
-                // TODO: !!!
-                $this->column->invalidateFields();
-            }
+            //if ($targetTableChanged) {
+                // TODO: Rerun validation
+            //}
         }
 
         Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId", "saved");

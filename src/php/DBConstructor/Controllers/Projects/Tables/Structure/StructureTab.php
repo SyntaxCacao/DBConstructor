@@ -10,6 +10,7 @@ use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
+use DBConstructor\Util\JsonException;
 
 class StructureTab extends TabController
 {
@@ -18,6 +19,9 @@ class StructureTab extends TabController
         parent::__construct("Struktur", "structure", "diagram-3");
     }
 
+    /**
+     * @throws JsonException
+     */
     public function request(array $path, &$data): bool
     {
         if (count($path) <= 5) { // '<=' because this can be access with /projects/x/tables/x/ and /projects/x/tables/x/structure/
@@ -102,7 +106,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new TextualColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position);
+                $form->init($data["project"]->id, $data["table"]->id);
                 $form->process();
                 $data["form"] = $form;
 
@@ -137,15 +141,9 @@ class StructureTab extends TabController
                 }
 
                 $form = new TextualColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $column);
+                $form->init($data["project"]->id, $data["table"]->id, $column);
                 $form->process();
                 $data["form"] = $form;
-
-                // TODO: Interim solution
-                $form = new TextualColumnOverwriteForm();
-                $form->init($column, $data["project"]->id, $data["table"]->id);
-                $form->process();
-                $data["overwriteForm"] = $form;
 
                 $data["heading"] = "Wertfeld bearbeiten";
                 $data["tabpage"] = "form";
