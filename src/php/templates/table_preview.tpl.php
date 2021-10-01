@@ -34,7 +34,7 @@
                 if (is_null($data["textualfields"][$row->id][$column->id]->value)) { ?>
       <td class="table-cell<?php if (! $data["textualfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>NULL</i></td>
 <?php           } else { ?>
-      <td class="table-cell<?php if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_INTEGER) echo " table-cell-numeric"; if (! $data["textualfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><?php echo htmlentities($data["textualfields"][$row->id][$column->id]->value); ?></td>
+      <td class="table-cell<?php if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_INTEGER && (intval($data["textualfields"][$row->id][$column->id]->value) || $data["textualfields"][$row->id][$column->id]->value === "0")) echo " table-cell-numeric"; if (! $data["textualfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><?php echo htmlentities($data["textualfields"][$row->id][$column->id]->value); ?></td>
 <?php           }
               } else { ?>
       <td class="table-cell"><i>&ndash;</i></td>
