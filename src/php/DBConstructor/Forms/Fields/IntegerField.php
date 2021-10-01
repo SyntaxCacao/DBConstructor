@@ -20,6 +20,11 @@ class IntegerField extends GroupableField
         parent::__construct($name, $label);
     }
 
+    public function hasValue(): bool
+    {
+        return isset($this->value) && strlen((string) $this->value) > 0;
+    }
+
     public function generateField(): string
     {
         $html = '<input class="form-input" type="number" name="field-'.htmlentities($this->name).'"';
@@ -43,7 +48,7 @@ class IntegerField extends GroupableField
         $html .= ' step="1"';
 
         if ($this->hasValue()) {
-            $html .= ' value="'.htmlentities($this->value).'"';
+            $html .= ' value="'.htmlentities((string) $this->value).'"';
         }
 
         if ($this->required && ! isset($this->dependsOn)) {
