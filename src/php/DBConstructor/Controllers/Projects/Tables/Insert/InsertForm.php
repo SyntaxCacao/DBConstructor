@@ -97,9 +97,7 @@ class InsertForm extends Form
 
                     $field->maxLength = 10000; // TODO: Check
 
-                    if ($type->fieldType == TextType::FIELD_TEXTAREA_LARGE) {
-                        $field->larger = true;
-                    }
+                    $field->larger = $type->fieldType == TextType::FIELD_TEXTAREA_LARGE;
                 }
             } else if ($column->type == TextualColumn::TYPE_SELECTION) {
                 /** @var SelectionType $type */
