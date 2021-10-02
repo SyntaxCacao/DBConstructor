@@ -27,8 +27,8 @@ class MinDigitsRule extends Rule
     {
         if ($value !== null) {
             $matches = [];
-            $result = preg_match("/^(?:(0)|-?([1-9]+[0-9]*))$/", $value, $matches);
-            $this->setResult($result === 1 && strlen($matches[1]) >= $this->minDigits);
+            $result = preg_match("/^(?:0|-?[1-9]+[0-9]*)$/", $value, $matches);
+            $this->setResult($result === 1 && strlen(trim($value, "-")) >= $this->minDigits);
         }
     }
 }
