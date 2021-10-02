@@ -51,11 +51,11 @@ class TableForm extends Form
 
         if (is_null($table)) {
             $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return Table::isNameAvailable($value);
+                return Table::isNameAvailable($this->projectId, $value);
             }, "Dieser Tabellenname ist bereits vergeben.");
         } else {
             $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return $value == $this->table->name || Table::isNameAvailable($value);
+                return $value == $this->table->name || Table::isNameAvailable($this->projectId, $value);
             }, "Dieser Tabellenname ist bereits vergeben.");
 
             $field->defaultValue = $table->name;

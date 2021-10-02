@@ -27,9 +27,9 @@ class Table
         return MySQLConnection::$instance->getLastInsertId();
     }
 
-    public static function isNameAvailable(string $name): bool
+    public static function isNameAvailable(string $projectId, string $name): bool
     {
-        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_table` WHERE `name`=?", [$name]);
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_table` WHERE `project_id`=? AND `name`=?", [$projectId, $name]);
         $result = MySQLConnection::$instance->getSelectedRows();
         return $result[0]["count"] === "0";
     }
