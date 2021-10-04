@@ -14,9 +14,7 @@
 }
 
 .tabnav-tab {
-  border-left: 1px solid rgba(0,0,0,0);
-  border-right: 1px solid rgba(0,0,0,0);
-  border-top: 1px solid rgba(0,0,0,0);
+  border: 1px solid rgba(0,0,0,0);
   color: $color-text-secondary;
   display: inline-block;
   flex-shrink: 0;

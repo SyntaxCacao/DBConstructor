@@ -9,7 +9,7 @@ document.querySelectorAll(".tabnav-tabs").forEach(tabnav => {
 
 document.addEventListener("click", event => {
   // show clicked tab body
-  if (event.target.matches(".tabnav-tab")) {
+  if (event.target.matches(".tabnav-tab") && (event.target.attributes["href"] === null || event.target.attributes["href"].value === "#")) {
     if (! event.target.classList.contains("selected")) {
       const prev = event.target.parentNode.querySelector(".selected");
       prev.classList.remove("selected");
