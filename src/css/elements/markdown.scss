@@ -2,7 +2,9 @@
   hyphens: auto;
   text-align: justify;
 
-  @include user-select(text);
+  pre, li {
+    @include user-select(text);
+  }
 
   h1, h2, h3,
   h4, h5, h6,
