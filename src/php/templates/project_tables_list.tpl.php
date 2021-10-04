@@ -13,11 +13,11 @@
       <header class="main-header">
         <div class="main-header-header">
           <h1 class="main-heading">Tabellen</h1>
-          <p class="main-subtitle"><?php echo count($data["tables"]); ?> angelegte Tabellen</p>
+          <p class="main-subtitle"><?php echo count($data["tables"]); ?> Tabelle<?php if (count($data["tables"]) != 1) echo "n" ?> angelegt</p>
         </div>
 <?php if ($data["isManager"]) { ?>
         <div class="main-header-actions">
-          <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/create/">Neue Tabelle</a>
+          <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/create/"><span class="bi bi-table"></span>Tabelle anlegen</a>
         </div>
 <?php } ?>
       </header>
