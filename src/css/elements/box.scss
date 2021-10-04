@@ -34,6 +34,23 @@
   flex-shrink: 0;
 }
 
+.box-row-header {
+  background-color: $color-background-gray;
+}
+
+.box-row-tabnav {
+  padding-bottom: 0;
+  padding-top: $spacer-3;
+
+  .tabnav {
+    border-bottom: 0;
+  }
+
+  + .box-row {
+    padding: $spacer-3;
+  }
+}
+
 .box-link {
   line-height: $line-height-paragraph;
 }
@@ -55,7 +72,6 @@
 /*
 .box-header {
   align-items: center;
-  background-color: $color-background-gray;
   display: flex;
 }
 

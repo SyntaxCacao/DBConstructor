@@ -6,6 +6,9 @@ namespace DBConstructor\Forms\Fields;
 
 class TextareaField extends GroupableField
 {
+    /** @var string|null */
+    public $id;
+
     /** @var bool */
     public $larger = false;
 
@@ -26,7 +29,7 @@ class TextareaField extends GroupableField
         parent::__construct($name, $label);
     }
 
-    public function generateField(bool $placeholderLabel = false): string
+    public function generateField(): string
     {
         $html = '<textarea class="form-textarea';
 
@@ -39,6 +42,10 @@ class TextareaField extends GroupableField
         }
 
         $html .= '" name="field-'.htmlentities($this->name).'"';
+
+        if (isset($this->id)) {
+            $html .= ' id="'.htmlentities($this->id).'"';
+        }
 
         if (isset($this->placeholder)) {
             $html .= ' placeholder="'.htmlentities($this->placeholder).'"';

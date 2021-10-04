@@ -6,6 +6,7 @@ namespace DBConstructor;
 
 use DBConstructor\Controllers\Exports\ExportsController;
 use DBConstructor\Controllers\LoginController;
+use DBConstructor\Controllers\MarkdownController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Settings\UserSettingsController;
@@ -121,6 +122,8 @@ class Application
             $controller = new ExportsController();
         } else if ($path[0] == "settings") {
             $controller = new UserSettingsController();
+        } else if ($path[0] == "markdown") {
+            $controller = new MarkdownController();
         }
 
         if (! isset($controller)) {

@@ -8,7 +8,7 @@
     <link href="<?php echo $data["baseurl"]; ?>/assets/build.min.css" rel="stylesheet">
     <link href="<?php echo $data["baseurl"]; ?>/assets/favicon.svg" rel="icon" type="image/svg+xml">
   </head>
-  <body class="page-<?php echo str_replace("_", "-", $data["page"]); ?>">
+  <body class="page-<?php echo str_replace("_", "-", $data["page"]); ?>" data-baseurl="<?php echo htmlentities($data["baseurl"]); ?>">
 <?php if (! (isset($data["suppressNavbar"]) && $data["suppressNavbar"])) { ?>
     <nav class="navbar">
       <div class="container">

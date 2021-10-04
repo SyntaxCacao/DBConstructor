@@ -64,10 +64,10 @@ module.exports = function(grunt) {
       build: {
         files: {
           'dist/assets/build.min.js': [
-            'src/js/tabnav.js',
             'src/js/forms.js',
             'src/js/links.js',
-            'src/js/form-lists.js'
+            'src/js/form-lists.js',
+            'src/js/tabnav.js'
           ]
         }
       }
