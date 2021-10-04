@@ -16,7 +16,6 @@ class MarkdownField extends TextareaField
 
     public function generateGroup(array $errorMessages = []): string
     {
-        $errorMessages = ["nachricht 1", "nachricht 2"];
         $html = '<div class="form-group';
 
         if (isset($this->dependsOn)) {
