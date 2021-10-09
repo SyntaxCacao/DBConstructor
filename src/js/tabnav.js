@@ -28,6 +28,11 @@ document.addEventListener("click", event => {
 
   // markdown preview
   if (event.target.matches(".js-markdown-tab")) {
+    if (document.querySelector(event.target.attributes["data-markdown-source"].value).value === "") {
+      document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Keine Eingabe vorhanden</em>";
+      return;
+    }
+
     document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Laden...</em>";
 
     fetch(new Request(document.body.attributes["data-baseurl"].value + "/markdown?src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value)), {redirect: "manual"})
