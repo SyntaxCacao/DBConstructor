@@ -105,9 +105,9 @@ textarea {
 // textarea //
 
 .form-textarea {
-  height: 100px; // a bit higher than min-height, so that users can resize in both directions
+  height: 170px; // a bit higher than min-height, so that users can resize in both directions
   line-height: $line-height-paragraph;
-  min-height: 90px;
+  min-height: 150px;
   resize: vertical;
   width: 100%;
 }
