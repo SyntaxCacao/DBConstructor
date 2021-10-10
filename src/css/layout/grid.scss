@@ -11,7 +11,7 @@
 
 @each $breakpoint, $width in $breakpoints {
   @media (max-width: $width) {
-    .break-#{$breakpoint} .column {
+    .break-#{$breakpoint} > .column {
       margin-left: 0 !important; // negative margin-left and margin-right set for :first-child and :last-child
       margin-right: 0 !important; // TODO use of !important is not ideal
       padding: 0;
