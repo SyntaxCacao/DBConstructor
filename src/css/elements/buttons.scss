@@ -22,13 +22,13 @@ button {
   white-space: nowrap;
 }
 
-.button:hover,
-[open] summary.button {
+.button:hover {
   background-color: #f3f4f6;
   border-color: #e1e4e8; // same as without hover, to override browser styles
 }
 
-.button:active {
+.button:active,
+.dropdown[open] > summary > .button {
   background-color: hsla(220,14%,93%,1);
 }
 
