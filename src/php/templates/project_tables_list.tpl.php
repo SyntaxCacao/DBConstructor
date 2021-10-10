@@ -8,7 +8,7 @@
     <div class="alert"><p>Sie sind dem Projekt beigetreten.</p></div>
   </div>
 <?php } ?>
-  <div class="row break-md" style="display: block"><?php /* BUG: issue with width on small devices with display=table */ ?>
+  <div class="row break-md">
     <div class="column width-9">
       <header class="main-header">
         <div class="main-header-header">
