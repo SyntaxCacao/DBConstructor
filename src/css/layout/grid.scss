@@ -11,8 +11,6 @@
 @each $breakpoint, $width in $breakpoints {
   @media (max-width: $width) {
     .break-#{$breakpoint} > .column {
-      margin-left: 0 !important; // negative margin-left and margin-right set for :first-child and :last-child
-      margin-right: 0 !important; // TODO use of !important is not ideal
       padding: 0;
       width: 100%;
     }
@@ -26,14 +24,14 @@
   padding-left: round(math.div($column-padding, 2));
   padding-right: round(math.div($column-padding, 2));
 
-  // previously padding-left: 0 for &:first-child and padding-right: 0 for &:last-child,
-  // which caused the first and last column to be less wide than those in between
+  // Causes first and last column to be less wide as columns in between
+  // If a row contains three columns with width-4 each, they won't be equally wide
   &:first-child {
-    margin-left: -(round(math.div($column-padding, 2)));
+    padding-left: 0;
   }
 
   &:last-child {
-    margin-right: -(round(math.div($column-padding, 2)));
+    padding-right: 0;
   }
 }
 
