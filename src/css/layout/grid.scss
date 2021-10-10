@@ -4,6 +4,8 @@
 
 .row {
   width: 100%;
+
+  @include clearfix();
 }
 
 // .break-x, class for .row, defines when columns within extend to full width
