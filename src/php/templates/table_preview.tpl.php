@@ -1,4 +1,4 @@
-<main class="container main-container">
+<main class="container">
   <header class="main-header">
     <h1 class="main-heading">Tabellenvorschau</h1>
   </header>

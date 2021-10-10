@@ -1,4 +1,4 @@
-<div class="container main-container">
+<div class="container">
 <?php if ($data["success"]) { ?>
   <div class="alerts">
     <div class="alert"><p>Die Datenbank wurde exportiert.</p></div>

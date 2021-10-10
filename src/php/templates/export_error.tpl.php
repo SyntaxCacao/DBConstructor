@@ -1,4 +1,4 @@
-<main class="container main-container">
+<main class="container">
   <header class="main-header">
     <h1 class="main-heading">Datenbankexport</h1>
   </header>

@@ -1,4 +1,4 @@
-<main class="container container-small main-container">
+<main class="container container-small">
 <?php if ($data["success"]) { ?>
   <div class="alerts">
     <div class="alert"><p>Der Datensatz wurde angelegt.</p></div>

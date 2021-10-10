@@ -1,4 +1,4 @@
-<div class="container main-container">
+<div class="container">
   <div class="alerts">
     <?php if (isset($data["request"]["edited"])) { ?>
     <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>

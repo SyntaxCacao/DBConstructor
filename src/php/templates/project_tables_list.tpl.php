@@ -1,4 +1,4 @@
-<main class="container main-container">
+<main class="container">
 <?php if (isset($data["request"]["created"])) { ?>
   <div class="alerts">
     <div class="alert"><p>Das Projekt wurde angelegt.</p></div>

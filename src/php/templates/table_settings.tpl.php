@@ -5,7 +5,7 @@
   <p class="blankslate-text">Der Zugriff auf die angeforderte Seite ist Ihnen nicht gestattet.</p>
 </main>
 <?php } else { ?>
-<main class="container container-small main-container">
+<main class="container container-small">
 <?php   if ($data["saved"]) { ?>
   <div class="alerts">
     <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>

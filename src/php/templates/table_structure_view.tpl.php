@@ -1,4 +1,4 @@
-<main class="container main-container">
+<main class="container">
 <?php if (isset($data["request"]["saved"])) { ?>
   <div class="alerts">
     <div class="alert"><p>Das Feld wurde gespeichert.</p></div>

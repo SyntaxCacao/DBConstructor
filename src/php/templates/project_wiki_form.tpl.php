@@ -1,4 +1,4 @@
-<main class="container container-small main-container">
+<main class="container container-small">
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading">Seite <?php echo $data["editMode"] ? "bearbeiten" : "anlegen" ?></h1>

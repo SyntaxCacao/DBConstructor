@@ -1,4 +1,4 @@
-<main class="container container-small main-container">
+<main class="container container-small">
   <div class="alerts">
 <?php if ($data["name-success"]) { ?>
     <div class="alert"><p>Ihr Name wurde geändert.</p></div>

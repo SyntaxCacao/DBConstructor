@@ -1,4 +1,4 @@
-<div class="container main-container">
+<div class="container">
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading">Beteiligte</h1>

@@ -1,5 +1,5 @@
 <?php if (count($data["participatingProjects"]) > 0 || ($data["isAdmin"] && count($data["allProjects"]) > 0)) { ?>
-<main class="container main-container">
+<main class="container">
 <?php   if (isset($data["request"]["welcome"])) { ?>
   <div class="alerts">
     <div class="alert"><p>Herzlich Willkommen. Sie haben sich erfolgreich angemeldet.</p></div>
