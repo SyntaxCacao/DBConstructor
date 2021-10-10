@@ -1,3 +1,8 @@
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
 .dropdown summary {
   cursor: pointer;
   list-style-type: none; // Removes caret on Firefox
@@ -18,12 +23,24 @@
   border-radius: 4px;
   box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); // Primer?
   color: $color-text-primary;
-  margin: 16px 0 0 -185px; // TODO
   padding-bottom: $spacer-1;
   padding-top: $spacer-1;
   position: absolute;
   width: 225px;
   z-index: 100; // previously issues with disabled inputs with Safari iOS
+}
+
+.dropdown-menu-down {
+  margin-top: 4px;
+}
+
+.dropdown-menu-up {
+  bottom: 100%;
+  margin-bottom: 4px;
+}
+
+.dropdown-menu-left {
+  right: 0;
 }
 
 $dropdown-padding-x: $spacer-3;

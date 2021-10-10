@@ -76,4 +76,5 @@ $navbar-item-padding-x: $spacer-3;
   border-top-right-radius: 0;
   border-top: 0;
   margin-top: 14px; // 13px with svg TODO
+  right: $spacer-3; // = .navbar-icon padding-right
 }
