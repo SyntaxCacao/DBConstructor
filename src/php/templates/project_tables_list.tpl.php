@@ -58,8 +58,10 @@
       <header class="main-header">
         <h1 class="main-heading">Beschreibung</h1>
       </header>
-      <div class="markdown"><p><?php if (is_null($data["project"]->description)) { ?>Es ist keine Beschreibung angegeben.<?php } else { echo htmlentities($data["project"]->description); } ?></p></div>
-      <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
+      <div class="markdown">
+        <p><?php if (is_null($data["project"]->description)) { ?>Es ist keine Beschreibung angegeben.<?php } else { echo htmlentities($data["project"]->description); } ?></p>
+        <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
+      </div>
     </div>
   </div>
 </main>
