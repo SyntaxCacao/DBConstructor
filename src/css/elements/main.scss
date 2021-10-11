@@ -7,22 +7,44 @@
   padding-bottom: $spacer-2;
 }
 
+.main-header-header {
+  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size/36247448#36247448
+  min-width: 0;
+}
+
 .main-heading {
   font-size: 20px; // TODO prev 22px
+  line-height: 1.2; // increase became necessary after overflow: none cut off part of the font vertically with line-height: 1
+
+  @include one-line-text;
 }
 
 .main-header-actions {
   flex-shrink: 0;
   margin-left: auto;
 
-  .button:not(:first-child) {
-    margin-left: $spacer-1;
+  > :not(:first-child) {
+    margin-left: $spacer-2;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .main-header-actions-responsive > :not(.main-header-actions-more) {
+    display: none;
+  }
+}
+
+@media (min-width: $breakpoint-sm+1) {
+  .main-header-actions-more {
+    display: none;
   }
 }
 
 .main-subtitle {
   color: $color-text-secondary;
-  margin-top: $spacer-1;
+  margin-top: 2px; // previously $spacer-1, decreased because of increased line-height on .main-heading
+
+  @include one-line-text;
 }
 
 .main-subheading {

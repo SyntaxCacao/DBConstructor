@@ -63,17 +63,19 @@
       <div class="alerts">
         <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>
       </div>
-<?php } */?>
-      <header class="main-header">
-        <div class="main-header-header">
-          <h1 class="main-heading"><?php echo htmlentities($data["state"]->title) ?></h1>
-          <p class="main-subtitle">Zuletzt geändert von <?php echo htmlentities($data["state"]->creatorFirstName." ".$data["state"]->creatorLastName) ?> am <?php echo htmlentities(date("d.m.Y \u\m H:i", strtotime($data["state"]->created))) ?> Uhr</p>
-        </div>
-        <div class="main-header-actions">
-          <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/wiki/<?php echo $data["wikiPage"]->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a>
-          <a class="button button-small" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/wiki/<?php echo $data["wikiPage"]->id ?>/history/"><span class="bi bi-clock-history"></span>Historie</a>
-        </div>
-      </header>
+<?php } */ ?>
+<?php \DBConstructor\Util\TemplateFunctions::printMainHeader(htmlentities($data["state"]->title), "Zuletzt geändert von ".htmlentities($data["state"]->creatorFirstName." ".$data["state"]->creatorLastName)." am ".htmlentities(date("d.m.Y \u\m H:i", strtotime($data["state"]->created)))." Uhr", [
+        [
+          "icon" => "bi-pencil",
+          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/wiki/".$data["wikiPage"]->id."/edit/",
+          "text" => "Bearbeiten"
+        ],
+        [
+          "icon" => "bi-clock-history",
+          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/wiki/".$data["wikiPage"]->id."/history/",
+          "text" => "Historie"
+        ]
+      ]); ?>
       <div class="markdown"><?php echo (new \DBConstructor\Util\MarkdownParser)->parse($data["state"]->text) ?></div>
     </div>
   </div>
