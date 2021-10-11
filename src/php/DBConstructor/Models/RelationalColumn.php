@@ -17,6 +17,9 @@ class RelationalColumn extends Column
         return MySQLConnection::$instance->getLastInsertId();
     }
 
+    /**
+     * @return RelationalColumn|null
+     */
     public static function load(string $id)
     {
         MySQLConnection::$instance->execute("SELECT c.*, t.`name` AS `target_table_name`, t.`label` AS `target_table_label` FROM `dbc_column_relational` c LEFT JOIN `dbc_table` t ON c.`target_table_id` = t.`id` WHERE c.`id`=?", [$id]);
@@ -29,6 +32,9 @@ class RelationalColumn extends Column
         return new RelationalColumn($result[0]);
     }
 
+    /**
+     * @return RelationalColumn[]
+     */
     public static function loadList(string $tableId): array
     {
         MySQLConnection::$instance->execute("SELECT c.*, t.`name` AS `target_table_name`, t.`label` AS `target_table_label` FROM `dbc_column_relational` c LEFT JOIN `dbc_table` t ON c.`target_table_id` = t.`id` WHERE c.`table_id`=? ORDER BY c.`position`", [$tableId]);

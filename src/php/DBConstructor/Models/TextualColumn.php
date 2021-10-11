@@ -46,6 +46,9 @@ class TextualColumn extends Column
         return MySQLConnection::$instance->getLastInsertId();
     }
 
+    /**
+     * @return TextualColumn|null
+     */
     public static function load($id)
     {
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_column_textual` WHERE `id`=?", [$id]);

@@ -38,7 +38,7 @@ class TextualField
     }
 
     /**
-     * @return Table[]
+     * @return TextualField[][]
      */
     public static function loadTable(string $tableId): array
     {

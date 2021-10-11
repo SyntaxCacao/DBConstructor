@@ -22,9 +22,6 @@ class RelationalField
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `column_id`=?", [$columnId]);
     }
 
-    /**
-     * @return Table[]
-     */
     public static function loadTable(string $tableId): array
     {
         MySQLConnection::$instance->execute("SELECT f.*, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE r.`table_id`=?", [$tableId]);
