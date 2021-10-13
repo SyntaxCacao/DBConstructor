@@ -20,10 +20,10 @@
       <td class="table-cell table-cell-numeric"><a class="main-link" href="#"><?php echo $row->id; ?></a></td>
 <?php       foreach ($data["relationalcolumns"] as $column) {
               if (isset($data["relationalfields"][$row->id]) && isset($data["relationalfields"][$row->id][$column->id])) {
-                if (is_null($data["relationalfields"][$row->id][$column->id]["target"])) { ?>
-            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]["obj"]->valid) echo " table-cell-invalid"; ?>"><i>NULL</i></td>
+                if (is_null($data["relationalfields"][$row->id][$column->id]->getTargetRow())) { ?>
+            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>NULL</i></td>
 <?php           } else { ?>
-            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]["obj"]->valid) echo " table-cell-invalid"; ?>"><i>Beziehung: </i><?php $str = ""; foreach ($data["relationalfields"][$row->id][$column->id]["target"] as $value) $str .= $value["obj"]->value."; "; echo htmlentities($str); /* echo htmlentities($data["relationalfields"][$row->id][$column->id]["target"][0]["obj"]->value);*/ ?></td>
+            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>Beziehung: </i><?php $str = ""; foreach ($data["relationalfields"][$row->id][$column->id]->getTargetRow() as $value) $str .= $value["obj"]->value."; "; echo htmlentities($str); /* echo htmlentities($data["relationalfields"][$row->id][$column->id]["target"][0]["obj"]->value);*/ ?></td>
 <?php           }
               } else { ?>
           <td class="table-cell"><i>&ndash;</i></td>

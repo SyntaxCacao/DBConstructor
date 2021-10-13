@@ -103,8 +103,8 @@ class ExportForm extends Form
                     */
 
                     foreach ($relationalColumns as $column) {
-                        if (isset($relationalFields[$row->id]) && isset($relationalFields[$row->id][$column->id]["obj"]) && ! is_null($relationalFields[$row->id][$column->id]["obj"]->targetRowExportId)) {
-                            $rowCsv[] = $relationalFields[$row->id][$column->id]["obj"]->targetRowExportId;
+                        if (isset($relationalFields[$row->id]) && isset($relationalFields[$row->id][$column->id]) && ! is_null($relationalFields[$row->id][$column->id]->targetRowExportId)) {
+                            $rowCsv[] = $relationalFields[$row->id][$column->id]->targetRowExportId;
                         } else {
                             $rowCsv[] = "";
                         }
