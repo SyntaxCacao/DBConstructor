@@ -23,7 +23,7 @@
                 if (is_null($data["relationalfields"][$row->id][$column->id]->getTargetRow())) { ?>
             <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>NULL</i></td>
 <?php           } else { ?>
-            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>Beziehung: </i><?php $str = ""; foreach ($data["relationalfields"][$row->id][$column->id]->getTargetRow() as $value) $str .= $value["obj"]->value."; "; echo htmlentities($str); /* echo htmlentities($data["relationalfields"][$row->id][$column->id]["target"][0]["obj"]->value);*/ ?></td>
+            <td class="table-cell<?php if (! $data["relationalfields"][$row->id][$column->id]->valid) echo " table-cell-invalid"; ?>"><i>Beziehung: </i><?php $str = ""; foreach ($data["relationalfields"][$row->id][$column->id]->getTargetRow() as $field) $str .= $field->value."; "; echo htmlentities($str); ?></td>
 <?php           }
               } else { ?>
           <td class="table-cell"><i>&ndash;</i></td>

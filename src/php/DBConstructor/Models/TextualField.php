@@ -22,16 +22,18 @@ class TextualField
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_textual` WHERE `column_id`=?", [$columnId]);
     }
 
+    /**
+     * @return TextualField[]
+     */
     public static function loadRow(string $rowId): array
     {
-        MySQLConnection::$instance->execute("SELECT f.*, c.`name` AS `column_name` FROM `dbc_field_textual` f LEFT JOIN `dbc_column_textual` c ON f.`column_id`=c.`id` WHERE `row_id`=?", [$rowId]);
+        MySQLConnection::$instance->execute("SELECT f.*, c.`name` AS `column_name` FROM `dbc_field_textual` f LEFT JOIN `dbc_column_textual` c ON f.`column_id`=c.`id` WHERE f.`row_id`=?", [$rowId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $row = [];
 
         foreach ($result as $resultRow) {
             $field = new TextualField($resultRow);
-            $row[$field->columnId]["obj"] = $field;
-            $row[$field->columnId]["name"] = $resultRow["column_name"];
+            $row[$field->columnId] = $field;
         }
 
         return $row;
@@ -63,6 +65,13 @@ class TextualField
     /** @var string */
     public $columnId;
 
+    /**
+     * TODO: Check if actually used somewhere, remove from loadRow() if not
+     *
+     * @var string|null
+     */
+    public $columnName;
+
     /** @var string|null */
     public $value;
 
@@ -78,6 +87,10 @@ class TextualField
         $this->rowId = $data["row_id"];
         $this->columnId = $data["column_id"];
         $this->value = $data["value"];
+
+        if (isset($data["column_name"])) {
+            $this->columnName = $data["column_name"];
+        }
 
         if ($data["valid"] !== null) {
             $this->valid = $data["valid"] == "1";
