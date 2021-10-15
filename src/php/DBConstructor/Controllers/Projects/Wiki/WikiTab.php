@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Wiki;
 
+use DBConstructor\Controllers\ComingSoonController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Page;
@@ -76,6 +77,8 @@ class WikiTab extends TabController
 
         if (count($path) == 5 && $path[4] == "history") {
             // TODO show history
+            (new ComingSoonController())->request($path);
+            return false;
         }
 
         if (count($path) == 6 && $path[4] == "history") {
