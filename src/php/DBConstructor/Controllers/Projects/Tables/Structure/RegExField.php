@@ -14,6 +14,7 @@ class RegExField extends TextField
         parent::__construct($name, "Regulärer Ausdruck");
         $this->dependsOn = $dependsOn;
         $this->dependsOnValue = $dependsValue;
+        $this->maxLength = 350;
         $this->monospace = true;
         $this->placeholder = "/^[a-z]+$/";
         $this->required = false;
