@@ -24,6 +24,9 @@ class TextareaField extends GroupableField
     /** @var string|null */
     public $placeholder;
 
+    /** @var bool|null */
+    public $spellcheck;
+
     public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
@@ -61,6 +64,10 @@ class TextareaField extends GroupableField
 
         if (isset($this->minLength)) {
             $html .= ' minlength="'.$this->minLength.'"';
+        }
+
+        if (isset($this->spellcheck)) {
+            $html .= ' spellcheck="'.var_export($this->spellcheck, true).'"';
         }
 
         if ($this->required && ! isset($this->dependsOn)) {

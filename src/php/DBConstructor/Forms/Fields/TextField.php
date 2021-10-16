@@ -18,6 +18,9 @@ class TextField extends GroupableField
     /** @var string|null */
     public $placeholder;
 
+    /** @var bool|null */
+    public $spellcheck;
+
     /**
      * To be overriden by child-classes.
      *
@@ -54,6 +57,10 @@ class TextField extends GroupableField
 
         if (isset($this->minLength)) {
             $html .= ' minlength="'.$this->minLength.'"';
+        }
+
+        if (isset($this->spellcheck)) {
+            $html .= ' spellcheck="'.var_export($this->spellcheck, true).'"';
         }
 
         if ($this->hasValue()) {

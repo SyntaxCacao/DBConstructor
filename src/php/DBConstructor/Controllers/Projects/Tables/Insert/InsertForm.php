@@ -84,6 +84,7 @@ class InsertForm extends Form
                 if ($type->fieldType == TextType::FIELD_INPUT_DEFAULT || $type->fieldType == TextType::FIELD_INPUT_BLOCK) {
                     $field = new TextField($fieldName, $column->label);
                     $field->maxLength = 10000; // TODO: Check
+                    $field->spellcheck = false;
 
                     if ($type->fieldType == TextType::FIELD_INPUT_BLOCK) {
                         $field->expand = true;
@@ -95,9 +96,9 @@ class InsertForm extends Form
                         $field = new MarkdownField($fieldName, $column->label);
                     }
 
-                    $field->maxLength = 10000; // TODO: Check
-
                     $field->larger = $type->fieldType == TextType::FIELD_TEXTAREA_LARGE;
+                    $field->maxLength = 10000; // TODO: Check
+                    $field->spellcheck = false;
                 }
             } else if ($column->type == TextualColumn::TYPE_SELECTION) {
                 /** @var SelectionType $type */
@@ -112,10 +113,12 @@ class InsertForm extends Form
             } else if ($column->type == TextualColumn::TYPE_DATE) {
                 $field = new TextField($fieldName, $column->label);
                 $field->maxLength = 10000; // TODO: Check
+                $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_INTEGER) {
                 /** @var IntegerType $type */
                 $field = new TextField($fieldName, $column->label);
                 $field->maxLength = 10000; // TODO Check
+                $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_BOOLEAN) {
                 /** @var BooleanType $type */
                 $type = $column->getValidationType();
