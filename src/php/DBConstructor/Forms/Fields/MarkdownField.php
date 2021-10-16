@@ -41,9 +41,9 @@ class MarkdownField extends TextareaField
         $html .= '<div class="form-group-body">'.
             '<div class="box">'.
             '<div class="box-row box-row-header box-row-tabnav"><div class="tabnav"><div class="tabnav-tabs">'.
-            '<a class="tabnav-tab selected" href="#" data-tab-body="#js-markdown-field-'.htmlentities($this->name).'">Eingabe</a>'.
-            '<a class="tabnav-tab js-markdown-tab" href="#" data-tab-body="#js-markdown-preview-'.htmlentities($this->name).'" data-markdown-source="#js-markdown-field-'.htmlentities($this->name).'">Vorschau</a>'.
-            '<a class="tabnav-tab" href="#" data-tab-body="#js-markdown-help-'.htmlentities($this->name).'">Hilfe</a>'.
+            '<a class="tabnav-tab selected" href="#" data-tab-body="#js-markdown-field-'.htmlentities($this->name).'" tabindex="-1">Eingabe</a>'.
+            '<a class="tabnav-tab js-markdown-tab" href="#" data-tab-body="#js-markdown-preview-'.htmlentities($this->name).'" data-markdown-source="#js-markdown-field-'.htmlentities($this->name).'" tabindex="-1">Vorschau</a>'.
+            '<a class="tabnav-tab" href="#" data-tab-body="#js-markdown-help-'.htmlentities($this->name).'" tabindex="-1">Hilfe</a>'.
             '</div></div></div>'.
             '<div class="box-row">'.
             $this->generateField().
