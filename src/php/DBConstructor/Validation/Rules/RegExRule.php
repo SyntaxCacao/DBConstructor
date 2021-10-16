@@ -11,7 +11,7 @@ class RegExRule extends Rule
 
     public function __construct(string $regEx)
     {
-        $this->description = "Entspricht dieser RegEx: $regEx";
+        $this->description = "Entspricht dieser RegEx: <br><code>".htmlentities($regEx)."</code>";
         $this->regEx = $regEx;
     }
 
