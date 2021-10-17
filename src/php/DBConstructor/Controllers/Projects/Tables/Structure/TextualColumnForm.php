@@ -129,7 +129,7 @@ class TextualColumnForm extends Form
         $field->description = "Das Markdown-Eingabefeld ist nur verfügbar, wenn ein mehrzeiliges Eingabefeld gewählt wurde";
         $field->addOption(TextType::MARKDOWN_DISABLED, "Nein");
         $field->addOption(TextType::MARKDOWN_ENABLED_EXPORT_MD, "Ja, unverändert als Markdown exportieren");
-        $field->addOption(TextType::MARKDOWN_ENABLED_EXPORT_HTML, "Ja, beim Export in HTML umwandeln");
+        $field->addOption(TextType::MARKDOWN_ENABLED_EXPORT_HTML, "Ja, beim Export in HTML umwandeln (noch nicht wirksam)");
 
         if (isset($textType)) {
             $field->defaultValue = $textType->markdown;
@@ -172,6 +172,8 @@ class TextualColumnForm extends Form
         $field = new CheckboxField("rule-select-allowmultiple", "Mehrfachauswahl erlauben");
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_SELECTION;
+        $field->description = "Noch nicht verfügbar";
+        $field->disabled = true;
 
         if (isset($selectType)) {
             $field->defaultValue = $selectType->allowMultiple;
@@ -184,6 +186,7 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_SELECTION;
         $field->description = "Im Falle der Mehrfachauswahl werden die gewählten Optionen beim Export durch dieses Zeichen getrennt";
+        $field->disabled = true;
         $field->addOption(SelectionType::SEPARATOR_SPACE, "Leerzeichen");
         $field->addOption(SelectionType::SEPARATOR_COMMA, "Komma");
         $field->addOption(SelectionType::SEPARATOR_SEMICOLON, "Semikolon");
