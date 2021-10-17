@@ -61,6 +61,9 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        toplevel: true
+      },
       build: {
         files: {
           'dist/assets/build.min.js': [
