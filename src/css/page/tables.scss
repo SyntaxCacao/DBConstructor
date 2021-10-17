@@ -1,0 +1,40 @@
+@media (max-width: $breakpoint-md) {
+  .page-table-insert-row > .column {
+    margin-bottom: 8px;
+  }
+}
+
+.page-table-insert-label {
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacer-1;
+}
+
+.page-table-insert-invalid {
+  .form-input,
+  .form-textarea {
+    text-decoration: $text-decoration-invalid;
+    text-decoration-skip-ink: none;
+  }
+}
+
+.validation-step {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.validation-step-icon {
+  align-items: center;
+  background-color: #f0f0f0; // TODO
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 12px;
+  height: 24px;
+  justify-content: center;
+  margin-right: 8px;
+  width: 24px;
+}
+
+.validation-step-description {
+  margin-top: 2px;
+}

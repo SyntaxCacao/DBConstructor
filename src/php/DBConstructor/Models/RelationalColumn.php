@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Models;
 
+use DBConstructor\Forms\Fields\Field;
 use DBConstructor\SQL\MySQLConnection;
 
 class RelationalColumn extends Column
@@ -82,12 +83,27 @@ class RelationalColumn extends Column
 
     public function edit(string $targetTableId, string $name, string $label, string $description = null, bool $nullable)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, $nullable, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, intval($nullable), $this->id]);
         $this->targetTableId = $targetTableId;
         $this->name = $name;
         $this->label = $label;
         $this->description = $description;
         $this->nullable = $nullable;
+    }
+
+    public function generateInput(Field $field, bool $edit = false)
+    {
+        // TODO Do actual validation
+        $validationIndicator = "";
+
+        if (! $this->nullable) {
+            $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">Enthält einen Wert</p></div>';
+        }
+
+        $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
+        $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
+
+        $this->generateInput_internal($field, $edit, $this->nullable, $validationIndicator, false, "Auswahl", 'data-nullable="'.var_export($this->nullable, true).'"');
     }
 
     public function move(int $newPosition)

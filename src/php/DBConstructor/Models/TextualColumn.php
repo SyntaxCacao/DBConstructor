@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace DBConstructor\Models;
 
+use DBConstructor\Forms\Fields\Field;
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
+use DBConstructor\Validation\Rules\Rule;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\DateType;
 use DBConstructor\Validation\Types\IntegerType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
 use DBConstructor\Validation\Types\Type;
+use DBConstructor\Validation\Validator;
 use Exception;
 
 class TextualColumn extends Column
@@ -120,6 +123,34 @@ class TextualColumn extends Column
         $this->type = $type;
         $this->rules = $rules;
         $this->validationType = $validationType;
+    }
+
+    public function generateIndicator(Validator $validator, bool $success): string
+    {
+        $html = '<div class="js-result" data-result="'.($success ? "1" : "0").'"></div>';
+
+        foreach ($validator->rules as $rule) {
+            if ($rule->result == Rule::RESULT_VALID) {
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+            } else if ($rule->result == Rule::RESULT_INVALID) {
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+            } else {
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function generateInput(Field $field, bool $edit = false)
+    {
+        $validator = $this->getValidationType()->buildValidator();
+        $valid = $validator->validate($field->value);
+
+        parent::generateInput_internal($field, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
     }
 
     public function getTypeLabel(): string

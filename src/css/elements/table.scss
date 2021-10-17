@@ -61,7 +61,6 @@
 }
 
 .table-cell-invalid {
-  text-decoration: underline;
-  text-decoration-color: $color-text-danger;
-  text-decoration-style: wavy;
+  text-decoration: $text-decoration-invalid;
+  text-decoration-skip-ink: none;
 }

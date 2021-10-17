@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Tables\Insert;
 
 use DBConstructor\Application;
+use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Forms\Form;
+use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
@@ -24,17 +26,26 @@ use Exception;
 
 class InsertForm extends Form
 {
+    /** @var string|null */
+    public $next;
+
     /** @var string */
     public $projectId;
+
+    /** @var string[] */
+    public $relationalColumnFields = [];
+
+    /** @var RelationalColumn[] */
+    public $relationalColumns;
 
     /** @var string */
     public $tableId;
 
+    /** @var string[] */
+    public $textualColumnFields = [];
+
     /** @var TextualColumn[] */
     public $textualColumns;
-
-    /** @var RelationalColumn[] */
-    public $relationalColumns;
 
     public function __construct()
     {
@@ -47,7 +58,7 @@ class InsertForm extends Form
      * @throws Exception
      * @throws JsonException
      */
-    public function init(string $projectId, string $tableId, array $relationalColumns, array $textualColumns)
+    public function init(string $projectId, string $tableId, array $relationalColumns, array $textualColumns, bool $nextNew = false)
     {
         $this->projectId = $projectId;
         $this->tableId = $tableId;
@@ -55,23 +66,9 @@ class InsertForm extends Form
         $this->textualColumns = $textualColumns;
 
         foreach ($relationalColumns as $column) {
-            $field = new SelectField("relational-".$column->id, $column->label);
-            $field->addOption("null", "Keine Auswahl");
-
-            // TODO: Anders machen!!!!!
-            $rows = TextualField::loadTable($column->targetTableId);
-
-            foreach ($rows as $id => $values) {
-                $str = "";
-
-                foreach ($values as $value) {
-                    $str .= $value->value."; ";
-                }
-
-                $field->addOption((string) $id, $str);
-            }
-
+            $field = new RelationalSelectField($column);
             $this->addField($field);
+            $this->relationalColumnFields[$column->name] = $this->fields[$field->name];
         }
 
         foreach ($textualColumns as $column) {
@@ -82,7 +79,7 @@ class InsertForm extends Form
                 $type = $column->getValidationType();
 
                 if ($type->fieldType == TextType::FIELD_INPUT_DEFAULT || $type->fieldType == TextType::FIELD_INPUT_BLOCK) {
-                    $field = new TextField($fieldName, $column->label);
+                    $field = new TextField($fieldName);
                     $field->maxLength = 10000; // TODO: Check
                     $field->spellcheck = false;
 
@@ -91,9 +88,9 @@ class InsertForm extends Form
                     }
                 } else {
                     if ($type->markdown == TextType::MARKDOWN_DISABLED) {
-                        $field = new TextareaField($fieldName, $column->label);
+                        $field = new TextareaField($fieldName);
                     } else {
-                        $field = new MarkdownField($fieldName, $column->label);
+                        $field = new MarkdownField($fieldName);
                     }
 
                     $field->larger = $type->fieldType == TextType::FIELD_TEXTAREA_LARGE;
@@ -103,27 +100,24 @@ class InsertForm extends Form
             } else if ($column->type == TextualColumn::TYPE_SELECTION) {
                 /** @var SelectionType $type */
                 $type = $column->getValidationType();
-                $field = new SelectField($fieldName, $column->label);
-                // TODO: Prevent collision with option name
-                $field->addOption("__null__", "Keine Auswahl");
+                $field = new SelectField($fieldName);
 
                 foreach ($type->options as $name => $label) {
                     $field->addOption($name, $label);
                 }
             } else if ($column->type == TextualColumn::TYPE_DATE) {
-                $field = new TextField($fieldName, $column->label);
+                $field = new TextField($fieldName);
                 $field->maxLength = 10000; // TODO: Check
                 $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_INTEGER) {
                 /** @var IntegerType $type */
-                $field = new TextField($fieldName, $column->label);
+                $field = new TextField($fieldName);
                 $field->maxLength = 10000; // TODO Check
                 $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_BOOLEAN) {
                 /** @var BooleanType $type */
                 $type = $column->getValidationType();
-                $field = new SelectField($fieldName, $column->label);
-                $field->addOption("null", "Keine Auswahl");
+                $field = new SelectField($fieldName);
 
                 if (is_null($type->falseLabel)) {
                     $field->addOption(BooleanType::VALUE_FALSE, "false");
@@ -140,18 +134,57 @@ class InsertForm extends Form
                 throw new Exception("Unsupported column type: ".$column->type);
             }
 
-            $field->description = $column->getTypeLabel();
             $field->required = false;
             $this->addField($field);
+
+            $this->textualColumnFields[$column->name] = $this->fields[$field->name];
         }
 
-        /* TODO: Auskommentieren
+        // comment
+        $field = new MarkdownField("comment", "Kommentar");
+        $field->description = "Halten Sie hier etwa Unklarheiten bei der Datenerfassung fest";
+        $field->larger = false;
+        $field->maxLength = 1000;
+        $field->required = false;
+
+        $this->addField($field);
+
+        // flag
+        $field = new CheckboxField("flag", "Zur Nachverfolgung kennzeichnen");
+        $field->description = "Kennzeichen Sie diesen Datensatz, wenn noch Klärungsbedarf besteht";
+
+        $this->addField($field);
+
+        // assignee
+        $field = new SelectField("assignee", "Jemandem zuordnen", "Keine Auswahl");
+        $field->description = "Ordnen Sie den Datensatz einem Projektbeteiligten zur weiteren Bearbeitung zu";
+        $field->required = false;
+
+        $field->addOption(Application::$instance->user->id, "Mir zuordnen");
+
+        $participants = Participant::loadList($projectId);
+
+        foreach ($participants as $participant) {
+            if ($participant->userId != Application::$instance->user->id) {
+                $field->addOption($participant->userId, $participant->lastName.", ".$participant->firstName);
+            }
+        }
+
+        $this->addField($field);
+
+        // next
         $field = new SelectField("next", "Als nächstes");
         $field->addOption("show", "Neuen Datensatz anzeigen");
         $field->addOption("new", "Weiteren Datensatz anlegen");
+        $field->addOption("duplicate", "Eingaben für weiteren Datensatz übernehmen");
+
+        if ($nextNew) {
+            // Cannot use defaultValue here, because defaultValue is inserted
+            // only in Form#process() which will not be called in this case
+            $field->value = "new";
+        }
 
         $this->addField($field);
-        */
     }
 
     /**
@@ -159,77 +192,60 @@ class InsertForm extends Form
      */
     public function perform(array $data)
     {
-        // TODO: step 1: check validity and build array; step 2: insert in database
-        $rowId = Row::create($this->tableId, Application::$instance->user->id);
-        $rowValid = true;
+        // Assemble fields and perform validation for textual fields
 
-        if (count($this->relationalColumns) > 0) {
-            $fields = [];
+        $relationalFields = [];
 
-            foreach ($this->relationalColumns as $column) {
-                $field = [];
-                $field["column_id"] = $column->id;
-
-                if ($data["relational-".$column->id] == "null") {
-                    $field["target_row_id"] = null;
-                } else {
-                    $field["target_row_id"] = $data["relational-".$column->id];
-                }
-
-                // TODO: Include target row validity in validation check
-                $field["valid"] = $field["target_row_id"] !== null || $column->nullable;
-
-                if (! $field["valid"]) {
-                    $rowValid = false;
-                }
-
-                $fields[] = $field;
-            }
-
-            RelationalField::createAll($rowId, $fields);
+        foreach ($this->relationalColumns as $column) {
+            $field = [];
+            $field["column_id"] = $column->id;
+            $field["column_nullable"] = $column->nullable;
+            $field["target_row_id"] = $data["relational-".$column->id];
+            $relationalFields[] = $field;
         }
 
-        if (count($this->textualColumns) > 0) {
-            $fields = [];
+        $textualFields = [];
 
-            foreach ($this->textualColumns as $column) {
-                $field = [];
-                $field["column_id"] = $column->id;
-                $field["value"] = $data["textual-".$column->id];
+        foreach ($this->textualColumns as $column) {
+            $field = [];
+            $field["column_id"] = $column->id;
+            $field["value"] = $data["textual-".$column->id];
 
-                if ($column->type == TextualColumn::TYPE_SELECTION) {
-                    if ($field["value"] == "__null__") {
-                        $field["value"] = null;
-                    }
-                } else if ($column->type == TextualColumn::TYPE_BOOLEAN) {
-                    if ($field["value"] == "null") {
-                        $field["value"] = null;
-                    }
-                }
+            $validator = $column->getValidationType()->buildValidator();
+            $field["valid"] = $validator->validate($field["value"]);
 
-                // TODO: Validator is built for each iteration, build all validators iteration instead
-                // TODO: Check if calling the same Validator instance multiple times with different
-                //   values actually works beforehand
-                $validator = $column->getValidationType()->buildValidator();
-                $field["valid"] = $validator->validate($field["value"]);
-                //var_dump($field["valid"]);
-
-                if (! $field["valid"]) {
-                    $rowValid = false;
-                }
-
-                $fields[] = $field;
-            }
-
-            TextualField::createAll($rowId, $fields);
+            $textualFields[] = $field;
         }
 
-        Row::setValidity($rowId, $rowValid);
+        // Database insertion
 
-        //if ($data["next"] == "show") {
-            // TODO: Auskommentieren
-            //Application::$instance->redirect("rows/$rowId", "created");
+        $id = Row::create($this->tableId, Application::$instance->user->id, $data["assignee"], $data["flag"]);
+
+        if (count($relationalFields) > 0) {
+            // Validity may be set incorrectly when referencing same row
+            // Referencing same row may not be possible on insertion, but maybe when editing?
+            RelationalField::createAll($id, $relationalFields);
+        }
+
+        if (count($textualFields) > 0) {
+            TextualField::createAll($id, $textualFields);
+        }
+
+        Row::updateValidity($id);
+
+        // Next
+
+        if ($data["next"] == "show") {
             Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/preview");
-        //}
+            //Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/view/$id");
+        } else {
+            $this->next = $data["next"];
+        }
+    }
+
+    public function generateAdditionalFields(): string
+    {
+        // TODO
+        return $this->fields["comment"]->generateGroup().$this->fields["flag"]->generateGroup().$this->fields["assignee"]->generateGroup().$this->fields["next"]->generateGroup();
     }
 }

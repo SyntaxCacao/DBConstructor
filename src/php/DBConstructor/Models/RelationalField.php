@@ -8,12 +8,15 @@ use DBConstructor\SQL\MySQLConnection;
 
 class RelationalField
 {
+    /**
+     * @param string[][] $fields
+     */
     public static function createAll(string $rowId, array $fields)
     {
-        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) VALUES (?, ?, ?, ?)");
+        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) VALUES (?, ?, ?, (SELECT ((? AND ? IS NULL) OR ((SELECT `valid` FROM `dbc_row` WHERE `id`=?) <=> 1))))");
 
         foreach ($fields as $field) {
-            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], intval($field["valid"])]);
+            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], intval($field["column_nullable"]), $field["target_row_id"], $field["target_row_id"]]);
         }
     }
 

@@ -23,19 +23,19 @@ class InsertTab extends TabController
             return false;
         }
 
-        $data["relationalcolumns"] = RelationalColumn::loadList($data["table"]->id);
-        $data["textualcolumns"] = TextualColumn::loadList($data["table"]->id);
+        $relationalColumns = RelationalColumn::loadList($data["table"]->id);
+        $textualColumns = TextualColumn::loadList($data["table"]->id);
 
         $form = new InsertForm();
-        $form->init($data["project"]->id, $data["table"]->id, $data["relationalcolumns"], $data["textualcolumns"]);
+        $form->init($data["project"]->id, $data["table"]->id, $relationalColumns, $textualColumns);
         $success = $form->process();
 
-        if ($success) {
+        if ($success && isset($form->next) && $form->next == "new") {
             // In diesem Fall soll ein neuer Datensatz eingegeben werden können,
             // dafür muss ein neues Formular generiert werden, damit nicht die
             // Werte des gerade angelegten Datensatzes in den Feldern stehen.
             $form = new InsertForm();
-            $form->init($data["project"]->id, $data["table"]->id, $data["relationalcolumns"], $data["textualcolumns"]);
+            $form->init($data["project"]->id, $data["table"]->id, $relationalColumns, $textualColumns, true);
         }
 
         $data["form"] = $form;

@@ -11,6 +11,7 @@ use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Settings\UserSettingsController;
 use DBConstructor\Controllers\Users\UsersController;
+use DBConstructor\Controllers\ValidationController;
 use DBConstructor\Models\User;
 use DBConstructor\SQL\MySQLConnection;
 
@@ -124,6 +125,8 @@ class Application
             $controller = new UserSettingsController();
         } else if ($path[0] == "markdown") {
             $controller = new MarkdownController();
+        } else if ($path[0] == "validation") {
+            $controller = new ValidationController();
         }
 
         if (! isset($controller)) {

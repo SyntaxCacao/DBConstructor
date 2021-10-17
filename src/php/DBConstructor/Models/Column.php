@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DBConstructor\Models;
 
+use DBConstructor\Forms\Fields\Field;
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Util\MarkdownParser;
 
 abstract class Column
 {
@@ -52,6 +54,46 @@ abstract class Column
         $this->description = $data["description"];
         $this->position = $data["position"];
         $this->created = $data["created"];
+    }
+
+    protected function generateInput_internal(Field $field, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
+    {
+        echo '<h2 class="main-subheading">'.htmlentities($this->label).'</h2>';
+        echo '<div class="row page-table-insert-row break-md">';
+
+        // field
+        echo '<label class="column width-'.($edit ? '7' : '4').' '.($isTextual ? 'js-validate-within' : 'js-validate-relational');
+
+        if ($edit && ! $valid) {
+            echo ' page-table-insert-invalid';
+        }
+
+        echo '" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'" '.$labelData.'>';
+        echo '<p class="page-table-insert-label">'.$insertLabel.'</p>';
+        echo $field->generateField();
+        echo '</label>';
+
+        // rules
+        echo '<div class="column width-'.($edit ? '5' : '3').'">';
+        echo '<p class="page-table-insert-label">Regeln</p>';
+        echo '<div class="validation-steps" id="validation-steps-'.($isTextual ? "textual" : "relational").'-'.htmlentities($this->id).'">';
+        echo $validationIndicator;
+        echo '</div></div>';
+
+        // description
+        if (! $edit) {
+            echo '<div class="column width-5"><p class="page-table-insert-label">Erläuterung</p>';
+
+            if (is_null($this->description)) {
+                echo '<div class="markdown"><p><em>Keine Erläuterung vorhanden</em></p></div>';
+            } else {
+                echo '<div class="markdown">'.(new MarkdownParser)->parse($this->description).'</div>';
+            }
+
+            echo '</div>';
+        }
+
+        echo '</div>';
     }
 
     protected function move_internal(string $tableName, int $newPosition)

@@ -8,9 +8,9 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Row
 {
-    public static function create(string $tableId, string $creatorId): string
+    public static function create(string $tableId, string $creatorId, string $assigneeId = null, bool $flagged): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`) VALUES (?, ?)", [$tableId, $creatorId]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?)", [$tableId, $creatorId, $assigneeId, intval($flagged)]);
 
         return MySQLConnection::$instance->getLastInsertId();
 
@@ -47,7 +47,8 @@ class Row
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new Row($row);
+            $obj = new Row($row);
+            $list[$obj->id] = $obj;
         }
 
         return $list;
@@ -59,9 +60,9 @@ class Row
         MySQLConnection::$instance->execute("SET @i=0; UPDATE `dbc_row` SET `exportid`=@i:=@i+1 WHERE `table_id`=? AND `deleted`=FALSE ORDER BY `created`", [$tableId]);
     }
 
-    public static function setValidity(string $rowId, bool $valid = null)
+    public static function updateValidity(string $id)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid`=? WHERE `id`=?", [intval($valid), $rowId]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid` = ((SELECT COUNT(*) FROM `dbc_field_relational` WHERE `row_id`=? AND `valid` = FALSE) = 0 AND (SELECT COUNT(*) FROM `dbc_field_textual` WHERE `row_id`=? AND `valid` != TRUE) = 0) WHERE `id`=?", [$id, $id, $id]);
     }
 
     /** @var string */
@@ -107,11 +108,7 @@ class Row
         $this->creatorId = $data["creator_id"];
         $this->assigneeId = $data["assignee_id"];
         $this->lasteditorId = $data["lasteditor_id"];
-
-        if ($data["valid"] !== null) {
-            $this->valid = $data["valid"] == "1";
-        }
-
+        $this->valid = $data["valid"] == "1";
         $this->flagged = $data["flagged"] == "1";
         $this->deleted = $data["deleted"] == "1";
         $this->exportId = $data["exportid"];

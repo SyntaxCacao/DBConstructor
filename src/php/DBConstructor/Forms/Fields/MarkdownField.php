@@ -14,39 +14,16 @@ class MarkdownField extends TextareaField
         $this->monospace = true;
     }
 
-    public function generateGroup(array $errorMessages = []): string
+    public function generateField(): string
     {
-        $html = '<div class="form-group';
-
-        if (isset($this->dependsOn)) {
-            $html .= " form-group-depend";
-        }
-
-        $html .= '">';
-
-        if ($this->label !== null) {
-            $html .= '<div class="form-group-header"><span class="form-label">'.htmlentities($this->label).'</span>';
-
-            if (! $this->required && ! $this->disabled) {
-                $html .= '<span class="form-label-addition"> (optional)</span>';
-            }
-
-            if (isset($this->description)) {
-                $html .= '<p class="form-group-description">'.htmlentities($this->description)."</p>";
-            }
-
-            $html .= "</div>";
-        }
-
-        $html .= '<div class="form-group-body">'.
-            '<div class="box">'.
+        return '<div class="box">'.
             '<div class="box-row box-row-header box-row-tabnav"><div class="tabnav"><div class="tabnav-tabs">'.
             '<a class="tabnav-tab selected" href="#" data-tab-body="#js-markdown-field-'.htmlentities($this->name).'" tabindex="-1">Eingabe</a>'.
             '<a class="tabnav-tab js-markdown-tab" href="#" data-tab-body="#js-markdown-preview-'.htmlentities($this->name).'" data-markdown-source="#js-markdown-field-'.htmlentities($this->name).'" tabindex="-1">Vorschau</a>'.
             '<a class="tabnav-tab" href="#" data-tab-body="#js-markdown-help-'.htmlentities($this->name).'" tabindex="-1">Hilfe</a>'.
             '</div></div></div>'.
             '<div class="box-row">'.
-            $this->generateField().
+            parent::generateField().
             '<div id="js-markdown-preview-'.htmlentities($this->name).'" class="markdown"></div>'.
             '<div id="js-markdown-help-'.htmlentities($this->name).'" class="markdown" style="display: none">'.
             '<p>Die Eingabe kann mit <i>Markdown</i> formatiert werden:</p>'.
@@ -76,6 +53,33 @@ class MarkdownField extends TextareaField
             '```'.PHP_EOL.
             '</pre></div>'.
             '</div></div>';
+    }
+
+    public function generateGroup(array $errorMessages = []): string
+    {
+        $html = '<div class="form-group';
+
+        if (isset($this->dependsOn)) {
+            $html .= " form-group-depend";
+        }
+
+        $html .= '">';
+
+        if ($this->label !== null) {
+            $html .= '<div class="form-group-header"><span class="form-label">'.htmlentities($this->label).'</span>';
+
+            if (! $this->required && ! $this->disabled) {
+                $html .= '<span class="form-label-addition"> (optional)</span>';
+            }
+
+            if (isset($this->description)) {
+                $html .= '<p class="form-group-description">'.htmlentities($this->description)."</p>";
+            }
+
+            $html .= "</div>";
+        }
+
+        $html .= '<div class="form-group-body">'.$this->generateField();
 
         foreach ($errorMessages as $errorMessage) {
             $html .= '<p class="form-error">'.htmlentities($errorMessage).'</p>';

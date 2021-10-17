@@ -77,7 +77,7 @@ CREATE TABLE `dbc_row` (
   `creator_id` INT UNSIGNED NOT NULL,
   `assignee_id` INT UNSIGNED NULL DEFAULT NULL,
   `lasteditor_id` INT UNSIGNED NULL DEFAULT NULL,
-  `valid` BOOLEAN NULL DEFAULT NULL,
+  `valid` BOOLEAN NOT NULL DEFAULT FALSE,
   `flagged` BOOLEAN NOT NULL DEFAULT FALSE,
   `deleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `exportid` INT UNSIGNED NULL DEFAULT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE `dbc_field_relational` (
   `row_id` INT UNSIGNED NOT NULL,
   `column_id` INT UNSIGNED NOT NULL,
   `target_row_id` INT UNSIGNED NULL,
-  `valid` BOOLEAN NULL DEFAULT NULL,
+  `valid` BOOLEAN NOT NULL,
   INDEX (`row_id`),
   INDEX (`target_row_id`)
 ) DEFAULT CHARSET=utf8mb4;
