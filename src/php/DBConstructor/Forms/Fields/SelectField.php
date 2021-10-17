@@ -9,9 +9,13 @@ class SelectField extends GroupableField
     /** @var string[] */
     public $options = [];
 
-    public function __construct(string $name, string $label = null)
+    /** @var string|null */
+    public $nullLabel;
+
+    public function __construct(string $name, string $label = null, string $nullLabel = null)
     {
         parent::__construct($name, $label);
+        $this->nullLabel = $nullLabel;
     }
 
     public function addOption(string $value, string $label)
@@ -51,6 +55,14 @@ class SelectField extends GroupableField
 
         $html .= '>';
 
+        if (! $this->required) {
+            if (isset($this->nullLabel)) {
+                $html .= '<option value="">'.htmlentities($this->nullLabel).'</option>';
+            } else {
+                $html .= '<option value="">Keine Auswahl</option>';
+            }
+        }
+
         foreach ($this->options as $value => $label) {
             $html .= '<option';
 
@@ -78,7 +90,7 @@ class SelectField extends GroupableField
 
     public function validate(): array
     {
-        if ($this->required && ! array_key_exists($this->value, $this->options)) {
+        if (($this->value === null && $this->required) || ! array_key_exists($this->value, $this->options)) {
             return ["Wählen Sie eine Option."];
         }
 

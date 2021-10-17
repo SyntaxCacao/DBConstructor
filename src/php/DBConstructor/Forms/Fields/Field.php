@@ -77,7 +77,7 @@ abstract class Field
 
     public function hasValue(): bool
     {
-        return isset($this->value) && strlen($this->value) > 0;
+        return isset($this->value);
     }
 
     /**
@@ -85,7 +85,9 @@ abstract class Field
      */
     public function insertValue($value)
     {
-        $this->value = $value;
+        if ($value !== "") {
+            $this->value = $value;
+        }
     }
 
     /**
