@@ -146,7 +146,8 @@ textarea {
 
 .form-checkbox-help {
   color: $color-text-secondary;
-  font-size: 12px;
+  line-height: 1.2; // see .form-group-header
+  margin-top: 2px; // see .form-group-description
 }
 
 .form-checkboxes {
