@@ -16,6 +16,7 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\DateType;
+use DBConstructor\Validation\Types\DecimalType;
 use DBConstructor\Validation\Types\IntegerType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
@@ -264,6 +265,48 @@ class TextualColumnForm extends Form
 
         $this->addField($field);
 
+        // // decimal //
+
+        if ($column !== null && $column->type == TextualColumn::TYPE_DECIMAL) {
+            /** @var DecimalType $decType */
+            $decType = $column->getValidationType();
+        }
+
+        // rule-dec-integerdigits
+        $field = new IntegerField("rule-dec-integerdigits", "Vorkommastellen");
+        $field->dependsOn = $typeFieldName;
+        $field->dependsOnValue = TextualColumn::TYPE_DECIMAL;
+        $field->maxValue = 35;
+        $field->minValue = 1;
+
+        if (isset($decType)) {
+            $field->defaultValue = $decType->integerDigits;
+        }
+
+        $this->addField($field);
+
+        // rule-dec-decimaldigits
+        $field = new IntegerField("rule-dec-decimaldigits", "Nachkommastellen");
+        $field->dependsOn = $typeFieldName;
+        $field->dependsOnValue = TextualColumn::TYPE_DECIMAL;
+        $field->maxValue = 30;
+        $field->minValue = 0;
+
+        if (isset($decType)) {
+            $field->defaultValue = $decType->decimalDigits;
+        }
+
+        $this->addField($field);
+
+        // rule-dec-regex
+        $field = new RegExField("rule-dec-regex", $typeFieldName, TextualColumn::TYPE_DECIMAL);
+
+        if (isset($decType)) {
+            $field->defaultValue = $decType->regEx;
+        }
+
+        $this->addField($field);
+
         // // bool //
 
         if ($column !== null && $column->type == TextualColumn::TYPE_BOOLEAN) {
@@ -381,6 +424,12 @@ class TextualColumnForm extends Form
 
             $type->nullable = $data["rule-null-allowed"];
             $type->regEx = $data["rule-int-regex"];
+        } else if ($data["type"] == TextualColumn::TYPE_DECIMAL) {
+            $type = new DecimalType();
+            $type->decimalDigits = intval($data["rule-dec-decimaldigits"]);
+            $type->integerDigits = intval($data["rule-dec-integerdigits"]);
+            $type->nullable = $data["rule-null-allowed"];
+            $type->regEx = $data["rule-dec-regex"];
         } else if ($data["type"] == TextualColumn::TYPE_BOOLEAN) {
             $type = new BooleanType();
             $type->falseLabel = $data["rule-bool-falselabel"];

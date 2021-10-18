@@ -19,7 +19,6 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
-use DBConstructor\Validation\Types\IntegerType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
 use Exception;
@@ -110,7 +109,10 @@ class InsertForm extends Form
                 $field->maxLength = 10000; // TODO: Check
                 $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_INTEGER) {
-                /** @var IntegerType $type */
+                $field = new TextField($fieldName);
+                $field->maxLength = 10000; // TODO Check
+                $field->spellcheck = false;
+            } else if ($column->type == TextualColumn::TYPE_DECIMAL) {
                 $field = new TextField($fieldName);
                 $field->maxLength = 10000; // TODO Check
                 $field->spellcheck = false;

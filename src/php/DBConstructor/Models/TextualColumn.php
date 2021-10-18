@@ -10,6 +10,7 @@ use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Rules\Rule;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\DateType;
+use DBConstructor\Validation\Types\DecimalType;
 use DBConstructor\Validation\Types\IntegerType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
@@ -23,6 +24,8 @@ class TextualColumn extends Column
 
     const TYPE_DATE = "date";
 
+    const TYPE_DECIMAL = "dec";
+
     const TYPE_INTEGER = "int";
 
     const TYPE_SELECTION = "select";
@@ -34,6 +37,7 @@ class TextualColumn extends Column
         TextualColumn::TYPE_SELECTION => "Auswahl",
         TextualColumn::TYPE_DATE => "Datum",
         TextualColumn::TYPE_INTEGER => "Ganze Zahl",
+        TextualColumn::TYPE_DECIMAL => "Dezimalzahl",
         TextualColumn::TYPE_BOOLEAN => "Boolsches Feld"
     ];
 
@@ -180,6 +184,9 @@ class TextualColumn extends Column
                 break;
             case TextualColumn::TYPE_INTEGER:
                 $type = new IntegerType();
+                break;
+            case TextualColumn::TYPE_DECIMAL:
+                $type = new DecimalType();
                 break;
             case TextualColumn::TYPE_BOOLEAN:
                 $type = new BooleanType();

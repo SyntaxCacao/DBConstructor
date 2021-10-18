@@ -131,7 +131,7 @@ CREATE TABLE `dbc_column_textual` (
   `label` VARCHAR(30) NOT NULL,
   `description` VARCHAR(1000) NULL,
   `position` INT UNSIGNED NOT NULL,
-  `type` ENUM('bool', 'date', 'int', 'select', 'text') NOT NULL,
+  `type` ENUM('bool', 'date', 'dec', 'int', 'select', 'text') NOT NULL,
   `rules` LONGTEXT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (`table_id`)
