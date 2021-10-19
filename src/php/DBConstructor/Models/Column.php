@@ -82,7 +82,7 @@ abstract class Column
 
         // description
         if (! $edit) {
-            echo '<div class="column width-5"><p class="page-table-insert-label">Erläuterung</p>';
+            echo '<div class="column width-5 page-table-insert-description"><p class="page-table-insert-label">Erläuterung</p>';
 
             if (is_null($this->description)) {
                 echo '<div class="markdown"><p><em>Keine Erläuterung vorhanden</em></p></div>';
