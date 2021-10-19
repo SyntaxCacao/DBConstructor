@@ -65,7 +65,7 @@ class TableForm extends Form
 
         $field = new MarkdownField("description", "Beschreibung");
         $field->larger = false;
-        $field->maxLength = 1000;
+        $field->maxLength = 20000;
         $field->required = false;
 
         if (! is_null($table)) {

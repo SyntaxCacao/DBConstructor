@@ -14,7 +14,7 @@ class ColumnDescriptionField extends MarkdownField
         parent::__construct("description", "Erläuterung");
         $this->description = "Wird bei der Eingabe von Daten angezeigt";
         $this->larger = false;
-        $this->maxLength = 1000;
+        $this->maxLength = 20000;
         $this->required = false;
 
         if (! is_null($column)) {
