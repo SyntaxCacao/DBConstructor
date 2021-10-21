@@ -21,18 +21,6 @@ class Participant
         return MySQLConnection::$instance->getLastInsertId();
     }
 
-    /*
-    public static function delete(string $userId, string $projectId)
-    {
-        MySQLConnection::$instance->execute("DELETE FROM `dbc_participant` WHERE `user_id`=? AND `project_id=?`", [$userId, $projectId]);
-    }
-    */
-
-    public static function deleteAll(string $projectId)
-    {
-        MySQLConnection::$instance->execute("DELETE FROM `dbc_participant` WHERE `project_id=?`", [$projectId]);
-    }
-
     /**
      * @return Participant|null
      */
