@@ -72,7 +72,7 @@ class ExportsController extends Controller
 
         header('Content-Description: File Transfer');
         header("Content-Type: application/zip");
-        header("Content-Disposition: attachment; filename=$fileName");
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
         header("Content-Length: ".filesize($filePath));
 
         readfile($filePath);
