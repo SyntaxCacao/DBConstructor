@@ -51,14 +51,14 @@ class CheckboxField extends Field
             $html .= ' form-group-depend';
         }
 
-        $html .= '">'.$this->generateField().'<div class="form-checkbox-label"><span class="form-label">'.htmlentities($this->label).'</span>';
+        $html .= '">'.$this->generateField().'<div class="form-checkbox-label"><p class="form-label">'.htmlentities($this->label).'</p>';
 
         if ($this->required) {
             $html .= '<span class="form-label-addition"> (erforderlich)</span>';
         }
 
         if (isset($this->description)) {
-            $html .= '<p class="form-checkbox-help">'.htmlentities($this->description).'</p>';
+            $html .= '<p class="form-group-description">'.htmlentities($this->description).'</p>';
         }
 
         $html .= '</div></label>';

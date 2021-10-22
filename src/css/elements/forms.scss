@@ -123,49 +123,40 @@ textarea {
 }
 
 // checkbox //
-// TODO Focus (Chrome Windows: black)
-
-.form-checkbox-group {
-  display: block;
-  margin-bottom: 12px; // TODO not $spacer-3 = 16px;
-}
-
-.form-checkbox-group .form-checkbox { // BUG flickering (possibly because of label) in Safari macOS
-  display: inline-block;
-  margin: 0 12px 0 0;
-  vertical-align: top;
-
-  //-webkit-transform: translateZ(0); // https://stackoverflow.com/questions/30454423/safari-8-label-checkbox-hover-flicker-how-to-prevent
-}
 
 .form-checkbox {
+  transition: 0.1s cubic-bezier(0.3, 0, 0.5, 1) box-shadow;
+
   @include appearance(checkbox); // auto doesn't work with Safari
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(3, 102, 214, 0.2);
+    outline: 0;
+  }
 }
 
-.form-checkbox-label {
-  display: inline-block;
-}
+.form-checkbox-group {
+  align-items: flex-start;
+  display: flex;
+  line-height: 1.2; // equals .form-group-header
+  margin-bottom: 12px; // TODO doesnnot $spacer-3 = 16px;
 
-.form-checkbox-help {
-  color: $color-text-secondary;
-  line-height: 1.2; // see .form-group-header
-  margin-top: 2px; // see .form-group-description
+  .form-label {
+    line-height: 1; // .form-checkbox position is too high with 1.2
+  }
+
+  .form-checkbox {
+    display: inline-block;
+    margin: 1px 12px 0 0;
+
+    // BUG flickering (possibly because of label) in Safari macOS
+    //-webkit-transform: translateZ(0); // https://stackoverflow.com/questions/30454423/safari-8-label-checkbox-hover-flicker-how-to-prevent
+  }
 }
 
 .form-checkboxes {
   margin-bottom: 16px; // prev 24px
   margin-top: 16px; // prev 24px
-}
-
-// TODO: Fixes checkbox line-break (also removes trailing whitespace = decreases margin):
-
-.form-checkbox {
-  align-items: flex-start; // TODO vertical-align top nicht mehr nötig
-  display: flex;
-}
-
-.form-checkbox input {
-  flex-shrink: 0;
 }
 
 // form-label //
