@@ -31,30 +31,10 @@ class Application
 
     public function run()
     {
-        // Check for tmp dir
-        if ((! file_exists("../tmp") || ! is_dir("../tmp")) && ! mkdir("../tmp")) {
-            die("<code>tmp</code> directory not found and could not be created.");
-        }
-
-        if (! is_writable("../tmp")) {
-            die("<code>tmp</code> is not writable.");
-        }
-
-        if ((! file_exists("../tmp/sessions") || ! is_dir("../tmp/sessions")) && ! mkdir("../tmp/sessions")) {
-            die("<code>tmp/sessions</code> directory not found and could not be created.");
-        }
-
-        if (! is_writable("../tmp/sessions")) {
-            die("<code>tmp/sessions</code> is not writable.");
-        }
-
-        if ((! file_exists("../tmp/exports") || ! is_dir("../tmp/exports")) && ! mkdir("../tmp/exports")) {
-            die("<code>tmp/exports</code> directory not found and could not be created.");
-        }
-
-        if (! is_writable("../tmp/exports")) {
-            die("<code>tmp/exports</code> is not writable.");
-        }
+        // Make sure all required directories exist
+        $this->checkDir("tmp");
+        $this->checkDir("tmp/exports");
+        $this->checkDir("tmp/sessions");
 
         // Load up configuration file
         if (! file_exists("../tmp/config.php")) {
@@ -156,6 +136,17 @@ class Application
         $data["request"] = $_REQUEST;
 
         require "templates/base.tpl.php";
+    }
+
+    public function checkDir(string $path)
+    {
+        if ((! file_exists("../$path") || ! is_dir("../$path")) && ! mkdir("../$path")) {
+            die("<code>$path</code> directory not found and could not be created.");
+        }
+
+        if (! is_writable("../$path")) {
+            die("<code>$path</code> is not writable.");
+        }
     }
 
     public function hasAdminPermissions(): bool
