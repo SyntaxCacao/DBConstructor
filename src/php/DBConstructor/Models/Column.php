@@ -71,7 +71,7 @@ abstract class Column
             echo ' page-table-insert-invalid';
         }
 
-        echo '" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'" '.$labelData.'>';
+        echo ' form-block" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'" '.$labelData.'>';
         echo '<p class="page-table-insert-label">'.$insertLabel.'</p>';
         echo $field->generateField();
         echo '</label>';

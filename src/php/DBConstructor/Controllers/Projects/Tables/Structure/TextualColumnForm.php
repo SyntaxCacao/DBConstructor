@@ -112,8 +112,7 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_TEXT;
         $field->description = "Wirkt sich nicht auf die Validierung aus";
-        $field->addOption(TextType::FIELD_INPUT_DEFAULT, "Einzeilig, gewöhnliche Breite");
-        $field->addOption(TextType::FIELD_INPUT_BLOCK, "Einzeilig, volle Breite");
+        $field->addOption(TextType::FIELD_INPUT, "Einzeilig");
         $field->addOption(TextType::FIELD_TEXTAREA_SMALL, "Mehrzeilig, geringere Höhe");
         $field->addOption(TextType::FIELD_TEXTAREA_LARGE, "Mehrzeilig, größere Höhe");
 

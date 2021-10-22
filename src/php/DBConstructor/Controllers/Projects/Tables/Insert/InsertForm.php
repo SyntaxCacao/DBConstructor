@@ -77,14 +77,8 @@ class InsertForm extends Form
                 /** @var TextType $type */
                 $type = $column->getValidationType();
 
-                if ($type->fieldType == TextType::FIELD_INPUT_DEFAULT || $type->fieldType == TextType::FIELD_INPUT_BLOCK) {
+                if ($type->fieldType == TextType::FIELD_INPUT) {
                     $field = new TextField($fieldName);
-                    $field->maxLength = 10000; // TODO: Check
-                    $field->spellcheck = false;
-
-                    if ($type->fieldType == TextType::FIELD_INPUT_BLOCK) {
-                        $field->expand = true;
-                    }
                 } else {
                     if ($type->markdown == TextType::MARKDOWN_DISABLED) {
                         $field = new TextareaField($fieldName);
@@ -93,9 +87,10 @@ class InsertForm extends Form
                     }
 
                     $field->larger = $type->fieldType == TextType::FIELD_TEXTAREA_LARGE;
-                    $field->maxLength = 10000; // TODO: Check
-                    $field->spellcheck = false;
                 }
+
+                $field->maxLength = 10000; // TODO: Check
+                $field->spellcheck = false;
             } else if ($column->type == TextualColumn::TYPE_SELECTION) {
                 /** @var SelectionType $type */
                 $type = $column->getValidationType();

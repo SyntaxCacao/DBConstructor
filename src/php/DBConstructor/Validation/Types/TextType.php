@@ -12,9 +12,7 @@ use DBConstructor\Validation\Validator;
 
 class TextType extends Type
 {
-    const FIELD_INPUT_BLOCK = "input_block";
-
-    const FIELD_INPUT_DEFAULT = "input_default";
+    const FIELD_INPUT = "input";
 
     const FIELD_TEXTAREA_LARGE = "textarea_large";
 
@@ -27,7 +25,7 @@ class TextType extends Type
     const MARKDOWN_ENABLED_EXPORT_MD = "enabled_md";
 
     /** @var string */
-    public $fieldType = TextType::FIELD_INPUT_DEFAULT;
+    public $fieldType = TextType::FIELD_INPUT;
 
     /** @var string */
     public $markdown = TextType::MARKDOWN_DISABLED;
