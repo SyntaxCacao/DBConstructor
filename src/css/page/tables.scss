@@ -41,13 +41,12 @@
 
 @media (min-width: $breakpoint-md) {
   .page-table-insert-description {
-    max-height: 230px;
-    overflow-y: auto;
-
     // improve positioning of scroll bar
     padding-right: 0;
 
     .markdown {
+      max-height: 230px;
+      overflow-y: auto;
       padding-right: $container-padding;
     }
   }
