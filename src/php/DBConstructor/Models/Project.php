@@ -8,10 +8,7 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Project
 {
-    /**
-     * @param string|null $description
-     */
-    public static function create(string $label, $description): string
+    public static function create(string $label, string $description = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_project` (`label`, `description`) VALUES (?, ?)", [$label, $description]);
 
@@ -34,7 +31,7 @@ class Project
     }
 
     /**
-     * @return Project[]
+     * @return array<string, Project>
      */
     public static function loadAll(): array
     {
@@ -42,7 +39,7 @@ class Project
     }
 
     /**
-     * @return Project[]
+     * @return array<string, Project>
      */
     private static function loadList(string $sql, array $params = []): array
     {
@@ -59,7 +56,7 @@ class Project
     }
 
     /**
-     * @return Project[]
+     * @return array<string, Project>
      */
     public static function loadParticipating(string $userId): array
     {
@@ -82,7 +79,7 @@ class Project
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {
@@ -93,10 +90,7 @@ class Project
         $this->created = $data["created"];
     }
 
-    /**
-     * @param string|null $description
-     */
-    public function edit(string $label, $description)
+    public function edit(string $label, string $description = null)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=? WHERE `id`=?", [$label, $description, $this->id]);
         $this->label = $label;

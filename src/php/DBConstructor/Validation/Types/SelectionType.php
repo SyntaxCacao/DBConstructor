@@ -24,7 +24,7 @@ class SelectionType extends Type
     /**
      * keys = names, values = labels
      *
-     * @var string[]
+     * @var array<string, string>
      */
     public $options;
 

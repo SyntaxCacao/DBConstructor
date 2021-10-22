@@ -22,7 +22,7 @@ class TablesTab extends TabController
         parent::__construct("Übersicht", "tables", "signpost-split");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) <= 3) { // <= because this can be access with /projects/x/ and /projects/x/tables
             $data["tables"] = Table::loadList($data["project"]->id);

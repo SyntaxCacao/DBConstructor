@@ -8,10 +8,7 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Table
 {
-    /**
-     * @param string|null $description
-     */
-    public static function create(string $projectId, string $name, string $label, $description): string
+    public static function create(string $projectId, string $name, string $label, string $description = null): string
     {
         MySQLConnection::$instance->execute("SELECT `position` FROM `dbc_table` WHERE `project_id`=? ORDER BY `position` DESC LIMIT 1", [$projectId]);
 
@@ -49,6 +46,9 @@ class Table
         return new Table($result[0]);
     }
 
+    /**
+     * @return array<array{obj: Table, rows: string}>
+     */
     public static function loadList(string $projectId): array
     {
         MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `position`", [$projectId]);
@@ -63,7 +63,7 @@ class Table
     }
 
     /**
-     * @return Table[]
+     * @return array<Table>
      */
     public static function loadListAbove(string $projectId, string $position): array
     {
@@ -100,7 +100,7 @@ class Table
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

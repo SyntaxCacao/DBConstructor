@@ -41,7 +41,7 @@ class CheckboxField extends Field
     }
 
     /**
-     * @param string[] $errorMessages
+     * @param array<string> $errorMessages
      */
     public function generateGroup(array $errorMessages = []): string
     {

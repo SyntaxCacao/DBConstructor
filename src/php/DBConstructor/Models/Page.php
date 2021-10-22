@@ -8,10 +8,7 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Page
 {
-    /**
-     * @param string|null $comment
-     */
-    public static function create(Project $project, User $creator, string $title, string $text, $comment): string
+    public static function create(Project $project, User $creator, string $title, string $text, string $comment = null): string
     {
         // Get next position
         MySQLConnection::$instance->execute("SELECT `position` FROM `dbc_page` WHERE `project_id`=? ORDER BY `position` DESC LIMIT 1", [$project->id]);
@@ -49,7 +46,7 @@ class Page
     }
 
     /**
-     * @return Page[]
+     * @return array<Page>
      */
     public static function loadList(string $projectId): array
     {
@@ -80,7 +77,7 @@ class Page
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {
@@ -91,10 +88,7 @@ class Page
         $this->created = $data["created"];
     }
 
-    /**
-     * @param string|null $comment
-     */
-    public function edit(User $editor, string $title, string $text, $comment)
+    public function edit(User $editor, string $title, string $text, string $comment = null)
     {
         PageState::create($this->id, $editor, $title, $text, $comment);
         MySQLConnection::$instance->execute("UPDATE `dbc_page` SET `title`=? WHERE `id`=?", [$title, $this->id]);

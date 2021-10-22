@@ -14,7 +14,7 @@ class RoutinesTab extends TabController
         parent::__construct("Eingaberoutinen", "routines", "pencil");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) != 3) {
             (new NotFoundController())->request($path);

@@ -53,7 +53,7 @@ class Participant
     }
 
     /**
-     * @return Participant[]
+     * @return array<Participant>
      */
     public static function loadList(string $projectId): array
     {
@@ -93,7 +93,7 @@ class Participant
     public $added;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

@@ -30,12 +30,7 @@ class PageForm extends Form
         parent::__construct("wikipage");
     }
 
-    /**
-     * @param $page Page|null null on creation
-     * @param $title string|null null on creation
-     * @param $text string|null null on creation
-     */
-    public function init(Project $project, $page, $title, $text)
+    public function init(Project $project, Page $page = null, string $title = null, string $text = null)
     {
         $this->project = $project;
         $this->page = $page;

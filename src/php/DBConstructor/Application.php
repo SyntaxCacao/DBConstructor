@@ -20,13 +20,13 @@ class Application
     /** @var Application */
     public static $instance;
 
-    /** @var array */
-    public $config;
+    /** @var array<string, string> */
+    public $config = [];
 
-    /** @var string[] */
+    /** @var array<string> */
     public $path;
 
-    /** @var User */
+    /** @var User|null */
     public $user;
 
     public function run()
@@ -145,7 +145,10 @@ class Application
         $controller->request($this->path);
     }
 
-    public function callTemplate(array $data=[])
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function callTemplate(array $data = [])
     {
         $data["baseurl"] = $this->config["baseurl"];
         $data["user"] = $this->user;
@@ -160,7 +163,7 @@ class Application
         return isset($this->user) && $this->user->isAdmin;
     }
 
-    public function redirect(string $page=null, string $get="")
+    public function redirect(string $page = null, string $get = "")
     {
         if (! empty($get)) {
             $get = "?$get";

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
@@ -30,7 +32,7 @@ class PageAttachment
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

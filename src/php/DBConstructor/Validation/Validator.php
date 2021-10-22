@@ -8,7 +8,7 @@ use DBConstructor\Validation\Rules\Rule;
 
 class Validator
 {
-    /** @var Rule[] */
+    /** @var array<Rule> */
     public $rules = [];
 
     /**

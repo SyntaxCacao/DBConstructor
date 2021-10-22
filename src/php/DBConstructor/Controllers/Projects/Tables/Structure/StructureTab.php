@@ -22,7 +22,7 @@ class StructureTab extends TabController
     /**
      * @throws JsonException
      */
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) <= 5) { // '<=' because this can be access with /projects/x/tables/x/ and /projects/x/tables/x/structure/
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);

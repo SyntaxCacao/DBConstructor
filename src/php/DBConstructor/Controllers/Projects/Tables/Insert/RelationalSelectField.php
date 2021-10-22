@@ -14,10 +14,10 @@ class RelationalSelectField extends Field
     /** @var RelationalColumn */
     public $column;
 
-    /** @var Row[] */
+    /** @var array<string, Row> */
     public $rows;
 
-    /** @var TextualField[][] */
+    /** @var array<string, array<string, TextualField>> */
     public $table;
 
     public function __construct(RelationalColumn $column)

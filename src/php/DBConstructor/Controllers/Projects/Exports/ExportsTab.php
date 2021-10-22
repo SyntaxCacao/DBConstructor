@@ -14,7 +14,7 @@ class ExportsTab extends TabController
         parent::__construct("Export", "exports", "box-seam");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) != 3) {
             (new NotFoundController())->request($path);

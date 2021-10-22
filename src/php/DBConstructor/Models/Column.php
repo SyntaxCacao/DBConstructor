@@ -45,6 +45,9 @@ abstract class Column
     /** @var string */
     public $created;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data)
     {
         $this->id = $data["id"];

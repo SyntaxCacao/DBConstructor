@@ -6,7 +6,7 @@ namespace DBConstructor\Forms\Fields;
 
 class SelectField extends GroupableField
 {
-    /** @var string[] */
+    /** @var array<string, string> */
     public $options = [];
 
     /** @var string|null */
@@ -23,6 +23,9 @@ class SelectField extends GroupableField
         $this->options[$value] = $label;
     }
 
+    /**
+     * @param array<string, string> $options
+     */
     public function addOptions(array $options)
     {
         foreach ($options as $value => $label) {

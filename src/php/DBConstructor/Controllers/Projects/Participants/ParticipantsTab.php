@@ -18,7 +18,7 @@ class ParticipantsTab extends TabController
         parent::__construct("Beteiligte", "participants", "people");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) == 4 && $path[3] == "add") {
             if (! $data["isManager"]) {

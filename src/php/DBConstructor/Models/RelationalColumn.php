@@ -34,7 +34,7 @@ class RelationalColumn extends Column
     }
 
     /**
-     * @return RelationalColumn[]
+     * @return array<RelationalColumn>
      */
     public static function loadList(string $tableId): array
     {
@@ -64,6 +64,9 @@ class RelationalColumn extends Column
     /** @var bool */
     public $nullable;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data)
     {
         parent::__construct($data);

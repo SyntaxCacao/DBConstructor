@@ -22,5 +22,9 @@ abstract class TabController
         $this->icon = $icon;
     }
 
-    public abstract function request(array $path, &$data);
+    /**
+     * @param array<string> $path
+     * @param array<string, mixed> $data
+     */
+    public abstract function request(array $path, array &$data);
 }

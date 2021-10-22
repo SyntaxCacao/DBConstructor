@@ -10,7 +10,7 @@ use DBConstructor\Models\Column;
 class ColumnPositionField extends SelectField
 {
     /**
-     * @param Column[] $columns
+     * @param array<Column> $columns
      */
     public function __construct(array $columns, Column $column = null)
     {

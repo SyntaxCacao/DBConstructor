@@ -19,41 +19,28 @@ use PDOStatement;
  */
 class MySQLConnection
 {
-    /**
-     * @var MySQLConnection
-     */
+    /** @var MySQLConnection */
     public static $instance;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $database;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $hostname;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $username;
-    /**
-     * @var string
-     */
+
+    /** @var string */
     protected $password;
 
-    /**
-     * @var PDO
-     */
+    /** @var PDO */
     protected $connection;
 
-    /**
-     * @var PDOStatement
-     */
+    /** @var PDOStatement */
     protected $statement;
 
-    public function __construct($hostname, $database, $username, $password)
+    public function __construct(string $hostname, string $database, string $username, string $password)
     {
         $this->database = $database;
         $this->hostname = $hostname;
@@ -76,6 +63,7 @@ class MySQLConnection
     }
 
     /**
+     * @param array<string, mixed> $parameters
      * @throws PDOException
      */
     public function execute(string $sql, array $parameters = [])
@@ -97,6 +85,8 @@ class MySQLConnection
 
     /**
      * To be used with {@link MySQLConnection::prepare()}
+     *
+     * @param array<string, mixed> $parameters
      */
     public function executePrepared(array $parameters = [])
     {
@@ -109,7 +99,7 @@ class MySQLConnection
     }
 
     /**
-     * @return string[][]
+     * @return array<array<string, string>>
      */
     public function getSelectedRows(): array
     {

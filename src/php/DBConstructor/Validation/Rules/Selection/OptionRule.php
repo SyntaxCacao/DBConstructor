@@ -12,11 +12,11 @@ class OptionRule extends Rule
     /** @var bool */
     public $allowMultiple;
 
-    /** @var string[] */
+    /** @var array<string> */
     public $options;
 
     /**
-     * @param string[] $options
+     * @param array<string> $options
      */
     public function __construct(array $options, bool $allowMultiple)
     {

@@ -14,7 +14,7 @@ class IssuesTab extends TabController
         parent::__construct("Probleme", "issues", "chat-left-text");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) != 5) {
             (new NotFoundController())->request($path);

@@ -15,7 +15,7 @@ class SettingsTab extends TabController
         parent::__construct("Einstellungen", "settings", "gear");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) != 3) {
             (new NotFoundController())->request($path);

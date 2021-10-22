@@ -14,10 +14,7 @@ class Export
         Export::FORMAT_CSV => "CSV"/*"CSV (Comma-separated values)"*/
     ];
 
-    /**
-     * @param string|null $note
-     */
-    public static function create(string $projectId, string $userId, string $format, $note): string
+    public static function create(string $projectId, string $userId, string $format, string $note = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_export` (`project_id`, `user_id`, `format`, `note`) VALUES (?, ?, ?, ?)", [$projectId, $userId, $format, $note]);
 
@@ -40,7 +37,7 @@ class Export
     }
 
     /**
-     * @return Export[]
+     * @return array<Export>
      */
     public static function loadList(string $projectId): array
     {
@@ -107,7 +104,7 @@ class Export
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

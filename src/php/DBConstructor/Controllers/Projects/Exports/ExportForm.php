@@ -21,6 +21,7 @@ use ZipArchive;
 
 class ExportForm extends Form
 {
+    /** @var Project */
     public $project;
 
     public function __construct()

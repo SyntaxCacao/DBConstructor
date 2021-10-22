@@ -23,7 +23,7 @@ class TextualField
     }
 
     /**
-     * @return TextualField[]
+     * @return array<string, TextualField>
      */
     public static function loadRow(string $rowId): array
     {
@@ -40,7 +40,7 @@ class TextualField
     }
 
     /**
-     * @return TextualField[][]
+     * @return array<string, array<string, TextualField>>
      */
     public static function loadTable(string $tableId): array
     {
@@ -79,7 +79,7 @@ class TextualField
     public $valid;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

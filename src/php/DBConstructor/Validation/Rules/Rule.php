@@ -16,7 +16,7 @@ abstract class Rule
      * Array of keys of rules in Validator::$rules that need to succeed before
      * this Rule's validate function may be called
      *
-     * @var int[]
+     * @var array<int>
      */
     public $depends = [];
 

@@ -6,6 +6,9 @@ namespace DBConstructor\Util;
 
 class TemplateFunctions
 {
+    /**
+     * @param array<array{href: string, icon: string, text: string}> $actions
+     */
     static function printMainHeader(string $heading, string $subtitle = null, array $actions = [], bool $showActions = true)
     {
         echo '<header class="main-header">';

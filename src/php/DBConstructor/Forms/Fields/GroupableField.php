@@ -13,7 +13,7 @@ abstract class GroupableField extends Field
     public $footer;
 
     /**
-     * @param array|string[] $errorMessages
+     * @param array<string> $errorMessages
      */
     public function generateGroup(array $errorMessages = []): string
     {

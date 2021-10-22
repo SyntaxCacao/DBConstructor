@@ -31,19 +31,19 @@ class InsertForm extends Form
     /** @var string */
     public $projectId;
 
-    /** @var string[] */
+    /** @var array<string, string> */
     public $relationalColumnFields = [];
 
-    /** @var RelationalColumn[] */
+    /** @var array<RelationalColumn> */
     public $relationalColumns;
 
     /** @var string */
     public $tableId;
 
-    /** @var string[] */
+    /** @var array<string, string> */
     public $textualColumnFields = [];
 
-    /** @var TextualColumn[] */
+    /** @var array<TextualColumn> */
     public $textualColumns;
 
     public function __construct()
@@ -52,8 +52,8 @@ class InsertForm extends Form
     }
 
     /**
-     * @param RelationalColumn[] $relationalColumns
-     * @param TextualColumn[] $textualColumns
+     * @param array<RelationalColumn> $relationalColumns
+     * @param array<TextualColumn> $textualColumns
      * @throws Exception
      * @throws JsonException
      */

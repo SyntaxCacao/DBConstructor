@@ -8,10 +8,7 @@ use DBConstructor\SQL\MySQLConnection;
 
 class PageState
 {
-    /**
-     * @param string|null $comment
-     */
-    public static function create(string $pageId, User $creator, string $title, string $text, $comment)
+    public static function create(string $pageId, User $creator, string $title, string $text, string $comment = null)
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_page_state` (`page_id`, `creator_id`, `title`, `text`, `comment`) VALUES (?, ?, ?, ?, ?)", [$pageId, $creator->id, $title, $text, $comment]);
     }
@@ -39,7 +36,7 @@ class PageState
     }
 
     /**
-     * @return PageState[]
+     * @return array<PageState>
      */
     public static function loadList(string $pageId): array
     {
@@ -79,7 +76,7 @@ class PageState
     public $created;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

@@ -12,7 +12,7 @@ abstract class Controller
     }
 
     /**
-     * @param string[] $path
+     * @param array<string> $path
      */
     public abstract function request(array $path);
 }

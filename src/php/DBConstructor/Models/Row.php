@@ -33,7 +33,7 @@ class Row
     }
 
     /**
-     * @return Row[]
+     * @return array<string, Row>
      */
     public static function loadList(string $tableId, bool $forExport = false): array
     {
@@ -99,7 +99,7 @@ class Row
     public $lastupdated;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

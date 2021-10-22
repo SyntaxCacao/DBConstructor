@@ -14,13 +14,13 @@ abstract class Form
     /** @var string */
     public $buttonLabel = "Speichern";
 
-    /** @var Field[] */
+    /** @var array<string, Field> */
     protected $fields = [];
 
-    /** @var string[] */
+    /** @var array<string, array<string>> */
     protected $issues = [];
 
-    /** @var string[] */
+    /** @var array<string> */
     protected $missing = [];
 
     public function __construct(string $name)
@@ -70,7 +70,10 @@ abstract class Form
         return $html;
     }
 
-    public abstract function perform(/*$mode, */ array $data);
+    /**
+     * @param array<string, mixed> $data
+     */
+    public abstract function perform(array $data);
 
     /**
      * @return bool returns true if form could be processed and false if form needs to be shown (again)

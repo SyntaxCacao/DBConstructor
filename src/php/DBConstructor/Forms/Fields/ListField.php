@@ -6,7 +6,7 @@ namespace DBConstructor\Forms\Fields;
 
 class ListField extends GroupableField
 {
-    /** @var ListFieldColumn[] */
+    /** @var array<ListFieldColumn> */
     public $columns = [];
 
     /** @var bool */

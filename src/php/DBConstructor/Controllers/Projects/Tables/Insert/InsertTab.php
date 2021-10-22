@@ -16,7 +16,7 @@ class InsertTab extends TabController
         parent::__construct("Daten erfassen", "insert", "pencil");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) != 5) {
             (new NotFoundController())->request($path);

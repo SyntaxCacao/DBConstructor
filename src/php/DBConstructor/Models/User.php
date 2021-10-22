@@ -47,7 +47,7 @@ class User
     }
 
     /**
-     * @return User[]
+     * @return array<array{obj: User, projects: string}>
      */
     public static function loadList(): array
     {
@@ -63,7 +63,7 @@ class User
     }
 
     /**
-     * @return User[]
+     * @return array<User>
      */
     public static function loadNotParticipatingList(string $projectId): array
     {
@@ -128,6 +128,9 @@ class User
     /** @var string|null */
     public $lastLogin;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data)
     {
         $this->id = $data["id"];

@@ -12,7 +12,7 @@ class TabRouter
     /** @var string */
     public $default;
 
-    /** @var TabController[] */
+    /** @var array<string, TabController> */
     public $tabs = [];
 
     public function register(TabController $tab, bool $default = false)
@@ -24,7 +24,11 @@ class TabRouter
         }
     }
 
-    public function route(array $path, int $tabIndex, &$data): bool
+    /**
+     * @param array<string> $path
+     * @param array<string, mixed> $data
+     */
+    public function route(array $path, int $tabIndex, array &$data): bool
     {
         if (isset($this->default) && ! isset($path[$tabIndex])) {
             $this->current = $this->tabs[$this->default];

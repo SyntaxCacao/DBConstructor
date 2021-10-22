@@ -16,7 +16,7 @@ class WikiTab extends TabController
         parent::__construct("Wiki", "wiki", "book");
     }
 
-    public function request(array $path, &$data): bool
+    public function request(array $path, array &$data): bool
     {
         if (count($path) == 3) {
             if (is_null($data["project"]->mainPageId)) {
@@ -34,7 +34,7 @@ class WikiTab extends TabController
             if ($path[3] == "create") {
                 // create page
                 $form = new PageForm();
-                $form->init($data["project"], null, null, null);
+                $form->init($data["project"]);
                 $form->process();
 
                 $data["form"] = $form;
@@ -89,7 +89,7 @@ class WikiTab extends TabController
         return false;
     }
 
-    public function showPage(Page $page, &$data)
+    public function showPage(Page $page, array &$data)
     {
         if (isset($_REQUEST["moveDown"]) && is_numeric($_REQUEST["moveDown"])) {
             $pages = Page::loadList($data["project"]->id);

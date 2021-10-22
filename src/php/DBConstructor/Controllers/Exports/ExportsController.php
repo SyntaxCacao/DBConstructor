@@ -11,9 +11,6 @@ use DBConstructor\Models\Export;
 
 class ExportsController extends Controller
 {
-    /**
-     * @param string[] $path
-     */
     public function request(array $path)
     {
         if (count($path) != 3) {

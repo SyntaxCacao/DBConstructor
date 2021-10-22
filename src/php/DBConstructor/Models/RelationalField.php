@@ -9,7 +9,7 @@ use DBConstructor\SQL\MySQLConnection;
 class RelationalField
 {
     /**
-     * @param string[][] $fields
+     * @param array<array<string>> $fields
      */
     public static function createAll(string $rowId, array $fields)
     {
@@ -26,7 +26,7 @@ class RelationalField
     }
 
     /**
-     * @return RelationalField[][]
+     * @return array<string, array<string, RelationalField>>
      */
     public static function loadTable(string $tableId): array
     {
@@ -51,7 +51,7 @@ class RelationalField
     /** @var string */
     public $columnId;
 
-    /** @var array|null */
+    /** @var array<string, TextualField>|null */
     public $targetRow;
 
     /** @var bool */
@@ -70,7 +70,7 @@ class RelationalField
     public $valid;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {
@@ -94,7 +94,7 @@ class RelationalField
      * TODO: Don't use this to load targetRow for a larger number of RelationalFields
      *       as each execution requires a query to be run
      *
-     * @return array|null
+     * @return array<string, TextualField>|null
      */
     public function getTargetRow()
     {

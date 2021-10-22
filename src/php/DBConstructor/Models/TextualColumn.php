@@ -69,7 +69,7 @@ class TextualColumn extends Column
     }
 
     /**
-     * @return TextualColumn[]
+     * @return array<TextualColumn>
      */
     public static function loadList(string $tableId): array
     {
@@ -96,7 +96,7 @@ class TextualColumn extends Column
     public $validationType;
 
     /**
-     * @param string[] $data
+     * @param array<string, string> $data
      */
     public function __construct(array $data)
     {

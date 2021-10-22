@@ -33,7 +33,7 @@ abstract class Field
     /**
      * TODO: Only implemented in TextField, IntegerField at the moment
      *
-     * @var ValidationClosure[];
+     * @var array<ValidationClosure>;
      */
     public $validationClosures = [];
 
@@ -52,7 +52,7 @@ abstract class Field
     }
 
     /**
-     * @param string[] $issues
+     * @param array<string> $issues
      */
     public function callClosures(array &$issues)
     {
@@ -71,7 +71,7 @@ abstract class Field
     public abstract function generateField(): string;
 
     /**
-     * @param string[] $errorMessages
+     * @param array<string> $errorMessages
      */
     public abstract function generateGroup(array $errorMessages): string;
 
@@ -91,7 +91,7 @@ abstract class Field
     }
 
     /**
-     * @return string[] contains error messages, empty if valid
+     * @return array<string> contains error messages, empty if valid
      */
     public abstract function validate(): array;
 }
