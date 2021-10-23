@@ -13,7 +13,9 @@ use DBConstructor\Controllers\Settings\UserSettingsController;
 use DBConstructor\Controllers\Users\UsersController;
 use DBConstructor\Controllers\ValidationController;
 use DBConstructor\Models\User;
+use DBConstructor\SQL\Migration\MigrationTool;
 use DBConstructor\SQL\MySQLConnection;
+use Exception;
 
 class Application
 {
@@ -29,6 +31,9 @@ class Application
     /** @var User|null */
     public $user;
 
+    /**
+     * @throws Exception
+     */
     public function run()
     {
         // Make sure all required directories exist
@@ -77,6 +82,17 @@ class Application
 
         // Establish MySQL connection
         MySQLConnection::$instance = new MySQLConnection($cfg["mysql"]["hostname"], $cfg["mysql"]["database"], $cfg["mysql"]["username"], $cfg["mysql"]["password"]);
+
+        // Update database scheme
+        if (count($path) == 1 && $path[0] == "migrate" && isset($_REQUEST["key"]) && isset($this->config["migratekey"])) {
+            if ($_REQUEST["key"] === $this->config["migratekey"]) {
+                MigrationTool::run();
+            } else {
+                echo "<p>Wrong key.</p>";
+            }
+
+            exit;
+        }
 
         // Load User
         if (isset($_SESSION[User::SESSION_USERID])) {

@@ -126,4 +126,23 @@ class MySQLConnection
 
         $this->statement = $this->connection->prepare($sql);
     }
+
+    /**
+     * When executing multiple queries at once, a PDOException is only thrown if the first
+     * query fails; nothing happens if one of the other fails. This function may be called
+     * as a workaround after executing multiple queries and will throw an exception if one
+     * of the subsequent queries failed.
+     *
+     * See https://bugs.php.net/bug.php?id=61613
+     * "As the query contains multiple result sets, what is the response if you actually
+     * take a look at the next rowset using PDOStatement::nextRowSet() in conjunction with
+     * PDOStatement::errorInfo() / PDOStatement::errorCode()?"
+     *
+     * @throws PDOException
+     */
+    public function verifyMultiple()
+    {
+        /** @noinspection PhpStatementHasEmptyBodyInspection */
+        while ($this->statement->nextRowset()) ;
+    }
 }
