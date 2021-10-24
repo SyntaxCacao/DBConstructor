@@ -233,8 +233,7 @@ class InsertForm extends Form
         // Next
 
         if ($data["next"] == "show") {
-            Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/preview");
-            //Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/view/$id");
+            Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/view/$id");
         } else {
             $this->next = $data["next"];
         }

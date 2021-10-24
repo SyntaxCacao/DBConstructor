@@ -17,7 +17,7 @@
 <?php   if (count($data["rows"]) > 0) {
           foreach ($data["rows"] as $row) { ?>
     <tr class="table-row">
-      <td class="table-cell table-cell-numeric"><a class="main-link" href="#"><?php echo $row->id; ?></a></td>
+      <td class="table-cell table-cell-numeric"><a class="main-link" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/view/<?php echo $row->id ?>/"><?php echo $row->id; ?></a></td>
 <?php       foreach ($data["relationalcolumns"] as $column) {
               if (isset($data["relationalfields"][$row->id]) && isset($data["relationalfields"][$row->id][$column->id])) {
                 if (is_null($data["relationalfields"][$row->id][$column->id]->getTargetRow())) { ?>

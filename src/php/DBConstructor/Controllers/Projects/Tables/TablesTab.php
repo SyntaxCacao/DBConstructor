@@ -9,9 +9,9 @@ use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\Tables\Insert\InsertTab;
 use DBConstructor\Controllers\Projects\Tables\Issues\IssuesTab;
-use DBConstructor\Controllers\Projects\Tables\Preview\PreviewTab;
 use DBConstructor\Controllers\Projects\Tables\Settings\SettingsTab;
 use DBConstructor\Controllers\Projects\Tables\Structure\StructureTab;
+use DBConstructor\Controllers\Projects\Tables\View\ViewTab;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Controllers\TabRouter;
 use DBConstructor\Models\Table;
@@ -64,7 +64,7 @@ class TablesTab extends TabController
 
         $tabRouter = new TabRouter();
         $tabRouter->register(new StructureTab(), true);
-        $tabRouter->register(new PreviewTab());
+        $tabRouter->register(new ViewTab());
         $tabRouter->register(new InsertTab());
         $tabRouter->register(new IssuesTab());
         $tabRouter->register(new SettingsTab());

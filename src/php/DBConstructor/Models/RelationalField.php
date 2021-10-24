@@ -26,6 +26,23 @@ class RelationalField
     }
 
     /**
+     * @return array<string, RelationalField>
+     */
+    public static function loadRow(string $rowId): array
+    {
+        MySQLConnection::$instance->execute("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE f.`row_id`=?", [$rowId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $row = [];
+
+        foreach ($result as $resultRow) {
+            $field = new RelationalField($resultRow);
+            $row[$field->columnId] = $field;
+        }
+
+        return $row;
+    }
+
+    /**
      * @return array<string, array<string, RelationalField>>
      */
     public static function loadTable(string $tableId): array
