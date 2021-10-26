@@ -172,13 +172,9 @@ textarea {
   margin-bottom: 16px; // prev 12px // TODO not $spacer-3 = 16px;
 }
 
-.form-group-depend {
+.form-group-depend:not(.form-group-depend-show) {
   display: none;
   padding-left: $spacer-5;
-}
-
-.form-group-depend-show {
-  display: block;
 }
 
 .form-group-header {
