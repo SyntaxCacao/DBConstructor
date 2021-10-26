@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace DBConstructor\Forms\Fields;
 
+/**
+ * Disabled SelectFields always need a defaultValue
+ */
 class SelectField extends GroupableField
 {
     /** @var array<string, string> */

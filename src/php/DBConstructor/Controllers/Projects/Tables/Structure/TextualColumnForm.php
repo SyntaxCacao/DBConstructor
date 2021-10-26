@@ -193,6 +193,10 @@ class TextualColumnForm extends Form
 
         if (isset($selectType)) {
             $field->defaultValue = $selectType->separator;
+        } else {
+            // Disabled selection fields always need a defaultValue
+            // TODO Remove when enabling field
+            $field->defaultValue = SelectionType::SEPARATOR_SPACE;
         }
 
         $this->addField($field);
