@@ -31,6 +31,9 @@ class Application
     /** @var User|null */
     public $user;
 
+    /** @var string */
+    public $version;
+
     /**
      * @throws Exception
      */
@@ -40,6 +43,13 @@ class Application
         $this->checkDir("tmp");
         $this->checkDir("tmp/exports");
         $this->checkDir("tmp/sessions");
+
+        // Load up version number
+        if (! file_exists("../version.txt")) {
+            die("Version file not found.");
+        }
+
+        $this->version = file_get_contents("../version.txt");
 
         // Load up configuration file
         if (! file_exists("../tmp/config.php")) {
@@ -150,6 +160,7 @@ class Application
         $data["user"] = $this->user;
         $data["isAdmin"] = $this->hasAdminPermissions();
         $data["request"] = $_REQUEST;
+        $data["version"] = $this->version;
 
         require "templates/base.tpl.php";
     }

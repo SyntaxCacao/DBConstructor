@@ -3,8 +3,14 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     clean: {
+      css: {
+        src: 'dist/assets/build-*.min.css'
+      },
       fonts: {
         src: 'dist/assets/fonts/*'
+      },
+      js: {
+        src: 'dist/assets/build-*.min.js'
       },
       php: {
         src: 'dist/php/*'
@@ -103,12 +109,37 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-dart-sass');
 
-  grunt.registerTask('css', ['dart-sass']);
+  grunt.registerTask('css', ['clean:css', 'dart-sass', 'version:css']);
   grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts-inter', 'copy:fonts-icons']);
-  grunt.registerTask('js', ['uglify']);
-  grunt.registerTask('misc', ['copy:favicon', 'copy:htaccess']);
+  grunt.registerTask('js', ['clean:js', 'uglify', 'version:js']);
+  grunt.registerTask('misc', ['copy:favicon', 'copy:htaccess', 'version:txt']);
   grunt.registerTask('php', ['clean:php', 'copy:php']);
   grunt.registerTask('sql', ['clean:sql', 'copy:sql']);
+
+  grunt.registerTask('version', 'Writes version number to version.txt and versionizes files', function(task) {
+    const version = grunt.config.get('pkg.version');
+
+    function versionize(file, versionized) {
+      if (grunt.file.exists(file)) {
+        grunt.file.copy(file, versionized);
+        grunt.file.delete(file);
+        grunt.log.ok('Moved ' + file + ' to ' + versionized);
+      } else {
+        grunt.log.warn(versionized + ' does not exist');
+      }
+    }
+
+    if (task === 'txt') {
+      grunt.file.write('dist/version.txt', version);
+      grunt.log.ok('Wrote ' + 'version.txt');
+    } else if (task === 'css') {
+      versionize('dist/assets/build.min.css', 'dist/assets/build-' + version + '.min.css');
+    } else if (task === 'js') {
+      versionize('dist/assets/build.min.js', 'dist/assets/build-' + version + '.min.js');
+    } else {
+      grunt.fail.warn('Unknown task "' + task + '".');
+    }
+  });
 
   grunt.registerTask('default', ['css', 'fonts', 'js', 'misc', 'php', 'sql']);
 }
