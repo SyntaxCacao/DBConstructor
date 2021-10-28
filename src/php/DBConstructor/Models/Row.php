@@ -10,7 +10,7 @@ class Row
 {
     public static function create(string $tableId, string $creatorId, string $assigneeId = null, bool $flagged): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?)", [$tableId, $creatorId, $assigneeId, intval($flagged)]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged)]);
 
         return MySQLConnection::$instance->getLastInsertId();
 
@@ -74,11 +74,11 @@ class Row
     /** @var string */
     public $creatorId;
 
-    /** @var string|null */
-    public $assigneeId;
+    /** @var string */
+    public $lastEditorId;
 
     /** @var string|null */
-    public $lasteditorId;
+    public $assigneeId;
 
     /** @var bool|null */
     public $valid;
@@ -106,8 +106,8 @@ class Row
         $this->id = $data["id"];
         $this->tableId = $data["table_id"];
         $this->creatorId = $data["creator_id"];
+        $this->lastEditorId = $data["lasteditor_id"];
         $this->assigneeId = $data["assignee_id"];
-        $this->lasteditorId = $data["lasteditor_id"];
         $this->valid = $data["valid"] == "1";
         $this->flagged = $data["flagged"] == "1";
         $this->deleted = $data["deleted"] == "1";
