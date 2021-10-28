@@ -118,7 +118,7 @@ class UserForm extends Form
     {
         if (is_null($this->user)) {
             // create
-            User::create($data["username"], $data["firstname"], $data["lastname"], $data["password"], $data["admin"]);
+            User::create(Application::$instance->user->id, $data["username"], $data["firstname"], $data["lastname"], $data["password"], $data["admin"]);
             Application::$instance->redirect("users", "created");
         } else {
             // edit

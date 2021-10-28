@@ -24,9 +24,9 @@ class User
         return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
     }
 
-    public static function create(string $username, string $firstname, string $lastname, string $password, bool $admin): string
+    public static function create(string $creatorId, string $username, string $firstname, string $lastname, string $password, bool $admin): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_user` (`username`, `firstname`, `lastname`, `password`, `admin`) VALUES (?, ?, ?, ?, ?)", [$username, $firstname, $lastname, password_hash($password, User::HASH_ALGO), intval($admin)]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_user` (`creator_id`, `username`, `firstname`, `lastname`, `password`, `admin`) VALUES (?, ?, ?, ?, ?, ?)", [$creatorId, $username, $firstname, $lastname, password_hash($password, User::HASH_ALGO), intval($admin)]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
