@@ -216,7 +216,7 @@ class InsertForm extends Form
 
         // Database insertion
 
-        $id = Row::create($this->tableId, Application::$instance->user->id, $data["assignee"], $data["flag"]);
+        $id = Row::create($this->tableId, Application::$instance->user->id, $data["comment"], $data["flag"], $data["assignee"]);
 
         if (count($relationalFields) > 0) {
             // Validity may be set incorrectly when referencing same row

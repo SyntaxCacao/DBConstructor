@@ -8,13 +8,28 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Row
 {
-    public static function create(string $tableId, string $creatorId, string $assigneeId = null, bool $flagged): string
+    public static function create(string $tableId, string $creatorId, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged)]);
 
-        return MySQLConnection::$instance->getLastInsertId();
+        $id = MySQLConnection::$instance->getLastInsertId();
 
-        // TODO: insert into row_action
+        // TODO: Provisional
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`) VALUES (?, ?, 'creation')", [$id, $creatorId]);
+
+        if ($comment !== null) {
+            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`) VALUES (?, ?, 'comment', ?)", [$id, $creatorId, $comment]);
+        }
+
+        if ($flagged) {
+            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`) VALUES (?, ?, 'flag')", [$id, $creatorId]);
+        }
+
+        if ($assigneeId !== null) {
+            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`) VALUES (?, ?, 'assignment', ?)", [$id, $creatorId, $assigneeId]);
+        }
+
+        return $id;
     }
 
     /**
