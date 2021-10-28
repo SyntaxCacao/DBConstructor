@@ -1,7 +1,7 @@
 CREATE TABLE `dbc_user` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `creator_id` INT UNSIGNED NULL DEFAULT NULL,
-  `username` VARCHAR(20) NOT NULL,
+  `username` VARCHAR(30) NOT NULL,
   `firstname` VARCHAR(30) NOT NULL,
   `lastname` VARCHAR(30) NOT NULL,
   `password` CHAR(60) NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE `dbc_participant` (
   `project_id` INT UNSIGNED NOT NULL,
   `manager` BOOLEAN NOT NULL DEFAULT FALSE,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`user_id`),
-  INDEX (`project_id`),
+  INDEX `user` (`user_id`),
+  INDEX `project` (`project_id`),
   INDEX `user_project` (`user_id`, `project_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
@@ -38,7 +38,7 @@ CREATE TABLE `dbc_page` (
   `title` VARCHAR(100) NOT NULL,
   `position` INT UNSIGNED NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`project_id`)
+  INDEX `project` (`project_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_page_attachment` (
@@ -47,8 +47,8 @@ CREATE TABLE `dbc_page_attachment` (
   `uploader_id` INT UNSIGNED NOT NULL,
   `filename` VARCHAR(100),
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`page_id`),
-  INDEX (`page_id`, `filename`)
+  INDEX `page` (`page_id`),
+  INDEX `page_filename` (`page_id`, `filename`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_page_state` (
@@ -56,10 +56,10 @@ CREATE TABLE `dbc_page_state` (
   `page_id` INT UNSIGNED NOT NULL,
   `creator_id` INT UNSIGNED NOT NULL,
   `title` VARCHAR(100) NOT NULL,
-  `text` TEXT NOT NULL,
+  `text` MEDIUMTEXT NOT NULL,
   `comment` VARCHAR(1000) NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`page_id`)
+  INDEX `page` (`page_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_table` (
@@ -67,10 +67,10 @@ CREATE TABLE `dbc_table` (
   `project_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(30) NOT NULL,
   `label` VARCHAR(30) NOT NULL,
-  `description` TEXT(20000) NULL,
+  `description` MEDIUMTEXT NULL,
   `position` INT UNSIGNED NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`project_id`)
+  INDEX `project` (`project_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_row` (
@@ -85,58 +85,37 @@ CREATE TABLE `dbc_row` (
   `exportid` INT UNSIGNED NULL DEFAULT NULL,
   `lastupdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`table_id`),
-  INDEX (`table_id`, `creator_id`),
-  INDEX (`table_id`, `assignee_id`),
-  INDEX (`table_id`, `valid`),
-  INDEX (`table_id`, `flagged`)
+  INDEX `table` (`table_id`),
+  INDEX `table_creator` (`table_id`, `creator_id`),
+  INDEX `table_assignee` (`table_id`, `assignee_id`),
+  INDEX `table_valid` (`table_id`, `valid`),
+  INDEX `table_flagged` (`table_id`, `flagged`),
+  INDEX `table_deleted` (`table_id`, `deleted`),
+  INDEX `table_exportid` (`table_id`, `exportid`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_row_action` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `row_id` INT UNSIGNED NOT NULL,
-  `actor_id` INT UNSIGNED NOT NULL,
-  `action` ENUM('creation', 'update', 'comment', 'flag', 'unflag', 'deletion', 'restoration') NOT NULL,
-  `data` TEXT(21000) NULL,
-  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`row_id`),
-  INDEX (`actor_id`)
-) DEFAULT CHARSET=utf8mb4;
-
-/*
-CREATE TABLE `dbc_row_issue` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `row_id` INT UNSIGNED NOT NULL,
-  `author_id` INT UNSIGNED NOT NULL,
-  `resolved` BOOLEAN NOT NULL DEFAULT FALSE,
-  `resolvedat` TIMESTAMP NULL DEFAULT NULL,
-  INDEX (`row_id`)
-) DEFAULT CHARSET=utf8mb4;
-*/
-
-/*
-CREATE TABLE `dbc_row_issue_comment` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `issue_id` INT UNSIGNED NOT NULL,
-  `author_id` INT UNSIGNED NOT NULL,
-  `text` VARCHAR(1000) NULL,
-  `action` ENUM('resolves', 'reopens') NULL,
+  `user_id` INT UNSIGNED NOT NULL,
+  `action` ENUM('creation', 'change', 'comment', 'flag', 'unflag', 'assignment', 'deletion', 'restoration') NOT NULL,
+  `data` TEXT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`issue_id`)
+  INDEX `row` (`row_id`),
+  INDEX `user` (`user_id`)
 ) DEFAULT CHARSET=utf8mb4;
-*/
 
 CREATE TABLE `dbc_column_textual` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `table_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(30) NOT NULL,
   `label` VARCHAR(30) NOT NULL,
-  `description` TEXT(20000) NULL,
+  `description` MEDIUMTEXT NULL,
   `position` INT UNSIGNED NOT NULL,
   `type` ENUM('bool', 'date', 'dec', 'int', 'select', 'text') NOT NULL,
   `rules` LONGTEXT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`table_id`)
+  INDEX `table` (`table_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_column_relational` (
@@ -146,11 +125,11 @@ CREATE TABLE `dbc_column_relational` (
   `label_column_id` INT UNSIGNED NULL DEFAULT NULL,
   `name` VARCHAR(30) NOT NULL,
   `label` VARCHAR(30) NOT NULL,
-  `description` TEXT(20000) NULL,
+  `description` MEDIUMTEXT NULL,
   `position` INT UNSIGNED NOT NULL,
   `nullable` BOOLEAN NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`table_id`)
+  INDEX `table` (`table_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_field_textual` (
@@ -159,7 +138,7 @@ CREATE TABLE `dbc_field_textual` (
   `column_id` INT UNSIGNED NOT NULL,
   `value` VARCHAR(10000) NULL,
   `valid` BOOLEAN NULL DEFAULT NULL,
-  INDEX (`row_id`)
+  INDEX `row` (`row_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_field_relational` (
@@ -168,8 +147,8 @@ CREATE TABLE `dbc_field_relational` (
   `column_id` INT UNSIGNED NOT NULL,
   `target_row_id` INT UNSIGNED NULL,
   `valid` BOOLEAN NOT NULL,
-  INDEX (`row_id`),
-  INDEX (`target_row_id`)
+  INDEX `row` (`row_id`),
+  INDEX `targetrow` (`target_row_id`)
 ) DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `dbc_export` (
@@ -180,6 +159,6 @@ CREATE TABLE `dbc_export` (
   `note` VARCHAR(1000) NULL,
   `deleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX (`project_id`),
-  INDEX (`user_id`)
+  INDEX `project` (`project_id`),
+  INDEX `user` (`user_id`)
 ) DEFAULT CHARSET=utf8mb4;
