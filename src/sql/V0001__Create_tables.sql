@@ -26,7 +26,7 @@ CREATE TABLE `dbc_participant` (
   `user_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
   `manager` BOOLEAN NOT NULL DEFAULT FALSE,
-  `added` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX (`user_id`),
   INDEX (`project_id`),
   INDEX `user_project` (`user_id`, `project_id`)

@@ -90,7 +90,7 @@ class Participant
     public $isManager;
 
     /** @var string */
-    public $added;
+    public $created;
 
     /**
      * @param array<string, string> $data
@@ -114,7 +114,7 @@ class Participant
 
         $this->projectId = $data["project_id"];
         $this->isManager = $data["manager"] == "1";
-        $this->added = $data["added"];
+        $this->created = $data["created"];
     }
 
     public function delete()

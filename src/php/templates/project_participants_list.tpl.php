@@ -26,7 +26,7 @@
       <tr class="table-row">
         <td class="table-cell"><?php echo htmlentities($participant->lastName.", ".$participant->firstName); if ($participant->locked) echo " <em>(gesperrt)</em>" ?></td>
         <td class="table-cell"><?php if ($participant->isManager) { ?>Manager<?php } else { ?>Beteiligter<?php } ?></td>
-        <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->added))) ?></td>
+        <td class="table-cell"><?php echo htmlentities(date("d.m.Y H:i", strtotime($participant->created))) ?></td>
 <?php   if ($data["isManager"]) { ?>
         <td class="table-cell table-cell-actions">
 <?php     if ($participant->isManager) { ?>
