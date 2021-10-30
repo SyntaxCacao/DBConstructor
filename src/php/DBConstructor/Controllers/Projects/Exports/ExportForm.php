@@ -90,7 +90,7 @@ class ExportForm extends Form
                 fputcsv($tableFile, $columnsArray);
 
                 Row::setExportId($table->id);
-                $rows = Row::loadList($table->id, true);
+                $rows = Row::loadListExport($table->id);
                 $relationalFields = RelationalField::loadTable($table->id);
                 $textualFields = TextualField::loadTable($table->id);
 

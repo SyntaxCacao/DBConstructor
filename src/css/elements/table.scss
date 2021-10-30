@@ -60,7 +60,20 @@
   text-align: right;
 }
 
+.table-cell-numeric-negative {
+  color: $color-text-danger;
+}
+
+.table-cell-null {
+  color: $color-text-secondary;
+  font-style: italic;
+}
+
 .table-cell-invalid {
   text-decoration: $text-decoration-invalid;
   text-decoration-skip-ink: none;
+
+  a {
+    text-decoration: none !important;
+  }
 }

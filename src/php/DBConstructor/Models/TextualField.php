@@ -56,6 +56,37 @@ class TextualField
         return $table;
     }
 
+    /**
+     * @param array<Row> $rows
+     * @return array<string, array<string, TextualField>>
+     */
+    public static function loadRows(array &$rows): array
+    {
+        $in = "";
+        $first = true;
+
+        foreach ($rows as $row) {
+            if ($first) {
+                $first = false;
+            } else {
+                $in .= ", ";
+            }
+
+            $in .= $row->id;
+        }
+
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_textual` WHERE `row_id` IN (".$in.")");
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $table = [];
+
+        foreach ($result as $row) {
+            $field = new TextualField($row);
+            $table[$field->rowId][$field->columnId] = $field;
+        }
+
+        return $table;
+    }
+
     /** @var string */
     public $id;
 

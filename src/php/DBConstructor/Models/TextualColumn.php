@@ -129,6 +129,112 @@ class TextualColumn extends Column
         $this->validationType = $validationType;
     }
 
+    /**
+     * @param TextualField $field field->value must not be null
+     * @throws JsonException
+     */
+    public function generateCellValue(TextualField $field = null): string
+    {
+        if ($field === null) {
+            $value = "Zelle fehlt";
+        } else if ($field->value === null) {
+            $value = "NULL";
+        } else if ($this->type === TextualColumn::TYPE_BOOLEAN) {
+            /** @var BooleanType $type */
+            $type = $this->getValidationType();
+
+            if ($field->value === BooleanType::VALUE_TRUE) {
+                if ($type->trueLabel !== null) {
+                    $value = $type->trueLabel;
+                } else {
+                    $value = "true";
+                }
+            } else if ($field->value === BooleanType::VALUE_FALSE) {
+                if ($type->falseLabel !== null) {
+                    $value = $type->falseLabel;
+                } else {
+                    $value = "false";
+                }
+            }
+        } else if ($this->type === TextualColumn::TYPE_DATE) {
+            $time = strtotime($field->value);
+
+            if ($time !== false) {
+                $value = date("d.m.Y", $time);
+            }
+
+        } else if ($this->type === TextualColumn::TYPE_SELECTION) {
+            /** @var SelectionType $type */
+            $type = $this->getValidationType();
+
+            if (in_array($field->value, array_keys($type->options))) {
+                $value = $type->options[$field->value];
+            }
+        }
+
+        if (! isset($value)) {
+            $value = str_replace("\n", " ", $field->value);
+        }
+
+        $html = '<td class="table-cell';
+
+        if ($field === null) {
+            $html .= ' table-cell-invalid table-cell-null';
+        } else {
+            if (! $field->valid) {
+                $html .= ' table-cell-invalid';
+            }
+
+            if ($field->value === null) {
+                $html .= ' table-cell-null';
+            } else if ($this->type === TextualColumn::TYPE_DECIMAL) {
+                //if (is_numeric($value)) {
+                $matches = [];
+                if (preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/", $value, $matches)) {
+                    $html .= ' table-cell-numeric';
+
+                    if (substr($value, 0, 1) === "-") {
+                        $html .= ' table-cell-numeric-negative';
+                    }
+
+                    /** @var DecimalType $validationType */
+                    $validationType = $this->getValidationType();
+                    $valueDecimals = 0;
+
+                    if (isset($matches[2])) {
+                        $valueDecimals = strlen($matches[2]);
+                    }
+
+                    //var_dump($valueDecimals);var_dump($valueDecimals < $validationType->decimalDigits);var_dump($validationType->decimalDigits - $valueDecimals);exit;
+                    if ($valueDecimals < $validationType->decimalDigits) {
+                        if ($valueDecimals === 0) {
+                            $value .= ".";
+                        }
+
+                        $value .= str_repeat("0", ($validationType->decimalDigits - $valueDecimals));
+                    }
+                }
+            } else if (ctype_digit(ltrim($value, "-"))) {
+                $html .= ' table-cell-numeric';
+
+                if (intval($value) < 0) {
+                    $html .= ' table-cell-numeric-negative';
+                }
+            }
+        }
+
+        $html .= '">';
+
+        if (strlen($value) > 30) {
+            $html .= substr($value, 0, 30)."...";
+        } else {
+            $html .= $value;
+        }
+
+        $html .= '</td>';
+        return $html;
+    }
+
     public function generateIndicator(Validator $validator, bool $success): string
     {
         $html = '<div class="js-result" data-result="'.($success ? "1" : "0").'"></div>';

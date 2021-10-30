@@ -6,6 +6,7 @@ namespace DBConstructor\Controllers\Projects\Tables\View;
 
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
+use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
@@ -22,19 +23,63 @@ class ViewTab extends TabController
     public function request(array $path, array &$data): bool
     {
         if (count($path) === 5) {
-            $data["rows"] = Row::loadList($data["table"]->id);
+            $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
+            $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
 
-            if (count($data["rows"]) == 0) {
+            if (count($data["relationalColumns"]) === 0 && count($data["textualColumns"]) === 0) {
                 $data["tabpage"] = "blank";
                 return true;
             }
 
-            $data["relationalcolumns"] = RelationalColumn::loadList($data["table"]->id);
-            $data["textualcolumns"] = TextualColumn::loadList($data["table"]->id);
-            $data["relationalfields"] = RelationalField::loadTable($data["table"]->id);
-            $data["textualfields"] = TextualField::loadTable($data["table"]->id);
-
             $data["notitle"] = true;
+
+            $participants = Participant::loadList($data["project"]->id);
+
+            // filter
+            $filterForm = new FilterForm();
+            $filterForm->init($participants);
+            $filterForm->process();
+
+            $data["filterForm"] = $filterForm;
+
+            // count rows
+            $data["rowCount"] = Row::countRowsFiltered($data["table"]->id, $filterForm);
+
+            if ($data["rowCount"] === 0) {
+                return true;
+            }
+
+            // determine page
+            $data["pageCount"] = Row::calcPages($data["rowCount"]);
+
+            $page = 1;
+
+            if (isset($_GET["page"]) && intval($_GET["page"]) > 0) {
+                $page = intval($_GET["page"]);
+            }
+
+            if ($page > $data["pageCount"]) {
+                $data["rowCount"] = 0;
+                return true;
+            }
+
+            $data["currentPage"] = $page;
+
+            // load rows
+            $data["rows"] = Row::loadListFiltered($data["table"]->id, $filterForm, $page);
+
+            // load fields
+            if (count($data["relationalColumns"]) > 0) {
+                $data["relationalFields"] = RelationalField::loadRows($data["rows"]);
+            } else {
+                $data["relationalFields"] = [];
+            }
+
+            if (count($data["textualColumns"]) > 0) {
+                $data["textualFields"] = TextualField::loadRows($data["rows"]);
+            } else {
+                $data["textualFields"] = [];
+            }
 
             return true;
         }

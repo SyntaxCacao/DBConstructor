@@ -18,13 +18,18 @@ class InsertTab extends TabController
 
     public function request(array $path, array &$data): bool
     {
-        if (count($path) != 5) {
+        if (count($path) !== 5) {
             (new NotFoundController())->request($path);
             return false;
         }
 
         $relationalColumns = RelationalColumn::loadList($data["table"]->id);
         $textualColumns = TextualColumn::loadList($data["table"]->id);
+
+        if (count($relationalColumns) === 0 && count($textualColumns) === 0) {
+            $data["tabpage"] = "blank";
+            return true;
+        }
 
         $form = new InsertForm();
         $form->init($data["project"]->id, $data["table"]->id, $relationalColumns, $textualColumns);

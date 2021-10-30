@@ -32,3 +32,10 @@
     min-width: ($container-width-default)-($container-padding)-($container-padding);
   }
 }
+
+// alternative to .container-expandable-inner
+.container-expandable-inner-centered {
+  margin-left: auto;
+  margin-right: auto;
+  width: max-content;
+}

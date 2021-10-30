@@ -59,6 +59,37 @@ class RelationalField
         return $table;
     }
 
+    /**
+     * @param array<Row> $rows
+     * @return array<string, array<string, RelationalField>>
+     */
+    public static function loadRows(array &$rows): array
+    {
+        $in = "";
+        $first = true;
+
+        foreach ($rows as $row) {
+            if ($first) {
+                $first = false;
+            } else {
+                $in .= ", ";
+            }
+
+            $in .= $row->id;
+        }
+
+        MySQLConnection::$instance->execute("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE f.`row_id` IN (".$in.")");
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $table = [];
+
+        foreach ($result as $row) {
+            $field = new RelationalField($row);
+            $table[$field->rowId][$field->columnId] = $field;
+        }
+
+        return $table;
+    }
+
     /** @var string */
     public $id;
 

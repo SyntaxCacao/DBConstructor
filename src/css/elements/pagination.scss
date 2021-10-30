@@ -1,0 +1,23 @@
+.pagination-container {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: $spacer-4;
+  width: max-content;
+}
+
+.pagination-link {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: $color-text-link;
+  display: inline-block; // so that padding is not substracted from pagination-container's margin-top
+  padding: $spacer-2;
+  transition: 0.1s cubic-bezier(0.3, 0, 0.5, 1) border-color;
+
+  &:hover:not(.pagination-link-disabled) {
+    border-color: lighten($color-text-link, 50%);
+  }
+}
+
+.pagination-link-disabled {
+  color: $color-text-secondary;
+}
