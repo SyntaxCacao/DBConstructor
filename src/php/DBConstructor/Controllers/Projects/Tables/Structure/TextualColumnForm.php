@@ -350,10 +350,10 @@ class TextualColumnForm extends Form
         $this->addField($field);
 
         // rule-bool-forcetrue
-        $field = new CheckboxField("rule-bool-forcetrue", "Nur \"true\" als valide Eingabe werten");
+        $field = new CheckboxField("rule-bool-forcetrue", "Nur true als gültige Eingabe werten");
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_BOOLEAN;
-        // TODO: Description
+        $field->description = "Eigentlich sind true und false gültig, mit dieser Option ist nur true gültig";
 
         if (isset($boolType)) {
             $field->defaultValue = $boolType->forceTrue;
