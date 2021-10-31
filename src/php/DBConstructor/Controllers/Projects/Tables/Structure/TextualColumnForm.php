@@ -78,6 +78,7 @@ class TextualColumnForm extends Form
         $field = new IntegerField("rule-text-minlength", "Mindestlänge");
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_TEXT;
+        $field->minValue = 1;
         $field->required = false;
 
         if (isset($textType)) {
@@ -91,6 +92,7 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_TEXT;
         $field->description = "Wird neben der Validierung auch zur Bestimmung des passenden SQL-Datentyps benötigt";
+        $field->minValue = 0;
 
         if (isset($textType)) {
             $field->defaultValue = $textType->maxLength;
@@ -213,6 +215,8 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_INTEGER;
         $field->description = "Mögliche Vorzeichen werden hier nicht einberechnet";
+        $field->maxValue = 19;
+        $field->minValue = 1;
         $field->required = false;
 
         if (isset($intType)) {
@@ -227,6 +231,8 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_INTEGER;
         $field->description = "Wird neben der Validierung auch zur Bestimmung des passenden SQL-Datentyps benötigt";
+        $field->maxValue = 19;
+        $field->minValue = 1;
 
         if (isset($intType)) {
             $field->defaultValue = $intType->maxDigits;

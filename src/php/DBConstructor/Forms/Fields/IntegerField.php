@@ -67,8 +67,7 @@ class IntegerField extends GroupableField
     {
         $issues = [];
 
-        if (! ctype_digit($this->value)) {
-            // TODO: It is not possible to enter negative integers
+        if (! ctype_digit(ltrim($this->value, "-"))) {
             $issues[] = "Geben Sie eine ganze Zahl ein.";
         }
 
