@@ -174,6 +174,9 @@ textarea {
 
 .form-group-depend:not(.form-group-depend-show) {
   display: none;
+}
+
+.form-group-depend {
   padding-left: $spacer-5;
 }
 
