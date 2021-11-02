@@ -1,4 +1,5 @@
-<code_scheme name="Default" version="173">
+<code_scheme name="Project" version="173">
+  <option name="LINE_SEPARATOR" value="&#xA;" />
   <option name="FORMATTER_TAGS_ENABLED" value="true" />
   <JSCodeStyleSettings version="0">
     <option name="SPACE_AFTER_UNARY_NOT" value="true" />
