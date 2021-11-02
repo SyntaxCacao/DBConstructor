@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DBConstructor\Controllers\Projects\Tables\Insert;
+namespace DBConstructor\Controllers\Projects\Tables;
 
 use DBConstructor\Forms\Fields\Field;
 use DBConstructor\Models\RelationalColumn;
@@ -36,7 +36,15 @@ class RelationalSelectField extends Field
         $html = '<select class="form-select" name="field-'.htmlentities($this->name).'">';
         $html .= '<option value="">Keine Auswahl</option>';
 
+        $selectedOptionIncluded = false;
+
         foreach ($this->table as $id => $fields) {
+            if (! isset($this->rows[$id])) {
+                // This is the case if row has been deleted
+                // TODO Handle this differently
+                continue;
+            }
+
             $str = "";
             $first = true;
 
@@ -62,9 +70,14 @@ class RelationalSelectField extends Field
 
             if ($this->value == $id) {
                 $html .= ' selected';
+                $selectedOptionIncluded = true;
             }
 
             $html .= '>'.htmlentities($str).'</option>';
+        }
+
+        if ($this->value !== null && ! $selectedOptionIncluded) {
+            $html .= '<option value="'.htmlentities($this->value).'" data-valid="false" selected>Unzulässiger Wert: '.htmlentities($this->value).'</option>"';
         }
 
         $html .= '</select>';

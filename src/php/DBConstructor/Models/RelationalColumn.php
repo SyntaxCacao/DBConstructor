@@ -34,7 +34,7 @@ class RelationalColumn extends Column
     }
 
     /**
-     * @return array<RelationalColumn>
+     * @return array<string, RelationalColumn>
      */
     public static function loadList(string $tableId): array
     {
@@ -43,7 +43,8 @@ class RelationalColumn extends Column
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new RelationalColumn($row);
+            $obj = new RelationalColumn($row);
+            $list[$obj->id] = $obj;
         }
 
         return $list;
@@ -97,6 +98,7 @@ class RelationalColumn extends Column
     public function generateInput(Field $field, bool $edit = false)
     {
         // TODO Do actual validation
+        // See workaround in validation.js
         $validationIndicator = "";
 
         if (! $this->nullable) {

@@ -69,7 +69,7 @@ class TextualColumn extends Column
     }
 
     /**
-     * @return array<TextualColumn>
+     * @return array<string, TextualColumn>
      */
     public static function loadList(string $tableId): array
     {
@@ -78,7 +78,8 @@ class TextualColumn extends Column
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new TextualColumn($row);
+            $obj = new TextualColumn($row);
+            $list[$obj->id] = $obj;
         }
 
         return $list;
@@ -137,43 +138,8 @@ class TextualColumn extends Column
     {
         if ($field === null) {
             $value = "Zelle fehlt";
-        } else if ($field->value === null) {
-            $value = "NULL";
-        } else if ($this->type === TextualColumn::TYPE_BOOLEAN) {
-            /** @var BooleanType $type */
-            $type = $this->getValidationType();
-
-            if ($field->value === BooleanType::VALUE_TRUE) {
-                if ($type->trueLabel !== null) {
-                    $value = $type->trueLabel;
-                } else {
-                    $value = "true";
-                }
-            } else if ($field->value === BooleanType::VALUE_FALSE) {
-                if ($type->falseLabel !== null) {
-                    $value = $type->falseLabel;
-                } else {
-                    $value = "false";
-                }
-            }
-        } else if ($this->type === TextualColumn::TYPE_DATE) {
-            $time = strtotime($field->value);
-
-            if ($time !== false) {
-                $value = date("d.m.Y", $time);
-            }
-
-        } else if ($this->type === TextualColumn::TYPE_SELECTION) {
-            /** @var SelectionType $type */
-            $type = $this->getValidationType();
-
-            if (in_array($field->value, array_keys($type->options))) {
-                $value = $type->options[$field->value];
-            }
-        }
-
-        if (! isset($value)) {
-            $value = str_replace("\n", " ", $field->value);
+        } else {
+            $value = $this->generatePrintableValue($field->value);
         }
 
         $html = '<td class="table-cell';
@@ -205,7 +171,6 @@ class TextualColumn extends Column
                         $valueDecimals = strlen($matches[2]);
                     }
 
-                    //var_dump($valueDecimals);var_dump($valueDecimals < $validationType->decimalDigits);var_dump($validationType->decimalDigits - $valueDecimals);exit;
                     if ($valueDecimals < $validationType->decimalDigits) {
                         if ($valueDecimals === 0) {
                             $value .= ".";
@@ -223,16 +188,7 @@ class TextualColumn extends Column
             }
         }
 
-        $html .= '">';
-
-        if (strlen($value) > 30) {
-            $html .= substr($value, 0, 30)."...";
-        } else {
-            $html .= $value;
-        }
-
-        $html .= '</td>';
-        return $html;
+        return $html.'">'.htmlentities($value).'</td>';
     }
 
     public function generateIndicator(Validator $validator, bool $success): string
@@ -261,6 +217,51 @@ class TextualColumn extends Column
         $valid = $validator->validate($field->value);
 
         parent::generateInput_internal($field, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
+    }
+
+    public function generatePrintableValue(string $value = null)
+    {
+        if ($value === null) {
+            return "NULL";
+        } else if ($this->type === TextualColumn::TYPE_BOOLEAN) {
+            /** @var BooleanType $type */
+            $type = $this->getValidationType();
+
+            if ($value === BooleanType::VALUE_TRUE) {
+                if ($type->trueLabel !== null) {
+                    return $type->trueLabel;
+                } else {
+                    return "true";
+                }
+            } else if ($value === BooleanType::VALUE_FALSE) {
+                if ($type->falseLabel !== null) {
+                    return $type->falseLabel;
+                } else {
+                    return "false";
+                }
+            }
+        } else if ($this->type === TextualColumn::TYPE_DATE) {
+            $time = strtotime($value);
+
+            if ($time !== false) {
+                return date("d.m.Y", $time);
+            }
+        } else if ($this->type === TextualColumn::TYPE_SELECTION) {
+            /** @var SelectionType $type */
+            $type = $this->getValidationType();
+
+            if (in_array($value, array_keys($type->options))) {
+                return $type->options[$value];
+            }
+        }
+
+        $value = str_replace("\n", " ", $value);
+
+        if (strlen($value) > 30) {
+            return substr($value, 0, 30)."...";
+        } else {
+            return $value;
+        }
     }
 
     public function getTypeLabel(): string

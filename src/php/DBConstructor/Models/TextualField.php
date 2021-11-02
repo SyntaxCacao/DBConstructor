@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Util\JsonException;
 
 class TextualField
 {
@@ -126,5 +127,21 @@ class TextualField
         if ($data["valid"] !== null) {
             $this->valid = $data["valid"] == "1";
         }
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function edit(string $userId, Row $row, string $value, bool $valid)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=?, `valid`=? WHERE `id`=?", [$value, intval($valid), $this->id]);
+        Row::revalidate($row->id);
+
+        $row->setUpdated($userId);
+        RowAction::logChange($row->id, $userId, false, $this->columnId, $this->value, $value);
+
+        // $this->value must not be updated earlier as old value is needed for logChange()
+        $this->value = $value;
+        $this->valid = $valid;
     }
 }

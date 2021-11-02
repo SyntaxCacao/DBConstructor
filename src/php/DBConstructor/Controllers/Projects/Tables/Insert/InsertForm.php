@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Tables\Insert;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\Tables\RowForm;
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Forms\Fields\TextField;
-use DBConstructor\Forms\Form;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
@@ -23,7 +23,7 @@ use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
 use Exception;
 
-class InsertForm extends Form
+class InsertForm extends RowForm
 {
     /** @var string|null */
     public $next;
@@ -31,24 +31,12 @@ class InsertForm extends Form
     /** @var string */
     public $projectId;
 
-    /** @var array<string, string> */
-    public $relationalColumnFields = [];
-
-    /** @var array<RelationalColumn> */
-    public $relationalColumns;
-
     /** @var string */
     public $tableId;
 
-    /** @var array<string, string> */
-    public $textualColumnFields = [];
-
-    /** @var array<TextualColumn> */
-    public $textualColumns;
-
     public function __construct()
     {
-        parent::__construct("table-insert");
+        parent::__construct("table-insert", false);
     }
 
     /**
@@ -65,76 +53,11 @@ class InsertForm extends Form
         $this->textualColumns = $textualColumns;
 
         foreach ($relationalColumns as $column) {
-            $field = new RelationalSelectField($column);
-            $this->addField($field);
-            $this->relationalColumnFields[$column->name] = $this->fields[$field->name];
+            $this->addRelationalField($column);
         }
 
         foreach ($textualColumns as $column) {
-            $fieldName = "textual-".$column->id;
-
-            if ($column->type == TextualColumn::TYPE_TEXT) {
-                /** @var TextType $type */
-                $type = $column->getValidationType();
-
-                if ($type->fieldType == TextType::FIELD_INPUT) {
-                    $field = new TextField($fieldName);
-                } else {
-                    if ($type->markdown == TextType::MARKDOWN_DISABLED) {
-                        $field = new TextareaField($fieldName);
-                    } else {
-                        $field = new MarkdownField($fieldName);
-                    }
-
-                    $field->larger = $type->fieldType == TextType::FIELD_TEXTAREA_LARGE;
-                }
-
-                $field->maxLength = 10000; // TODO: Check
-                $field->spellcheck = false;
-            } else if ($column->type == TextualColumn::TYPE_SELECTION) {
-                /** @var SelectionType $type */
-                $type = $column->getValidationType();
-                $field = new SelectField($fieldName);
-
-                foreach ($type->options as $name => $label) {
-                    $field->addOption($name, $label);
-                }
-            } else if ($column->type == TextualColumn::TYPE_DATE) {
-                $field = new TextField($fieldName);
-                $field->maxLength = 10000; // TODO: Check
-                $field->spellcheck = false;
-            } else if ($column->type == TextualColumn::TYPE_INTEGER) {
-                $field = new TextField($fieldName);
-                $field->maxLength = 10000; // TODO Check
-                $field->spellcheck = false;
-            } else if ($column->type == TextualColumn::TYPE_DECIMAL) {
-                $field = new TextField($fieldName);
-                $field->maxLength = 10000; // TODO Check
-                $field->spellcheck = false;
-            } else if ($column->type == TextualColumn::TYPE_BOOLEAN) {
-                /** @var BooleanType $type */
-                $type = $column->getValidationType();
-                $field = new SelectField($fieldName);
-
-                if (is_null($type->falseLabel)) {
-                    $field->addOption(BooleanType::VALUE_FALSE, "false");
-                } else {
-                    $field->addOption(BooleanType::VALUE_FALSE, $type->falseLabel);
-                }
-
-                if (is_null($type->trueLabel)) {
-                    $field->addOption(BooleanType::VALUE_TRUE, "true");
-                } else {
-                    $field->addOption(BooleanType::VALUE_TRUE, $type->trueLabel);
-                }
-            } else {
-                throw new Exception("Unsupported column type: ".$column->type);
-            }
-
-            $field->required = false;
-            $this->addField($field);
-
-            $this->textualColumnFields[$column->name] = $this->fields[$field->name];
+            $this->addTextualField($column);
         }
 
         // comment
@@ -228,7 +151,7 @@ class InsertForm extends Form
             TextualField::createAll($id, $textualFields);
         }
 
-        Row::updateValidity($id);
+        Row::revalidate($id);
 
         // Next
 
@@ -239,9 +162,13 @@ class InsertForm extends Form
         }
     }
 
-    public function generateAdditionalFields(): string
+    public function generateAdditionalFields()
     {
-        // TODO
-        return $this->fields["comment"]->generateGroup().$this->fields["flag"]->generateGroup().$this->fields["assignee"]->generateGroup().$this->fields["next"]->generateGroup();
+        // TODO Find a better solution than this function
+        echo '<hr style="margin: 32px 0">';
+        echo $this->fields["comment"]->generateGroup();
+        echo $this->fields["flag"]->generateGroup();
+        echo $this->fields["assignee"]->generateGroup();
+        echo $this->fields["next"]->generateGroup();
     }
 }

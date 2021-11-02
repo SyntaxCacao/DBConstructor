@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Tables\View;
 
+use DBConstructor\Application;
+use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
+use DBConstructor\Controllers\Projects\Tables\Insert\InsertForm;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
+use DBConstructor\Models\RowAction;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 
@@ -94,10 +98,56 @@ class ViewTab extends TabController
 
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
             $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
-            $data["row"] = $row;
             $data["relationalFields"] = RelationalField::loadRow($data["table"]->id);
             $data["textualFields"] = TextualField::loadRow($data["table"]->id);
 
+            if (isset($_GET["debug"])) {
+                if (! Application::$instance->hasAdminPermissions()) {
+                    (new ForbiddenController())->request($path);
+                    return false;
+                }
+
+                $data["actions"] = RowAction::loadAll($row->id);
+                $data["row"] = $row;
+                $data["tabpage"] = "row_debug";
+                $data["title"] = "#".$row->id;
+                return true;
+            }
+
+            if (isset($_GET["flag"]) && ! $row->flagged) {
+                $row->flag(Application::$instance->user->id);
+            } else if (isset($_GET["unflag"]) && $row->flagged) {
+                $row->unflag(Application::$instance->user->id);
+            }
+
+            if (isset($_GET["delete"]) && ! $row->deleted) {
+                $row->delete(Application::$instance->user->id);
+            } else if (isset($_GET["restore"]) && $row->deleted) {
+                $row->restore(Application::$instance->user->id);
+            }
+
+            $editForm = new EditForm();
+            $editForm->init($row, $data["relationalColumns"], $data["relationalFields"], $data["textualColumns"], $data["textualFields"]);
+            $editForm->process();
+            $data["editForm"] = $editForm;
+
+            $commentForm = new CommentForm();
+            $commentForm->init($row);
+            if ($commentForm->process()) {
+                // reset textarea after saving comment
+                $commentForm = new CommentForm();
+                $commentForm->init($row);
+            }
+            $data["commentForm"] = $commentForm;
+
+            $participants = Participant::loadList($data["project"]->id);
+            $assigneeForm = new AssigneeForm();
+            $assigneeForm->init($row, $participants, $row->assigneeId);
+            $assigneeForm->process();
+            $data["assigneeForm"] = $assigneeForm;
+
+            $data["actions"] = RowAction::loadAll($row->id);
+            $data["row"] = $row;
             $data["tabpage"] = "row";
             $data["title"] = "#".$row->id;
 

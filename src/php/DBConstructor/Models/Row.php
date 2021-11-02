@@ -70,22 +70,20 @@ class Row
     public static function create(string $tableId, string $creatorId, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged)]);
-
         $id = MySQLConnection::$instance->getLastInsertId();
 
-        // TODO: Provisional
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`) VALUES (?, ?, 'creation')", [$id, $creatorId]);
+        RowAction::logCreation($id, $creatorId);
 
         if ($comment !== null) {
-            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`) VALUES (?, ?, 'comment', ?)", [$id, $creatorId, $comment]);
+            RowAction::logComment($id, $creatorId, $comment);
         }
 
         if ($flagged) {
-            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`) VALUES (?, ?, 'flag')", [$id, $creatorId]);
+            RowAction::logFlag($id, $creatorId);
         }
 
         if ($assigneeId !== null) {
-            MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`) VALUES (?, ?, 'assignment', ?)", [$id, $creatorId, $assigneeId]);
+            RowAction::logAssignment($id, $creatorId, $assigneeId);
         }
 
         return $id;
@@ -96,8 +94,18 @@ class Row
      */
     public static function load(string $id)
     {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_row` WHERE `id`=?", [$id]);
+        // @formatter:off
+        MySQLConnection::$instance->execute("SELECT `row`.*, ".
+                                                        "`lasteditor`.`firstname` as `lasteditor_firstname`, ".
+                                                        "`lasteditor`.`lastname` as `lasteditor_lastname`, ".
+                                                        "`assignee`.`firstname` as `assignee_firstname`, ".
+                                                        "`assignee`.`lastname` as `assignee_lastname` ".
+                                                 "FROM `dbc_row` `row` ".
+                                                 "LEFT JOIN `dbc_user` `lasteditor` ON `row`.`lasteditor_id` = `lasteditor`.`id` ".
+                                                 "LEFT JOIN `dbc_user` `assignee` ON `row`.`assignee_id` = `assignee`.`id` ".
+                                                 "WHERE `row`.`id`=?", [$id]);
         $result = MySQLConnection::$instance->getSelectedRows();
+        // @formatter:on
 
         if (count($result) != 1) {
             return null;
@@ -190,9 +198,10 @@ class Row
         MySQLConnection::$instance->execute("SET @i=0; UPDATE `dbc_row` SET `exportid`=@i:=@i+1 WHERE `table_id`=? AND `deleted`=FALSE ORDER BY `created`", [$tableId]);
     }
 
-    public static function updateValidity(string $id)
+    public static function revalidate(string $id)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid` = ((SELECT COUNT(*) FROM `dbc_field_relational` WHERE `row_id`=? AND `valid` = FALSE) = 0 AND (SELECT COUNT(*) FROM `dbc_field_textual` WHERE `row_id`=? AND `valid` != TRUE) = 0) WHERE `id`=?", [$id, $id, $id]);
+        RelationalField::revalidateReferencing($id);
     }
 
     /** @var string */
@@ -286,5 +295,81 @@ class Row
         if (isset($data["assignee_lastname"])) {
             $this->assigneeLastName = $data["assignee_lastname"];
         }
+    }
+
+    public function assign(string $userId, string $assigneeId = null, string $assigneeFirstName = null, string $assigneeLastName = null)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `assignee_id`=?, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$assigneeId, $userId, $this->id]);
+        $this->assigneeId = $assigneeId;
+        $this->assigneeFirstName = $assigneeFirstName;
+        $this->assigneeLastName = $assigneeLastName;
+        $this->updateLastUpdated();
+        RowAction::logAssignment($this->id, $userId, $assigneeId);
+    }
+
+    public function comment(string $userId, string $comment)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->updateLastUpdated();
+        RowAction::logComment($this->id, $userId, $comment);
+    }
+
+    public function delete(string $userId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `deleted`=TRUE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->deleted = true;
+        $this->updateLastUpdated();
+        RelationalField::revalidateReferencing($this->id);
+        RowAction::logDeletion($this->id, $userId);
+    }
+
+    public function flag(string $userId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `flagged`=TRUE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->flagged = true;
+        $this->updateLastUpdated();
+        RowAction::logFlag($this->id, $userId);
+    }
+
+    public function restore(string $userId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `deleted`=FALSE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->deleted = false;
+        $this->updateLastUpdated();
+        RelationalField::revalidateReferencing($this->id);
+        RowAction::logRestoration($this->id, $userId);
+    }
+
+    public function setUpdated(string $userId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->updateLastUpdated();
+    }
+
+    public function unflag(string $userId)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `flagged`=FALSE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
+        $this->flagged = false;
+        $this->updateLastUpdated();
+        RowAction::logUnflag($this->id, $userId);
+    }
+
+    public function updateLastUpdated()
+    {
+        // @formatter:off
+        MySQLConnection::$instance->execute("SELECT `row`.`lasteditor_id`, ".
+                                                        "`row`.`lastupdated`, ".
+                                                        "`lasteditor`.`firstname` as `lasteditor_firstname`, ".
+                                                        "`lasteditor`.`lastname` as `lasteditor_lastname` ".
+                                                 "FROM `dbc_row` `row` ".
+                                                 "LEFT JOIN `dbc_user` `lasteditor` ON `row`.`lasteditor_id` = `lasteditor`.`id` ".
+                                                 "WHERE `row`.`id`=?", [$this->id]);
+        // @formatter:on
+
+        $row = MySQLConnection::$instance->getSelectedRows()[0];
+        $this->lastEditorId = $row["lasteditor_id"];
+        $this->lastEditorFirstName = $row["lasteditor_firstname"];
+        $this->lastEditorLastName = $row["lasteditor_lastname"];
+        $this->lastUpdated = $row["lastupdated"];
     }
 }

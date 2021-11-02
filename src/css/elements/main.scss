@@ -41,6 +41,12 @@
   }
 }
 
+.main-header-action {
+  float: left;
+
+  @include clearfix;
+}
+
 .main-subtitle {
   color: $color-text-secondary;
   margin-top: 2px; // previously $spacer-1, decreased because of increased line-height on .main-heading

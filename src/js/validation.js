@@ -86,3 +86,9 @@ function setSuccess(element) {
   element.classList.remove("bi-x-lg");
   element.classList.add("bi-check-lg");
 }
+
+// TODO Workaround to actually validate relational fields after loading the page
+// RelationalColumn#generateInput() sends static validation state, not real validation result
+document.querySelectorAll(".js-validate-relational select").forEach(element => {
+  element.dispatchEvent(new Event("change", {"bubbles": true}));
+});

@@ -1,13 +1,24 @@
 // //
 
+@media (max-width: $breakpoint-md) {
+  .hide-md {
+    display: none;
+  }
+}
+
+// //
+
 .validation-step {
   display: flex;
-  margin-bottom: 8px;
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
 }
 
 .validation-step-icon {
   align-items: center;
-  background-color: #f0f0f0; // TODO
+  background-color: #f0f0f0;
   border-radius: 50%;
   display: flex;
   flex-shrink: 0;
@@ -66,6 +77,12 @@
       margin-right: 0;
     }
   }
+}
+
+// //
+
+#form-table-view-edit .main-subheading:first-of-type {
+  margin-top: 0;
 }
 
 // //

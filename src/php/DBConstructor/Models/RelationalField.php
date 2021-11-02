@@ -5,24 +5,55 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Util\JsonException;
 
 class RelationalField
 {
+    /**
+     * 1st ?: intval(nullable)
+     * 2nd-4th ?: targetRowId
+     *
+     * Validation process for RelationalField:
+     *
+     * (targetRow is nullable AND (targetRow does not exist OR targetRow exists but was deleted))
+     * OR
+     * (targetRow exists, was not deleted, and is valid)
+     */
+    const VALIDATION_SUBQUERY = "(SELECT ((? AND (? IS NULL OR (SELECT `deleted` FROM `dbc_row` WHERE `id`=?) = 1)) OR ((SELECT (`valid` AND NOT `deleted`) FROM `dbc_row` WHERE `id`=?) <=> 1)))";
+
     /**
      * @param array<array<string>> $fields
      */
     public static function createAll(string $rowId, array $fields)
     {
-        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) VALUES (?, ?, ?, (SELECT ((? AND ? IS NULL) OR ((SELECT `valid` FROM `dbc_row` WHERE `id`=?) <=> 1))))");
+        MySQLConnection::$instance->prepare("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) VALUES (?, ?, ?, ".RelationalField::VALIDATION_SUBQUERY.")");
 
         foreach ($fields as $field) {
-            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], intval($field["column_nullable"]), $field["target_row_id"], $field["target_row_id"]]);
+            MySQLConnection::$instance->executePrepared([$rowId, $field["column_id"], $field["target_row_id"], intval($field["column_nullable"]), $field["target_row_id"], $field["target_row_id"], $field["target_row_id"]]);
         }
     }
 
     public static function delete(string $columnId)
     {
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `column_id`=?", [$columnId]);
+    }
+
+    /**
+     * @return array<string, RelationalField>
+     */
+    public static function loadReferencingRows(string $rowId): array
+    {
+        //MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id`=r.`id` LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=? AND r.`valid`=TRUE", [$rowId]);
+        MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=?", [$rowId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $fields = [];
+
+        foreach ($result as $row) {
+            $field = new RelationalField($row);
+            $fields[$field->columnId] = $field;
+        }
+
+        return $fields;
     }
 
     /**
@@ -90,6 +121,15 @@ class RelationalField
         return $table;
     }
 
+    public static function revalidateReferencing(string $rowId)
+    {
+        $fields = RelationalField::loadReferencingRows($rowId);
+
+        foreach ($fields as $field) {
+            $field->revalidate($field->columnNullable);
+        }
+    }
+
     /** @var string */
     public $id;
 
@@ -98,6 +138,9 @@ class RelationalField
 
     /** @var string */
     public $columnId;
+
+    /** @var bool|null */
+    public $columnNullable;
 
     /** @var array<string, TextualField>|null */
     public $targetRow;
@@ -125,24 +168,48 @@ class RelationalField
         $this->id = $data["id"];
         $this->rowId = $data["row_id"];
         $this->columnId = $data["column_id"];
-        $this->targetRowExists = $data["target_row_exists"] == "1";
         $this->targetRowId = $data["target_row_id"];
-        $this->targetRowExportId = $data["target_row_exportid"];
 
-        if ($data["target_row_valid"] !== null) {
+        if (isset($data["column_nullable"])) {
+            $this->columnNullable = $data["column_nullable"] == "1";
+        }
+
+        if (isset($data["target_row_exists"])) {
+            $this->targetRowExists = $data["target_row_exists"] == "1";
+        }
+
+        if (isset($data["target_row_exportid"])) {
+            $this->targetRowExportId = $data["target_row_exportid"];
+        }
+
+        if (isset($data["target_row_valid"])) {
             $this->targetRowValid = $data["target_row_valid"] == "1";
         }
 
-        if ($data["valid"] !== null) {
+        if (isset($data["valid"])) {
             $this->valid = $data["valid"] == "1";
         }
     }
 
     /**
-     * TODO: Don't use this to load targetRow for a larger number of RelationalFields
-     *       as each execution requires a query to be run
-     *
+     * @throws JsonException
+     */
+    public function edit(string $userId, Row $row, string $targetRowId = null, bool $nullable)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_field_relational` SET `target_row_id`=? WHERE `id`=?", [$targetRowId, $this->id]);
+        $prevValue = $this->targetRowId;
+        $this->targetRowId = $targetRowId;
+
+        $this->revalidate($nullable);
+
+        $row->setUpdated($userId);
+        RowAction::logChange($row->id, $userId, true, $this->columnId, $prevValue, $targetRowId);
+    }
+
+    /**
      * @return array<string, TextualField>|null
+     * @deprecated Don't use this to load targetRow for a larger number of RelationalFields
+     *       as each execution requires a query to be run
      */
     public function getTargetRow()
     {
@@ -151,5 +218,18 @@ class RelationalField
         }
 
         return $this->targetRow;
+    }
+
+    public function revalidate(bool $nullable)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_field_relational` SET `valid`=".RelationalField::VALIDATION_SUBQUERY." WHERE `id`=?", [intval($nullable), $this->targetRowId, $this->targetRowId, $this->targetRowId, $this->id]);
+        $this->updateValidity();
+        Row::revalidate($this->rowId);
+    }
+
+    public function updateValidity()
+    {
+        MySQLConnection::$instance->execute("SELECT `valid` FROM `dbc_field_relational` WHERE `id`=?", [$this->id]);
+        $this->valid = MySQLConnection::$instance->getSelectedRows()[0]["valid"] === "1";
     }
 }

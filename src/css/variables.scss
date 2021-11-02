@@ -99,3 +99,14 @@ $column-padding: $spacer-5;
 
 $main-header-margin-bottom: $spacer-3;
 $main-header-margin-top: $spacer-5;
+
+// timeline //
+
+$timeline-icon-color-background: #eaeef2; // primer --color-timeline-badge-bg
+$timeline-icon-color-font: #57606a; // primer --color-fg-muted
+$timeline-icon-size: 32px;
+
+$timeline-line-color: hsla(210, 18%, 87%, 1); // primer --color-border-muted
+$timeline-line-width: 2px;
+
+$timeline-item-margin-left: $spacer-5+$timeline-line-width;

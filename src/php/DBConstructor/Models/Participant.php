@@ -53,7 +53,7 @@ class Participant
     }
 
     /**
-     * @return array<Participant>
+     * @return array<string, Participant>
      */
     public static function loadList(string $projectId): array
     {
@@ -62,7 +62,8 @@ class Participant
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new Participant($row);
+            $participant = new Participant($row);
+            $list[$participant->userId] = $participant;
         }
 
         return $list;
