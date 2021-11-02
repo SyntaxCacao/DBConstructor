@@ -73,8 +73,8 @@ class FilterForm extends Form
         $field->addOption(Application::$instance->user->id, "Mir zugewiesen");
 
         foreach ($participants as $participant) {
-            if ($participant->id !== Application::$instance->user->id) {
-                $field->addOption($participant->id, $participant->lastName.", ".$participant->firstName." zugewiesen");
+            if ($participant->userId !== Application::$instance->user->id) {
+                $field->addOption($participant->userId, $participant->lastName.", ".$participant->firstName." zugewiesen");
             }
         }
 
@@ -87,8 +87,8 @@ class FilterForm extends Form
         $field->addOption(Application::$instance->user->id, "Von mir angelegt");
 
         foreach ($participants as $participant) {
-            if ($participant->id !== Application::$instance->user->id) {
-                $field->addOption($participant->id, "Von ".$participant->lastName.", ".$participant->firstName." angelegt");
+            if ($participant->userId !== Application::$instance->user->id) {
+                $field->addOption($participant->userId, "Von ".$participant->lastName.", ".$participant->firstName." angelegt");
             }
         }
 
