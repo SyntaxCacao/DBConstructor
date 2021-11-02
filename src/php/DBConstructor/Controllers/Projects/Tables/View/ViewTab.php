@@ -98,8 +98,8 @@ class ViewTab extends TabController
 
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
             $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
-            $data["relationalFields"] = RelationalField::loadRow($data["table"]->id);
-            $data["textualFields"] = TextualField::loadRow($data["table"]->id);
+            $data["relationalFields"] = RelationalField::loadRow($row->id);
+            $data["textualFields"] = TextualField::loadRow($row->id);
 
             if (isset($_GET["debug"])) {
                 if (! Application::$instance->hasAdminPermissions()) {
