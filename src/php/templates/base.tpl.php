@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <!-- maximum-scale=1, user-scalable=0 to prevent iOS from zooming in on inputs -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title><?php if (isset($data["title"])) echo $data["title"]." · "; ?>DBConstructor</title>
+    <title><?php if (isset($data["title"])) echo htmlentities($data["title"])." · "; ?>DBConstructor</title>
     <link href="<?php echo $data["baseurl"]; ?>/assets/build-<?php echo $data["version"]; ?>.min.css" rel="stylesheet">
     <link href="<?php echo $data["baseurl"]; ?>/assets/favicon.svg" rel="icon" type="image/svg+xml">
   </head>
