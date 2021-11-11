@@ -31,10 +31,10 @@
               <li class="dropdown-item dropdown-item-text">Angemeldet als<br><b><?php echo htmlentities($data["user"]->firstname)." ".htmlentities($data["user"]->lastname); ?></b></li>
               <li><hr class="dropdown-divider"></li>
               <li class="dropdown-item">
-                <a class="dropdown-link" href="<?php echo $data["baseurl"] ?>/settings/"><span class="bi bi-gear"></span> Einstellungen</a>
+                <a class="dropdown-link" href="<?php echo $data["baseurl"] ?>/settings/"><span class="bi bi-gear"></span>Einstellungen</a>
               </li>
               <li class="dropdown-item">
-                <a class="dropdown-link" href="<?php echo $data["baseurl"] ?>/login/?logout"><span class="bi bi-door-open"></span> Abmelden</a>
+                <a class="dropdown-link" href="<?php echo $data["baseurl"] ?>/login/?logout"><span class="bi bi-door-open"></span>Abmelden</a>
               </li>
             </ul>
           </details>
