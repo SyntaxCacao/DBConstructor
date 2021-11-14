@@ -1,3 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+use DBConstructor\Util\HeaderGenerator;
+use DBConstructor\Util\MarkdownParser;
+
+/** @var array $data */
+
+?>
 <main class="container">
 <?php if (isset($data["request"]["saved"])) { ?>
   <div class="alerts">
@@ -48,23 +58,9 @@
         </div>
 <?php } ?>
       </div>
-<?php /* // TODO Alternative sidenav
-      <ul class="filterlist">
-<?php foreach ($data["pages"] as $page) { ?>
-        <li class="filterlist-item">
-          <a class="filterlist-link<?php if ($page->id == $data["wikiPage"]->id) echo " current" ?>" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/wiki/<?php if ($page->id != $data["wikiPage"]->id) echo $page->id."/"; ?>"><span class="bi bi-file-earmark"></span><?php echo htmlentities($page->title) ?></a>
-        </li>
-<?php } ?>
-      </ul>
-*/ ?>
     </div>
     <div class="column width-9">
-<?php /*if (isset($data["request"]["saved"])) { // TODO Move here? ?>
-      <div class="alerts">
-        <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>
-      </div>
-<?php } */ ?>
-<?php $header = new \DBConstructor\Util\HeaderGenerator($data["state"]->title);
+<?php $header = new HeaderGenerator($data["state"]->title);
       $header->subtitle = "Zuletzt geändert von ".$data["state"]->creatorFirstName." ".$data["state"]->creatorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["state"]->created))." Uhr";
       $header->autoActions = [
         [
@@ -80,7 +76,7 @@
       ];
 
       $header->generate(); ?>
-      <div class="markdown"><?php echo (new \DBConstructor\Util\MarkdownParser)->parse($data["state"]->text) ?></div>
+      <div class="markdown"><?php echo (new MarkdownParser)->parse($data["state"]->text) ?></div>
     </div>
   </div>
 </main>
