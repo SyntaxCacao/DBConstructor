@@ -64,18 +64,22 @@
         <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>
       </div>
 <?php } */ ?>
-<?php \DBConstructor\Util\TemplateFunctions::printMainHeader(htmlentities($data["state"]->title), "Zuletzt geändert von ".htmlentities($data["state"]->creatorFirstName." ".$data["state"]->creatorLastName)." am ".htmlentities(date("d.m.Y \u\m H:i", strtotime($data["state"]->created)))." Uhr", [
+<?php $header = new \DBConstructor\Util\HeaderGenerator($data["state"]->title);
+      $header->subtitle = "Zuletzt geändert von ".$data["state"]->creatorFirstName." ".$data["state"]->creatorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["state"]->created))." Uhr";
+      $header->autoActions = [
         [
-          "icon" => "bi-pencil",
           "href" => $data["baseurl"]."/projects/".$data["project"]->id."/wiki/".$data["wikiPage"]->id."/edit/",
+          "icon" => "pencil",
           "text" => "Bearbeiten"
         ],
         [
-          "icon" => "bi-clock-history",
           "href" => $data["baseurl"]."/projects/".$data["project"]->id."/wiki/".$data["wikiPage"]->id."/history/",
+          "icon" => "clock-history",
           "text" => "Historie"
         ]
-      ]); ?>
+      ];
+
+      $header->generate(); ?>
       <div class="markdown"><?php echo (new \DBConstructor\Util\MarkdownParser)->parse($data["state"]->text) ?></div>
     </div>
   </div>

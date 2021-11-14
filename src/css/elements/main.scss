@@ -29,18 +29,6 @@
   }
 }
 
-@media (max-width: $breakpoint-sm) {
-  .main-header-actions-responsive > :not(.main-header-actions-more) {
-    display: none;
-  }
-}
-
-@media (min-width: $breakpoint-sm+1) {
-  .main-header-actions-more {
-    display: none;
-  }
-}
-
 .main-header-action {
   float: left;
 

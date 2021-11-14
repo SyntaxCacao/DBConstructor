@@ -8,31 +8,37 @@
     <div class="alert"><p>Das Feld wurde gelöscht.</p></div>
   </div>
 <?php }
-      $subtitle = "";
+      $header = new \DBConstructor\Util\HeaderGenerator("Struktur");
+
+      $header->subtitle = "";
 
       if (count($data["relationalColumns"]) > 0) {
-        $subtitle .= count($data["relationalColumns"])." Relationsfeld";
-        if (count($data["relationalColumns"]) > 1) $subtitle .= "er";
-        if (count($data["textualColumns"]) > 0) $subtitle .= " · ";
+        $header->subtitle .= count($data["relationalColumns"])." Relationsfeld";
+        if (count($data["relationalColumns"]) > 1) $header->subtitle .= "er";
+        if (count($data["textualColumns"]) > 0) $header->subtitle .= " · ";
       }
 
       if (count($data["textualColumns"]) > 0) {
-        $subtitle .= count($data["textualColumns"])." Wertfeld";
-        if (count($data["textualColumns"]) > 1) $subtitle .= "er";
+        $header->subtitle .= count($data["textualColumns"])." Wertfeld";
+        if (count($data["textualColumns"]) > 1) $header->subtitle .= "er";
       }
 
-      \DBConstructor\Util\TemplateFunctions::printMainHeader("Struktur", $subtitle, [
-        [
-          "icon" => "bi-arrow-up-right",
-          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/structure/relational/create/",
-          "text" => "Relationsfeld anlegen"
-        ],
-        [
-          "icon" => "bi-input-cursor-text",
-          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/structure/textual/create/",
-          "text" => "Wertfeld anlegen"
-        ]
-      ], $data["isManager"]);?>
+      if ($data["isManager"]) {
+        $header->autoActions = [
+          [
+            "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/structure/relational/create/",
+            "icon" => "arrow-up-right",
+            "text" => "Relationsfeld anlegen"
+          ],
+          [
+            "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/structure/textual/create/",
+            "icon" => "input-cursor-text",
+            "text" => "Wertfeld anlegen"
+          ]
+        ];
+      }
+
+      $header->generate(); ?>
 
   <h2 class="main-subheading">Relationsfelder</h2>
 

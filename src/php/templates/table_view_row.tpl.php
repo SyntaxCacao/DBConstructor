@@ -3,49 +3,63 @@
 declare(strict_types=1);
 
 use DBConstructor\Models\RowAction;
+use DBConstructor\Util\HeaderGenerator;
 use DBConstructor\Util\MarkdownParser;
+
+/** @var array $data */
 
 ?>
 <main class="container">
-  <div class="main-header">
-    <header class="main-header-header">
-      <h1 class="main-heading">Datensatz #<?= $data["row"]->id.($data["row"]->deleted ? " (gelöscht)" : "") ?></h1>
-      <p class="main-subtitle">Zuletzt bearbeitet von <?= htmlentities($data["row"]->lastEditorFirstName." ".$data["row"]->lastEditorLastName) ?> am <?= htmlentities(date("d.m.Y \u\m H:i", strtotime($data["row"]->lastUpdated))) ?> Uhr</p>
-    </header>
-    <nav class="main-header-actions">
-<?php if ($data["row"]->flagged) { ?>
-      <a class="button button-small main-header-action" href="?unflag"><span class="bi bi-flag-fill"></span> Markiert</a>
-<?php } else { ?>
-      <a class="button button-small main-header-action" href="?flag"><span class="bi bi-flag"></span> Markieren</a>
-<?php } ?>
-      <details class="dropdown main-header-action">
-        <summary><span class="button button-small"><span class="bi bi-person"></span><?= isset($data["row"]->assigneeId) ? "Zuweisung: ".($data["row"]->assigneeId === $data["user"]->id ? "mir" : htmlentities($data["row"]->assigneeFirstName." ".$data["row"]->assigneeLastName)) : "Zuweisen" ?></span></summary>
-        <ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">
-          <li class="dropdown-item dropdown-item-form"><?= $data["assigneeForm"]->generate() ?></li>
-        </ul>
-      </details><!--
-   --><details class="dropdown main-header-action">
-        <summary><span class="button button-small"><span class="bi bi-three-dots" style="margin-right: 0"></span></span></summary>
-        <ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">
-<?php if ($data["isAdmin"]) { ?>
-          <li class="dropdown-item">
-            <a class="dropdown-link" href="?debug"><span class="bi bi-wrench"></span> Debug-Ansicht</a>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-<?php }
-      if ($data["row"]->deleted) { ?>
-          <li class="dropdown-item">
-            <a class="dropdown-link" href="?restore"><span class="bi bi-arrow-counterclockwise"></span> Wiederherstellen</a>
-          </li>
-<?php } else { ?>
-          <li class="dropdown-item">
-            <a class="dropdown-link js-confirm" href="?delete" data-confirm-message="Sind Sie sicher? Der Datensatz kann nach der Löschung wiederhergestellt werden."><span class="bi bi-trash"></span> Löschen</a>
-          </li>
-<?php } ?>
-        </ul>
-      </details>
-    </nav>
-  </div>
+<?php $header = new HeaderGenerator("Datensatz #".$data["row"]->id.($data["row"]->deleted ? " (gelöscht)" : ""));
+      $header->subtitle = "Zuletzt bearbeitet von ".$data["row"]->lastEditorFirstName." ".$data["row"]->lastEditorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["row"]->lastUpdated))." Uhr";
+
+      if ($data["row"]->flagged) {
+        $header->buttonActions[] = [
+          "href" => "?unflag",
+          "icon" => "flag-fill",
+          "text" => "Markiert",
+        ];
+      } else {
+        $header->buttonActions[] = [
+          "href" => "?flag",
+          "icon" => "flag",
+          "text" => "Markieren"
+        ];
+      }
+
+      $header->additionalHTML = '<details class="dropdown main-header-action">'.
+                                  '<summary><span class="button button-small"><span class="bi bi-person"></span>'.(isset($data["row"]->assigneeId) ? "Zuweisung: ".($data["row"]->assigneeId === $data["user"]->id ? "mir" : htmlentities($data["row"]->assigneeFirstName." ".$data["row"]->assigneeLastName)) : "Zuweisen").'</span></summary>'.
+                                  '<ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">'.
+                                    '<li class="dropdown-item dropdown-item-form">'.$data["assigneeForm"]->generate().'</li>'.
+                                  '</ul>'.
+                                '</details>';
+
+      if ($data["isAdmin"]) {
+        $header->dropdownActions[] = [
+          "href" => "?debug",
+          "icon" => "wrench",
+          "text" => "Debug-Ansicht",
+          "divider" => true,
+        ];
+      }
+
+      if ($data["row"]->deleted) {
+        $header->dropdownActions[] = [
+          "href" => "restore",
+          "icon" => "arrow-counterclockwise",
+          "text" => "Wiederherstellen"
+        ];
+      } else {
+        $header->dropdownActions[] = [
+          "href" => "?delete",
+          "icon" => "trash",
+          "text" => "Löschen",
+          "danger" => true,
+          "confirm" => "Sind Sie sicher? Der Datensatz kann nach der Löschung wiederhergestellt werden."
+        ];
+      }
+
+      $header->generate(); ?>
   <div class="row break-md">
     <div class="column width-7">
       <?php $data["editForm"]->generate() ?>
