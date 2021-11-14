@@ -1,0 +1,17 @@
+// hide utilities //
+
+@each $breakpoint, $width in $breakpoints {
+  // .show-md: element shown on >= md
+  @media (max-width: $width) {
+    .hide-down-#{$breakpoint} {
+      display: none !important;
+    }
+  }
+
+  // .hide-md: element hidden on >= md
+  @media (min-width: $width+1) {
+    .hide-up-#{$breakpoint} {
+      display: none !important;
+    }
+  }
+}
