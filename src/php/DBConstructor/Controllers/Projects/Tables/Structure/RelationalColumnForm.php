@@ -9,6 +9,7 @@ use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\RelationalColumn;
+use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Table;
 use Exception;
 
@@ -19,6 +20,9 @@ class RelationalColumnForm extends Form
 
     /** @var string */
     public $projectId;
+
+    /** @var bool */
+    public $tableEmpty;
 
     /** @var string */
     public $tableId;
@@ -31,10 +35,11 @@ class RelationalColumnForm extends Form
     /**
      * @param RelationalColumn|null $column null on creation
      */
-    public function init(string $projectId, string $tableId, string $tablePosition, RelationalColumn $column = null)
+    public function init(string $projectId, string $tableId, string $tablePosition, bool $tableEmpty, RelationalColumn $column = null)
     {
         $this->projectId = $projectId;
         $this->tableId = $tableId;
+        $this->tableEmpty = $tableEmpty;
         $this->column = $column;
 
         // label
@@ -82,7 +87,11 @@ class RelationalColumnForm extends Form
     {
         if (is_null($this->column)) {
             // create
-            RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["description"], $data["position"], $data["null-allowed"]);
+            $id = RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["description"], $data["position"], $data["null-allowed"]);
+
+            if (! $this->tableEmpty) {
+                RelationalField::fill($this->tableId, $id, $data["null-allowed"]);
+            }
         } else {
             // edit
             $targetTableChanged = $data["target-table"] != $this->column->targetTableId;
@@ -92,9 +101,9 @@ class RelationalColumnForm extends Form
                 $this->column->move(intval($data["position"]));
             }
 
-            //if ($targetTableChanged) {
+            if ($targetTableChanged && ! $this->tableEmpty) {
                 // TODO: Rerun validation
-            //}
+            }
         }
 
         Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId", "saved");

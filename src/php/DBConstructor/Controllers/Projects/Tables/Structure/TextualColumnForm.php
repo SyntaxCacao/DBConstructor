@@ -13,6 +13,7 @@ use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\TextualColumn;
+use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\DateType;
@@ -30,6 +31,9 @@ class TextualColumnForm extends Form
     /** @var string */
     public $projectId;
 
+    /** @var bool */
+    public $tableEmpty;
+
     /** @var string */
     public $tableId;
 
@@ -42,10 +46,11 @@ class TextualColumnForm extends Form
      * @param TextualColumn|null $column null on creation
      * @throws JsonException
      */
-    public function init(string $projectId, string $tableId, TextualColumn $column = null)
+    public function init(string $projectId, string $tableId, bool $tableEmpty, TextualColumn $column = null)
     {
         $this->projectId = $projectId;
         $this->tableId = $tableId;
+        $this->tableEmpty = $tableEmpty;
         $this->column = $column;
 
         // label
@@ -373,6 +378,15 @@ class TextualColumnForm extends Form
 
         $this->addField($field);
 
+        // fill-value
+        if (! isset($column) && ! $tableEmpty) {
+            $field = new TextField("fill-value", "Füllwert");
+            $field->description = "Dieser Wert wird für dieses Feld in die bestehenden Datensätze eingefügt";
+            $field->required = false;
+
+            $this->addField($field);
+        }
+
         // description
         $this->addField(new ColumnDescriptionField($column));
 
@@ -451,7 +465,11 @@ class TextualColumnForm extends Form
 
         if (is_null($this->column)) {
             // create
-            TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["description"], $data["position"], $data["type"], $type);
+            $id = TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["description"], $data["position"], $data["type"], $type);
+
+            if (! $this->tableEmpty) {
+                TextualField::fill($this->tableId, $id, $data["fill-value"], $type);
+            }
         } else {
             // edit
             $this->column->edit($data["name"], $data["label"], $data["description"], $data["type"], $type);
@@ -460,7 +478,10 @@ class TextualColumnForm extends Form
                 $this->column->move(intval($data["position"]));
             }
 
-            // TODO: Rerun validation
+            if (! $this->tableEmpty) {
+                // TODO: Check if validation rules changed
+                // TODO: Rerun validation
+            }
         }
 
         Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId", "saved");

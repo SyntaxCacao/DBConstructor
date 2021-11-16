@@ -89,6 +89,12 @@ class Row
         return $id;
     }
 
+    public static function isTableEmpty(string $tableId): bool
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) <= 0 AS `isEmpty` FROM `dbc_row` WHERE `table_id`=?", [$tableId]);
+        return boolval(MySQLConnection::$instance->getSelectedRows()[0]["isEmpty"]);
+    }
+
     /**
      * @return Row|null
      */
@@ -202,6 +208,17 @@ class Row
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid` = ((SELECT COUNT(*) FROM `dbc_field_relational` WHERE `row_id`=? AND `valid` = FALSE) = 0 AND (SELECT COUNT(*) FROM `dbc_field_textual` WHERE `row_id`=? AND `valid` != TRUE) = 0) WHERE `id`=?", [$id, $id, $id]);
         RelationalField::revalidateReferencing($id);
+    }
+
+    public static function revalidateAllValid(string $tableId)
+    {
+        // TODO one query instead of executing queries in foreach
+        MySQLConnection::$instance->execute("SELECT `id` FROM `dbc_row` WHERE `table_id`=? AND `valid`=TRUE", [$tableId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        foreach ($result as $row) {
+            Row::revalidate($row["id"]);
+        }
     }
 
     /** @var string */

@@ -1,4 +1,9 @@
 <main class="container container-small">
+  <?php if (isset($data["isEmpty"]) && ! $data["isEmpty"]) { ?>
+    <div class="alerts">
+      <div class="alert alert-error"><p><strong>Wichtig:</strong> Diese Tabelle enthält bereits Datensätze. Das Anlegen einer neuen Spalte sowie das Bearbeiten oder Löschen bestehender Spalten führt dazu, dass alle bestehenden Datensätze in dieser Tabelle sowie Datensätze aus anderen Tabellen, die auf Datensätze in dieser Tabelle verweisen, neu validiert werden müssen. Je nach Zahl der betroffenen Datensätze kann dies längere Zeit in Anspruch nehmen. Sollte der Vorgang abgebrochen werden oder es zu einem Fehler kommen, muss eine manuelle Neuvalidierung erfolgen.</p></div>
+    </div>
+  <?php } ?>
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading"><?php echo $data["heading"] ?></h1>

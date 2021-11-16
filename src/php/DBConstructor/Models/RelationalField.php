@@ -38,6 +38,15 @@ class RelationalField
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `column_id`=?", [$columnId]);
     }
 
+    public static function fill(string $tableId, string $columnId, bool $nullable)
+    {
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_field_relational` (`row_id`, `column_id`, `target_row_id`, `valid`) SELECT `id`, ?, null, ? FROM `dbc_row` WHERE `table_id`=?", [$columnId, intval($nullable), $tableId]);
+
+        if (! $nullable) {
+            Row::revalidateAllValid($tableId);
+        }
+    }
+
     /**
      * @return array<string, RelationalField>
      */

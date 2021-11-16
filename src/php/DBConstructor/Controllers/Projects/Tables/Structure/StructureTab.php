@@ -9,6 +9,7 @@ use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\RelationalColumn;
+use DBConstructor\Models\Row;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Util\JsonException;
 
@@ -37,6 +38,8 @@ class StructureTab extends TabController
             return true;
         }
 
+        $data["isEmpty"] = Row::isTableEmpty($data["table"]->id);
+
         if (count($path) > 6 && $path[5] == "relational") {
             // relational
 
@@ -49,7 +52,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new RelationalColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position);
+                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $data["isEmpty"]);
                 $form->process();
                 $data["form"] = $form;
 
@@ -84,7 +87,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new RelationalColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $column);
+                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $data["isEmpty"], $column);
                 $form->process();
                 $data["form"] = $form;
 
@@ -106,7 +109,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new TextualColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id);
+                $form->init($data["project"]->id, $data["table"]->id, $data["isEmpty"]);
                 $form->process();
                 $data["form"] = $form;
 
@@ -141,7 +144,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new TextualColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $column);
+                $form->init($data["project"]->id, $data["table"]->id, $data["isEmpty"], $column);
                 $form->process();
                 $data["form"] = $form;
 

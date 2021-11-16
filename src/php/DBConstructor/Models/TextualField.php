@@ -6,6 +6,7 @@ namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
+use DBConstructor\Validation\Types\Type;
 
 class TextualField
 {
@@ -21,6 +22,18 @@ class TextualField
     public static function delete(string $columnId)
     {
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_textual` WHERE `column_id`=?", [$columnId]);
+    }
+
+    public static function fill(string $tableId, string $columnId, string $fillValue = null, Type $validationType)
+    {
+        $validator = $validationType->buildValidator();
+        $valid = $validator->validate($fillValue);
+
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_field_textual` (`row_id`, `column_id`, `value`, `valid`) SELECT `id`, ?, ?, ? FROM `dbc_row` WHERE `table_id`=?", [$columnId, $fillValue, intval($valid), $tableId]);
+
+        if (! $valid) {
+            Row::revalidateAllValid($tableId);
+        }
     }
 
     /**
