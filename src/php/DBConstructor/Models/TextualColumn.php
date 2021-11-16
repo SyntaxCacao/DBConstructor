@@ -111,6 +111,7 @@ class TextualColumn extends Column
         TextualField::delete($this->id);
         MySQLConnection::$instance->execute("DELETE FROM `dbc_column_textual` WHERE `id`=?", [$this->id]);
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>=?", [$this->tableId, $this->position]);
+        Row::revalidateAllInvalid($this->tableId);
     }
 
     /**
@@ -219,6 +220,9 @@ class TextualColumn extends Column
         parent::generateInput_internal($field, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
     }
 
+    /**
+     * @throws JsonException
+     */
     public function generatePrintableValue(string $value = null)
     {
         if ($value === null) {

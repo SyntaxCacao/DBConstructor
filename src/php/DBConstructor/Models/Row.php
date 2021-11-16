@@ -210,6 +210,17 @@ class Row
         RelationalField::revalidateReferencing($id);
     }
 
+    public static function revalidateAllInvalid(string $tableId)
+    {
+        // TODO one query instead of executing queries in foreach
+        MySQLConnection::$instance->execute("SELECT `id` FROM `dbc_row` WHERE `table_id`=? AND `valid`=FALSE", [$tableId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        foreach ($result as $row) {
+            Row::revalidate($row["id"]);
+        }
+    }
+
     public static function revalidateAllValid(string $tableId)
     {
         // TODO one query instead of executing queries in foreach
