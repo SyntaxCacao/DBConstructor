@@ -50,7 +50,7 @@ class RelationalField
     /**
      * @return array<RelationalField>
      */
-    public static function loadReferencingRows(string $rowId): array
+    public static function loadReferencingFields(string $rowId): array
     {
         //MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id`=r.`id` LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=? AND r.`valid`=TRUE", [$rowId]);
         MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=?", [$rowId]);
@@ -131,7 +131,7 @@ class RelationalField
 
     public static function revalidateReferencing(string $rowId)
     {
-        $fields = RelationalField::loadReferencingRows($rowId);
+        $fields = RelationalField::loadReferencingFields($rowId);
 
         foreach ($fields as $field) {
             $field->revalidate($field->columnNullable);
