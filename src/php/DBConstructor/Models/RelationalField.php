@@ -48,7 +48,7 @@ class RelationalField
     }
 
     /**
-     * @return array<string, RelationalField>
+     * @return array<RelationalField>
      */
     public static function loadReferencingRows(string $rowId): array
     {
@@ -58,8 +58,7 @@ class RelationalField
         $fields = [];
 
         foreach ($result as $row) {
-            $field = new RelationalField($row);
-            $fields[$field->columnId] = $field;
+            $fields[] = new RelationalField($row);
         }
 
         return $fields;
