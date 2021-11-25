@@ -9,27 +9,25 @@ use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Forms\Form;
+use DBConstructor\Models\Column;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
+use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
 use Exception;
-use DBConstructor\Util\JsonException;
 
 abstract class RowForm extends Form
 {
+    /** @var array<string, Column> */
+    public $columns = [];
+
     /** @var bool */
     public $isEdit;
 
-    /** @var array<string, string> */
-    public $relationalColumnFields = [];
-
     /** @var array<RelationalColumn> */
     public $relationalColumns;
-
-    /** @var array<string, string> */
-    public $textualColumnFields = [];
 
     /** @var array<TextualColumn> */
     public $textualColumns;
@@ -40,25 +38,35 @@ abstract class RowForm extends Form
         $this->isEdit = $isEdit;
     }
 
-    public function addRelationalField(RelationalColumn $column, string $storedValue = null)
+    public function addRelationalField(RelationalColumn $column, string $storedValue = null, string $stepId = null): string
     {
         $field = new RelationalSelectField($column);
+
+        if ($stepId !== null) {
+            $field->name = "step-".$stepId."-".$field->name;
+        }
 
         if ($storedValue !== null) {
             $field->defaultValue = $storedValue;
         }
 
         $this->addField($field);
-        $this->relationalColumnFields[$column->name] = $this->fields[$field->name];
+        $this->columns[$field->name] = $column;
+
+        return $field->name;
     }
 
     /**
      * @throws Exception
      * @throws JsonException
      */
-    public function addTextualField(TextualColumn $column, string $storedValue = null)
+    public function addTextualField(TextualColumn $column, string $storedValue = null, string $stepId = null): string
     {
         $fieldName = "textual-".$column->id;
+
+        if ($stepId !== null) {
+            $fieldName = "step-".$stepId."-".$fieldName;
+        }
 
         if ($column->type == TextualColumn::TYPE_TEXT) {
             /** @var TextType $type */
@@ -125,26 +133,18 @@ abstract class RowForm extends Form
         }
 
         $this->addField($field);
-        $this->textualColumnFields[$column->name] = $this->fields[$field->name];
+        $this->columns[$field->name] = $column;
+
+        return $field->name;
     }
 
     /**
      * Result will not be returned, but echoed!
-     *
-     * @throws JsonException
      */
     public function generate(): string
     {
         echo $this->generateStartingTag();
-
-        foreach ($this->relationalColumns as $column) {
-            $column->generateInput($this->relationalColumnFields[$column->name], $this->isEdit);
-        }
-
-        foreach ($this->textualColumns as $column) {
-            $column->generateInput($this->textualColumnFields[$column->name], $this->isEdit);
-        }
-
+        $this->generateFields();
         $this->generateAdditionalFields();
         echo $this->generateActions();
         echo $this->generateClosingTag();
@@ -157,5 +157,15 @@ abstract class RowForm extends Form
      */
     public function generateAdditionalFields()
     {
+    }
+
+    /**
+     * To be overriden by ExecutionForm
+     */
+    public function generateFields()
+    {
+        foreach ($this->columns as $fieldName => $column) {
+            $column->generateInput($this->fields[$fieldName], $this->isEdit);
+        }
     }
 }

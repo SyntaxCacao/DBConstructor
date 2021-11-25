@@ -23,6 +23,10 @@ a.page-project-list-box:hover .page-project-list-label {
 
 .page-project-list-description {
   color: $color-text-secondary;
+
+  a {
+    color: inherit;
+  }
 }
 
 .page-project-list-button {

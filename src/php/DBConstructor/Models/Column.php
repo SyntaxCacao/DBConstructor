@@ -59,6 +59,8 @@ abstract class Column
         $this->created = $data["created"];
     }
 
+    public abstract function generateInput(Field $field, bool $edit = false);
+
     protected function generateInput_internal(Field $field, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
     {
         echo '<h2 class="main-subheading">'.htmlentities($this->label).'</h2>';
