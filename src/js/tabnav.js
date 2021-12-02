@@ -35,15 +35,21 @@ document.addEventListener("click", event => {
 
     document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Laden...</em>";
 
-    fetch(new Request(document.body.attributes["data-baseurl"].value + "/api/markdown?src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value)), {redirect: "manual"})
-      .then(response => {
-        if (response.ok) {
-          response.text().then(text => {
-            document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = text;
-          });
-        } else {
-          document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Fehler bei der Verarbeitung</em>";
-        }
-      });
+    fetch(document.body.attributes["data-baseurl"].value + "/api/markdown/", {
+      body: "src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value),
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded"
+      }),
+      method: "POST",
+      redirect: "manual"
+    }).then(response => {
+      if (response.ok) {
+        response.text().then(text => {
+          document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = text;
+        });
+      } else {
+        document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Fehler bei der Verarbeitung</em>";
+      }
+    });
   }
 });
