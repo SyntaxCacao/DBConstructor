@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace DBConstructor;
 
+use DBConstructor\Controllers\APIController;
 use DBConstructor\Controllers\Exports\ExportsController;
 use DBConstructor\Controllers\LoginController;
-use DBConstructor\Controllers\MarkdownController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Settings\UserSettingsController;
 use DBConstructor\Controllers\Users\UsersController;
-use DBConstructor\Controllers\ValidationController;
 use DBConstructor\Models\User;
 use DBConstructor\SQL\Migration\MigrationTool;
 use DBConstructor\SQL\MySQLConnection;
@@ -129,10 +128,8 @@ class Application
             $controller = new ExportsController();
         } else if ($path[0] == "settings") {
             $controller = new UserSettingsController();
-        } else if ($path[0] == "markdown") {
-            $controller = new MarkdownController();
-        } else if ($path[0] == "validation") {
-            $controller = new ValidationController();
+        } else if ($path[0] == "api") {
+            $controller = new APIController();
         }
 
         if (! isset($controller)) {

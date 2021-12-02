@@ -35,7 +35,7 @@ document.addEventListener("click", event => {
 
     document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Laden...</em>";
 
-    fetch(new Request(document.body.attributes["data-baseurl"].value + "/markdown?src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value)), {redirect: "manual"})
+    fetch(new Request(document.body.attributes["data-baseurl"].value + "/api/markdown?src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value)), {redirect: "manual"})
       .then(response => {
         if (response.ok) {
           response.text().then(text => {
