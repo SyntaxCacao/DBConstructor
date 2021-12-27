@@ -45,7 +45,7 @@ use DBConstructor\Util\MarkdownParser;
 
       if ($data["row"]->deleted) {
         $header->dropdownActions[] = [
-          "href" => "restore",
+          "href" => "?restore",
           "icon" => "arrow-counterclockwise",
           "text" => "Wiederherstellen"
         ];
