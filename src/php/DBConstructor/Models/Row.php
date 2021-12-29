@@ -12,7 +12,7 @@ class Row
     /** @var int */
     const ROWS_PER_PAGE = 20;
 
-    public static function buildOrderBy(FilterForm $filter): string
+    protected static function buildOrderBy(FilterForm $filter): string
     {
         if ($filter->order === null) {
             return "ORDER BY `row`.`lastupdated` DESC";
@@ -23,12 +23,12 @@ class Row
         }
     }
 
-    public static function buildWhere(FilterForm $filter, array &$params): string
+    protected static function buildWhere(FilterForm $filter, array &$params): string
     {
         $sql = "";
 
         if ($filter->validity === "valid") {
-            $sql .= " `row`.`valid`=TRUE AND";
+            $sql .= " `row`.`valid`=TRUE AND `row`.`deleted`=FALSE AND";
         } else if ($filter->validity === "invalid") {
             $sql .= " `row`.`valid`=FALSE AND";
         }
@@ -47,8 +47,6 @@ class Row
             $params[] = $filter->creator;
         }
 
-        $sql .= " `row`.`deleted`=FALSE";
-
         return $sql;
     }
 
@@ -60,7 +58,7 @@ class Row
     public static function countRowsFiltered(string $tableId, FilterForm $filter): int
     {
         $params = [];
-        $sql = "SELECT COUNT(*) AS `count` FROM `dbc_row` `row` WHERE".Row::buildWhere($filter, $params)." AND `table_id`=?";
+        $sql = "SELECT COUNT(*) AS `count` FROM `dbc_row` `row` WHERE".Row::buildWhere($filter, $params)." `table_id`=?";
         $params[] = $tableId;
 
         MySQLConnection::$instance->execute($sql, $params);
@@ -156,7 +154,7 @@ class Row
                 "LEFT JOIN `dbc_user` `creator` ON `row`.`creator_id` = `creator`.`id` ".
                 "LEFT JOIN `dbc_user` `lasteditor` ON `row`.`lasteditor_id` = `lasteditor`.`id` ".
                 "LEFT JOIN `dbc_user` `assignee` ON `row`.`assignee_id` = `assignee`.`id` ".
-                "WHERE".Row::buildWhere($filter, $params)." AND `row`.`table_id`=?";
+                "WHERE".Row::buildWhere($filter, $params)." `row`.`table_id`=?";
         $params[] = $tableId;
 
         $sql .= " ".Row::buildOrderBy($filter);
