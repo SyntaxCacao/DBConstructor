@@ -123,7 +123,7 @@ class Row
      */
     public static function loadListExport(string $tableId): array
     {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_row` WHERE `table_id`=? AND `deleted`=FALSE ORDER BY `exportid`", [$tableId]);
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_row` WHERE `table_id`=? AND `exportid` IS NOT NULL ORDER BY `exportid`", [$tableId]);
 
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
@@ -198,8 +198,8 @@ class Row
 
     public static function setExportId(string $tableId)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `exportid`=null WHERE `table_id`=?", [$tableId]);
-        MySQLConnection::$instance->execute("SET @i=0; UPDATE `dbc_row` SET `exportid`=@i:=@i+1 WHERE `table_id`=? AND `deleted`=FALSE ORDER BY `created`", [$tableId]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `exportid`=NULL WHERE `table_id`=?", [$tableId]);
+        MySQLConnection::$instance->execute("SET @i=0; UPDATE `dbc_row` SET `exportid`=@i:=@i+1 WHERE `table_id`=? AND `valid`=TRUE AND `deleted`=FALSE ORDER BY `created`", [$tableId]);
     }
 
     public static function revalidate(string $id)
