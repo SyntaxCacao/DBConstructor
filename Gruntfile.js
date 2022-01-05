@@ -21,6 +21,10 @@ module.exports = function(grunt) {
     },
 
     copy: {
+      config: {
+        src: 'src/misc/config.default.php',
+        dest: 'dist/tmp/config.default.php'
+      },
       favicon: {
         src: 'src/misc/favicon.svg',
         dest: 'dist/assets/favicon.svg'
@@ -41,11 +45,19 @@ module.exports = function(grunt) {
         src: 'src/misc/htaccess',
         dest: 'dist/.htaccess'
       },
+      license: {
+        src: 'LICENSE',
+        dest: 'dist/LICENSE'
+      },
       php: {
         expand: true,
         cwd: 'src/php',
         src: '**',
         dest: 'dist/php'
+      },
+      readme: {
+        src: 'README.md',
+        dest: 'dist/README.md'
       },
       sql: {
         expand: true,
@@ -112,7 +124,7 @@ module.exports = function(grunt) {
   grunt.registerTask('css', ['clean:css', 'dart-sass', 'version:css']);
   grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts-inter', 'copy:fonts-icons']);
   grunt.registerTask('js', ['clean:js', 'uglify', 'version:js']);
-  grunt.registerTask('misc', ['copy:favicon', 'copy:htaccess', 'version:txt']);
+  grunt.registerTask('misc', ['copy:config', 'copy:favicon', 'copy:htaccess', 'copy:license', 'copy:readme', 'version:txt']);
   grunt.registerTask('php', ['clean:php', 'copy:php']);
   grunt.registerTask('sql', ['clean:sql', 'copy:sql']);
 
