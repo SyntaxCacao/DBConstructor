@@ -54,23 +54,6 @@ class TextualField
     }
 
     /**
-     * @return array<string, array<string, TextualField>>
-     */
-    public static function loadTable(string $tableId): array
-    {
-        MySQLConnection::$instance->execute("SELECT f.* FROM `dbc_field_textual` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` WHERE r.`table_id`=?", [$tableId]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $table = [];
-
-        foreach ($result as $row) {
-            $field = new TextualField($row);
-            $table[$field->rowId][$field->columnId] = $field;
-        }
-
-        return $table;
-    }
-
-    /**
      * @param array<Row> $rows
      * @return array<string, array<string, TextualField>>
      */
@@ -90,6 +73,23 @@ class TextualField
         }
 
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_textual` WHERE `row_id` IN (".$in.")");
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $table = [];
+
+        foreach ($result as $row) {
+            $field = new TextualField($row);
+            $table[$field->rowId][$field->columnId] = $field;
+        }
+
+        return $table;
+    }
+
+    /**
+     * @return array<string, array<string, TextualField>>
+     */
+    public static function loadTable(string $tableId): array
+    {
+        MySQLConnection::$instance->execute("SELECT f.* FROM `dbc_field_textual` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` WHERE r.`table_id`=?", [$tableId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $table = [];
 
