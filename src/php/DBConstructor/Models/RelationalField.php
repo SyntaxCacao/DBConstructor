@@ -15,7 +15,7 @@ class RelationalField
      *
      * Validation process for RelationalField:
      *
-     * (targetRow is nullable AND (targetRow does not exist OR targetRow exists but was deleted))
+     * (targetRow is nullable AND (targetRow is unset OR targetRow exists but was deleted))
      * OR
      * (targetRow exists, was not deleted, and is valid)
      */
@@ -96,6 +96,16 @@ class RelationalField
         }
 
         return $table;
+    }
+
+    public static function revalidateNullValues(string $columnId, bool $nullable)
+    {
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_relational` WHERE `column_id`=? AND `target_row_id` IS NULL", [$columnId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        foreach ($result as $row) {
+            (new RelationalField($row))->revalidate($nullable);
+        }
     }
 
     /**

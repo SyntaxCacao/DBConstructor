@@ -59,6 +59,7 @@ class RelationalColumnForm extends Form
 
         if (! is_null($column)) {
             $field->defaultValue = $column->targetTableId;
+            $field->disabled = true;
         }
 
         $this->addField($field);
@@ -94,15 +95,15 @@ class RelationalColumnForm extends Form
             }
         } else {
             // edit
-            $targetTableChanged = $data["target-table"] != $this->column->targetTableId;
-            $this->column->edit($data["target-table"], $data["name"], $data["label"], $data["description"], $data["null-allowed"]);
+            $nullAllowedChanged = $data["null-allowed"] != $this->column->nullable;
+            $this->column->edit($data["name"], $data["label"], $data["description"], $data["null-allowed"]);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));
             }
 
-            if ($targetTableChanged && ! $this->tableEmpty) {
-                // TODO: Rerun validation
+            if ($nullAllowedChanged && ! $this->tableEmpty) {
+                RelationalField::revalidateNullValues($this->column->id, $this->column->nullable);
             }
         }
 

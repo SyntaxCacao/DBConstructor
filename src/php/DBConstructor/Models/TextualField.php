@@ -39,6 +39,23 @@ class TextualField
     /**
      * @return array<string, TextualField>
      */
+    public static function loadColumn(string $columnId): array
+    {
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_textual` WHERE `column_id`=?", [$columnId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $fields = [];
+
+        foreach ($result as $row) {
+            $field = new TextualField($row);
+            $fields[$field->rowId] = $field;
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @return array<string, TextualField>
+     */
     public static function loadRow(string $rowId): array
     {
         MySQLConnection::$instance->execute("SELECT f.*, c.`name` AS `column_name` FROM `dbc_field_textual` f LEFT JOIN `dbc_column_textual` c ON f.`column_id`=c.`id` WHERE f.`row_id`=?", [$rowId]);
@@ -155,6 +172,13 @@ class TextualField
 
         // $this->value must not be updated earlier as old value is needed for logChange()
         $this->value = $value;
+        $this->valid = $valid;
+    }
+
+    public function setValid(bool $valid)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `valid`=? WHERE `id`=?", [intval($valid), $this->id]);
+        Row::revalidate($this->rowId);
         $this->valid = $valid;
     }
 }

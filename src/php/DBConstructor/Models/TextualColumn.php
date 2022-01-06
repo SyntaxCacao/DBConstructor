@@ -315,4 +315,22 @@ class TextualColumn extends Column
     {
         parent::move_internal("dbc_column_textual", $newPosition);
     }
+
+    /**
+     * @throws JsonException
+     */
+    public function revalidate()
+    {
+        // TODO Don't load everything at once
+        $fields = TextualField::loadColumn($this->id);
+        $validator = $this->getValidationType()->buildValidator();
+
+        foreach ($fields as $field) {
+            $valid = $validator->validate($field->value);
+
+            if ($field->valid !== $valid) {
+                $field->setValid($valid);
+            }
+        }
+    }
 }

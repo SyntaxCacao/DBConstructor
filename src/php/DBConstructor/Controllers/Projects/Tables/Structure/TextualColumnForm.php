@@ -472,15 +472,15 @@ class TextualColumnForm extends Form
             }
         } else {
             // edit
+            $oldRules = $this->column->rules;
             $this->column->edit($data["name"], $data["label"], $data["description"], $data["type"], $type);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));
             }
 
-            if (! $this->tableEmpty) {
-                // TODO: Check if validation rules changed
-                // TODO: Rerun validation
+            if ($this->column->rules !== $oldRules && ! $this->tableEmpty) {
+                $this->column->revalidate();
             }
         }
 

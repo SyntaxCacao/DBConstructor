@@ -86,10 +86,9 @@ class RelationalColumn extends Column
         Row::revalidateAllInvalid($this->tableId);
     }
 
-    public function edit(string $targetTableId, string $name, string $label, string $description = null, bool $nullable)
+    public function edit(string $name, string $label, string $description = null, bool $nullable)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `target_table_id`=?, `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$targetTableId, $name, $label, $description, intval($nullable), $this->id]);
-        $this->targetTableId = $targetTableId;
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$name, $label, $description, intval($nullable), $this->id]);
         $this->name = $name;
         $this->label = $label;
         $this->description = $description;
