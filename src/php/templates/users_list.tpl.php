@@ -29,7 +29,7 @@
         <th class="table-cell">Rolle</th>
         <th class="table-cell">Projekte</th>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell">Erste Anmeldung</th><?php } ?>
-<?php if ($data["isAdmin"]) { ?><th class="table-cell">Letze Anmeldung</th><?php } ?>
+<?php if ($data["isAdmin"]) { ?><th class="table-cell">Letzte Anmeldung</th><?php } ?>
 <?php if ($data["isAdmin"]) { ?><th class="table-cell"></th><?php } ?>
       </tr>
 <?php foreach ($data["users"] as $user) { ?>
