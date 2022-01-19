@@ -119,6 +119,11 @@ class Application
 
         // Routing
         if ($path[0] == "login") {
+            // TODO: Remove after implementation of installer
+            if (User::countAll() === 0) {
+                User::create(null, "admin", "Vorname", "Nachname", "admin", true);
+            }
+
             $controller = new LoginController();
         } else if ($path[0] == "projects") {
             $controller = new ProjectsController();
