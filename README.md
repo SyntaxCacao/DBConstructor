@@ -10,9 +10,9 @@
   * PHP ≥ 7.0 installed
   * `mod_rewrite` enabled
   * Configured to interpret `.htaccess` files
-* MySQL/MariaDB server (tested with MariaDB 10.1.48, 10.4.8)
+* MySQL/MariaDB server (tested with MySQL 5.7.17, MariaDB 10.1.48, 10.4.8)
 
-Download a package from GitHub or make a build (see below). Move the files on the web server. Rename `tmp/config.default.php` to `tmp/config.php` and adjust the settings to your environment. Then call `<base URL>/migrate/?key=<key>` using the migration key in your configuration file to perform a database scheme migration.
+Download a package package from the [releases page](https://github.com/SyntaxCacao/DBConstructor/releases/) on GitHub or make a build (see below). Move the files on the web server. Rename `tmp/config.default.php` to `tmp/config.php` and adjust the settings to your environment. Then call `<base URL>/migrate/?key=<key>` using the migration key in your configuration file to perform a database scheme migration. To sign in for the first time, use "admin" as username and password. Change the credentials afterwards.
 
 To **update** your installation, delete all files except for (!) the `tmp` directory and move the files of the new build on the server. Then perform a database scheme migration as described before.
 
@@ -21,7 +21,8 @@ To **update** your installation, delete all files except for (!) the `tmp` direc
 To make a build, make sure to have installed Node.js Package Manager (NPM) and the `grunt-cli` package globally (`npm install -g grunt-cli`). First, clone the repository. To build a specific version, check out the corresponding [tag](https://github.com/SyntaxCacao/DBConstructor/tags/) (`git checkout <tag name>`). Then run `npm install` and `npm run-script build` *or* `grunt` to make a build. The `dist` directory contains all build files.
 
 ```
-git clone git@github.com:SyntaxCacao/DBConstructor.git
+git clone git@github.com:SyntaxCacao/DBConstructor.git dbc
+cd dbc
 npm install
 npm run-script build
 ```
@@ -34,4 +35,4 @@ Feel free to report issues or suggest changes using the [Issue Tracker](https://
 
 ## License
 
-This project is made available under the conditions of the MIT License (see [LICENSE file](https://github.com/SyntaxCacao/DBConstructor/blob/main/LICENSE/)). The repository contains parts of the [Inter](https://rsms.me/inter/) typeface, licensed under the [SIL Open Font License](https://github.com/rsms/inter/blob/master/LICENSE.txt), Version 1.1, and the [Primer](https://primer.style/) design system, licensed under the [MIT License](https://github.com/primer/css/blob/main/LICENSE). Builds contain [Bootstrap Icons](https://github.com/twbs/icons/), licensed under the [MIT License](https://github.com/twbs/icons/blob/main/LICENSE.md).
+This project is made available under the conditions of the MIT License (see [LICENSE file](https://github.com/SyntaxCacao/DBConstructor/blob/main/LICENSE/)). The repository contains parts of the [Inter](https://rsms.me/inter/) typeface, licensed under the [SIL Open Font License](https://github.com/rsms/inter/blob/master/LICENSE.txt), Version 1.1, parts of the [Primer](https://primer.style/) design system, licensed under the [MIT License](https://github.com/primer/css/blob/main/LICENSE), and the "cubes" icon from [Font Awesome 5](https://fontawesome.com/), licensed under [CC BY 4.0](https://fontawesome.com/license/free). Builds contain [Bootstrap Icons](https://github.com/twbs/icons/), licensed under the [MIT License](https://github.com/twbs/icons/blob/main/LICENSE.md).
