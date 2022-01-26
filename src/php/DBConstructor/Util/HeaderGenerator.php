@@ -37,6 +37,9 @@ class HeaderGenerator
      */
     public $dropdownActions = [];
 
+    /** @var bool */
+    public $escapeTitle = true;
+
     /** @var string|null */
     public $subtitle;
 
@@ -54,7 +57,7 @@ class HeaderGenerator
 
         // header
         echo '<header class="main-header-header">';
-        echo '<h1 class="main-heading">'.htmlentities($this->title).'</h1>';
+        echo '<h1 class="main-heading">'.($this->escapeTitle ? htmlentities($this->title) : $this->title).'</h1>';
 
         if ($this->subtitle !== null) {
             echo '<p class="main-subtitle">'.htmlentities($this->subtitle).'</p>';

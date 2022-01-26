@@ -11,6 +11,8 @@ use DBConstructor\Util\MarkdownParser;
 ?>
 <main class="container">
 <?php $header = new HeaderGenerator("Datensatz #".$data["row"]->id.($data["row"]->deleted ? " (gelöscht)" : ""));
+      $header->title .= ' <div class="validation-step-icon"><span class="bi-'.($data["row"]->valid ? "check-lg" : "x-lg").'"></span></div>';
+      $header->escapeTitle = false;
       $header->subtitle = "Zuletzt bearbeitet von ".$data["row"]->lastEditorFirstName." ".$data["row"]->lastEditorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["row"]->lastUpdated))." Uhr";
 
       if ($data["row"]->flagged) {
