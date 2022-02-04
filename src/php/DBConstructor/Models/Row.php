@@ -398,4 +398,11 @@ class Row
         $this->lastEditorLastName = $row["lasteditor_lastname"];
         $this->lastUpdated = $row["lastupdated"];
     }
+
+    public function updateValidity()
+    {
+        MySQLConnection::$instance->execute("SELECT `valid` FROM `dbc_row` WHERE `id`=?", [$this->id]);
+        $row = MySQLConnection::$instance->getSelectedRows()[0];
+        $this->valid = $row["valid"] === "1";
+    }
 }

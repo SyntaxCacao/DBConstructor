@@ -166,6 +166,7 @@ class TextualField
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=?, `valid`=? WHERE `id`=?", [$value, intval($valid), $this->id]);
         Row::revalidate($row->id);
+        $row->updateValidity();
 
         $row->setUpdated($userId);
         RowAction::logChange($row->id, $userId, false, $this->columnId, $this->value, $value);

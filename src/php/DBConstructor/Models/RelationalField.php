@@ -219,6 +219,7 @@ class RelationalField
         $this->targetRowId = $targetRowId;
 
         $this->revalidate($nullable);
+        $row->updateValidity();
 
         $row->setUpdated($userId);
         RowAction::logChange($row->id, $userId, true, $this->columnId, $prevValue, $targetRowId);
