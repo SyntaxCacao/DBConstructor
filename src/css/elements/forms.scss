@@ -37,7 +37,8 @@ textarea {
 }
 
 ::placeholder {
-  color: $color-text-secondary;
+  color: lighten($color-text-secondary, 25%);
+  opacity: 1; // Firefox sets opacity to 0.54 by default (resource://gre-resources/forms.css)
 }
 
 // input and select //
