@@ -108,7 +108,7 @@ class TextualColumn extends Column
 
     public function delete()
     {
-        TextualField::delete($this->id);
+        TextualField::deleteColumn($this->id);
         MySQLConnection::$instance->execute("DELETE FROM `dbc_column_textual` WHERE `id`=?", [$this->id]);
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`-1 WHERE `table_id`=? AND `position`>=?", [$this->tableId, $this->position]);
         Row::revalidateAllInvalid($this->tableId);

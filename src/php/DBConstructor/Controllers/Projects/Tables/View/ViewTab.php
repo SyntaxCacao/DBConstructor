@@ -133,6 +133,11 @@ class ViewTab extends TabController
                 $row->restore(Application::$instance->user->id);
             }
 
+            if (isset($_GET["deletePerm"]) && $row->deleted && $data["isManager"]) {
+                $row->deletePermanently(Application::$instance->user->id);
+                Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
+            }
+
             $editForm = new EditForm();
             $editForm->init($row, $data["relationalColumns"], $data["relationalFields"], $data["textualColumns"], $data["textualFields"]);
             $editForm->process();

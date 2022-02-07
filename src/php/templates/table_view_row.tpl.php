@@ -51,12 +51,20 @@ use DBConstructor\Util\MarkdownParser;
           "icon" => "arrow-counterclockwise",
           "text" => "Wiederherstellen"
         ];
+
+        if ($data["isManager"]) {
+          $header->dropdownActions[] = [
+            "href" => "?deletePerm",
+            "icon" => "trash",
+            "text" => "Endgültig löschen",
+            "confirm" => "Sind Sie sicher? Nach der endgültigen Löschung kann der Datensatz NICHT wiederhergestellt werden. Felder, die diesen Datensatz noch referenzieren, werden auf NULL gesetzt."
+          ];
+        }
       } else {
         $header->dropdownActions[] = [
           "href" => "?delete",
           "icon" => "trash",
           "text" => "Löschen",
-          "danger" => true,
           "confirm" => "Sind Sie sicher? Der Datensatz kann nach der Löschung wiederhergestellt werden."
         ];
       }
@@ -73,7 +81,7 @@ use DBConstructor\Util\MarkdownParser;
         if ($action->action === RowAction::ACTION_ASSIGNMENT) { ?>
         <div class="timeline-item">
           <div class="timeline-item-icon"><span class="bi bi-person"></span></div>
-<?php      if ($action->data === null) { ?>
+<?php     if ($action->data === null) { ?>
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat die Zuweisung vom Datensatz entfernt · <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
 <?php     } else { ?>
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat den Datensatz <span class="timeline-item-body-emphasis"><?= $action->data === $action->userId ? "sich selbst" : htmlentities($action->data) ?></span> zugewiesen · <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>

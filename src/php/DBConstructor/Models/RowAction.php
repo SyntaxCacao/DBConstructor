@@ -33,6 +33,11 @@ class RowAction
 
     const CHANGE_DATA_PREVIOUS_VALUE = "prev";
 
+    public static function deleteRow(string $rowId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_row_action` WHERE `row_id`=?", [$rowId]);
+    }
+
     /**
      * @return array<RowAction>
      */

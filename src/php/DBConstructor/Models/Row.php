@@ -6,6 +6,7 @@ namespace DBConstructor\Models;
 
 use DBConstructor\Controllers\Projects\Tables\View\FilterForm;
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Util\JsonException;
 
 class Row
 {
@@ -347,6 +348,18 @@ class Row
         $this->updateLastUpdated();
         RelationalField::revalidateReferencing($this->id);
         RowAction::logDeletion($this->id, $userId);
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function deletePermanently(string $userId)
+    {
+        RowAction::deleteRow($this->id);
+        RelationalField::deleteRow($this->id);
+        TextualField::deleteRow($this->id);
+        RelationalField::nullifyReferencing($userId, $this);
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_row` WHERE `id`=?", [$this->id]);
     }
 
     public function flag(string $userId)

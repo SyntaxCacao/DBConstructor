@@ -33,9 +33,14 @@ class RelationalField
         }
     }
 
-    public static function delete(string $columnId)
+    public static function deleteColumn(string $columnId)
     {
         MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `column_id`=?", [$columnId]);
+    }
+
+    public static function deleteRow(string $rowId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_field_relational` WHERE `row_id`=?", [$rowId]);
     }
 
     public static function fill(string $tableId, string $columnId, bool $nullable)
@@ -127,6 +132,18 @@ class RelationalField
         }
 
         return $table;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public static function nullifyReferencing(string $userId, Row $row)
+    {
+        $fields = RelationalField::loadReferencingFields($row->id);
+
+        foreach ($fields as $field) {
+            $field->edit($userId, $row, null, $field->columnNullable);
+        }
     }
 
     public static function revalidateNullValues(string $columnId, bool $nullable)
