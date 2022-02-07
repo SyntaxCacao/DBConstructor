@@ -82,33 +82,6 @@ class RelationalField
     }
 
     /**
-     * @return array<string, array<string, RelationalField>>
-     */
-    public static function loadTable(string $tableId): array
-    {
-        MySQLConnection::$instance->execute("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE r.`table_id`=?", [$tableId]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $table = [];
-
-        foreach ($result as $row) {
-            $field = new RelationalField($row);
-            $table[$field->rowId][$field->columnId] = $field;
-        }
-
-        return $table;
-    }
-
-    public static function revalidateNullValues(string $columnId, bool $nullable)
-    {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_relational` WHERE `column_id`=? AND `target_row_id` IS NULL", [$columnId]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-
-        foreach ($result as $row) {
-            (new RelationalField($row))->revalidate($nullable);
-        }
-    }
-
-    /**
      * @param array<Row> $rows
      * @return array<string, array<string, RelationalField>>
      */
@@ -137,6 +110,33 @@ class RelationalField
         }
 
         return $table;
+    }
+
+    /**
+     * @return array<string, array<string, RelationalField>>
+     */
+    public static function loadTable(string $tableId): array
+    {
+        MySQLConnection::$instance->execute("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE r.`table_id`=?", [$tableId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $table = [];
+
+        foreach ($result as $row) {
+            $field = new RelationalField($row);
+            $table[$field->rowId][$field->columnId] = $field;
+        }
+
+        return $table;
+    }
+
+    public static function revalidateNullValues(string $columnId, bool $nullable)
+    {
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_relational` WHERE `column_id`=? AND `target_row_id` IS NULL", [$columnId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        foreach ($result as $row) {
+            (new RelationalField($row))->revalidate($nullable);
+        }
     }
 
     public static function revalidateReferencing(string $rowId)
