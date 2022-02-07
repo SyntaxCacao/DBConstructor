@@ -7,7 +7,6 @@ namespace DBConstructor\Controllers\Projects\Tables\View;
 use DBConstructor\Application;
 use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
-use DBConstructor\Controllers\Projects\Tables\Insert\InsertForm;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
@@ -16,6 +15,7 @@ use DBConstructor\Models\Row;
 use DBConstructor\Models\RowAction;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
+use DBConstructor\Util\JsonException;
 
 class ViewTab extends TabController
 {
@@ -24,9 +24,14 @@ class ViewTab extends TabController
         parent::__construct("Tabelle", "view", "table");
     }
 
+    /**
+     * @throws JsonException
+     */
     public function request(array $path, array &$data): bool
     {
         if (count($path) === 5) {
+            // table view
+
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
             $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
 
@@ -89,6 +94,8 @@ class ViewTab extends TabController
         }
 
         if (count($path) === 6 && intval($path[5]) !== 0) {
+            // dataset view
+
             $row = Row::load($path[5]);
 
             if ($row === null || $row->tableId !== $data["table"]->id) {
