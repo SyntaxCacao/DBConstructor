@@ -197,6 +197,23 @@ class Row
         return $list;
     }
 
+    /**
+     * @return array<string, Row>
+     */
+    public static function loadReferencing(string $rowId): array
+    {
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_row` WHERE `id` IN (SELECT `row_id` FROM `dbc_field_relational` WHERE `target_row_id`=?)", [$rowId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $list = [];
+
+        foreach ($result as $row) {
+            $obj = new Row($row);
+            $list[$obj->id] = $obj;
+        }
+
+        return $list;
+    }
+
     public static function setExportId(string $tableId)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `exportid`=NULL WHERE `table_id`=?", [$tableId]);

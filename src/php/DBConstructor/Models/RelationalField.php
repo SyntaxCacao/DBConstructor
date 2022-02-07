@@ -140,9 +140,10 @@ class RelationalField
     public static function nullifyReferencing(string $userId, Row $row)
     {
         $fields = RelationalField::loadReferencingFields($row->id);
+        $rows = Row::loadReferencing($row->id);
 
         foreach ($fields as $field) {
-            $field->edit($userId, $row, null, $field->columnNullable);
+            $field->edit($userId, $rows[$field->rowId], null, $field->columnNullable);
         }
     }
 
