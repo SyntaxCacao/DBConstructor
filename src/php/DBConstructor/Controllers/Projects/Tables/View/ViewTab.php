@@ -122,6 +122,49 @@ class ViewTab extends TabController
             return true;
         }
 
+        if (count($path) === 7 && $path[6] === "revalidate") {
+            // revalidation view
+
+            if (! $data["isManager"]) {
+                (new ForbiddenController())->request($path);
+                return false;
+            }
+
+            $relFieldsValidBefore = [];
+            $relFieldsValidAfter = [];
+
+            foreach ($data["relationalFields"] as $field) {
+                $relFieldsValidBefore["#".$field->id.", column #".$field->columnId." ".$data["relationalColumns"][$field->columnId]->name] = $field->valid;
+                $field->revalidate($data["relationalColumns"][$field->columnId]->nullable, false);
+                $relFieldsValidAfter["#".$field->id.", column #".$field->columnId." ".$data["relationalColumns"][$field->columnId]->name] = $field->valid;
+            }
+
+            $textFieldsValidBefore = [];
+            $textFieldsValidAfter = [];
+
+            foreach ($data["textualFields"] as $field) {
+                $textFieldsValidBefore["#".$field->id.", column #".$field->columnId." ".$field->columnName] = $field->valid;
+                $validator = $data["textualColumns"][$field->columnId]->getValidationType()->buildValidator();
+                $field->setValid($validator->validate($field->value), false);
+                $textFieldsValidAfter["#".$field->id.", column #".$field->columnId." ".$field->columnName] = $field->valid;
+            }
+
+            $rowValidBefore = $data["row"]->valid;
+            Row::revalidate($data["row"]->id);
+            $data["row"]->updateValidity();
+            $rowValidAfter = $data["row"]->valid;
+
+            $data["relFieldsValidBefore"] = $relFieldsValidBefore;
+            $data["relFieldsValidAfter"] = $relFieldsValidAfter;
+            $data["textFieldsValidBefore"] = $textFieldsValidBefore;
+            $data["textFieldsValidAfter"] = $textFieldsValidAfter;
+            $data["rowValidBefore"] = $rowValidBefore;
+            $data["rowValidAfter"] = $rowValidAfter;
+
+            $data["tabpage"] = "row_revalidate";
+            return true;
+        }
+
         if (count($path) !== 6) {
             (new NotFoundController())->request($path);
             return false;

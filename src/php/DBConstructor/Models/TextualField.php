@@ -181,10 +181,13 @@ class TextualField
         $this->valid = $valid;
     }
 
-    public function setValid(bool $valid)
+    public function setValid(bool $valid, bool $revalidateRow = true)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `valid`=? WHERE `id`=?", [intval($valid), $this->id]);
-        Row::revalidate($this->rowId);
         $this->valid = $valid;
+
+        if ($revalidateRow) {
+            Row::revalidate($this->rowId);
+        }
     }
 }

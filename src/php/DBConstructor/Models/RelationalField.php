@@ -257,11 +257,14 @@ class RelationalField
         return $this->targetRow;
     }
 
-    public function revalidate(bool $nullable)
+    public function revalidate(bool $nullable, bool $revalidateRow = true)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_relational` SET `valid`=".RelationalField::VALIDATION_SUBQUERY." WHERE `id`=?", [intval($nullable), $this->targetRowId, $this->targetRowId, $this->targetRowId, $this->id]);
         $this->updateValidity();
-        Row::revalidate($this->rowId);
+
+        if ($revalidateRow) {
+            Row::revalidate($this->rowId);
+        }
     }
 
     public function updateValidity()

@@ -40,8 +40,14 @@ use DBConstructor\Util\MarkdownParser;
         $header->dropdownActions[] = [
           "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/raw/",
           "icon" => "wrench",
-          "text" => "Debug-Ansicht",
-          "divider" => true,
+          "text" => "Debug-Ansicht"
+        ];
+
+        $header->dropdownActions[] = [
+          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/revalidate/",
+          "icon" => "arrow-repeat",
+          "text" => "Erneut validieren",
+          "divider" => true
         ];
       }
 
