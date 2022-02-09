@@ -29,7 +29,7 @@ class ViewTab extends TabController
      */
     public function request(array $path, array &$data): bool
     {
-        if (count($path) === 5) {
+        if (count($path) <= 5) {
             // table view
 
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
@@ -93,80 +93,78 @@ class ViewTab extends TabController
             return true;
         }
 
-        if (count($path) === 6 && intval($path[5]) !== 0) {
-            // dataset view
+        // dataset view
 
-            $row = Row::load($path[5]);
+        $data["row"] = Row::load($path[5]);
 
-            if ($row === null || $row->tableId !== $data["table"]->id) {
-                (new NotFoundController())->request($path);
+        if ($data["row"] === null || $data["row"]->tableId !== $data["table"]->id) {
+            (new NotFoundController())->request($path);
+            return false;
+        }
+
+        $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
+        $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
+        $data["relationalFields"] = RelationalField::loadRow($data["row"]->id);
+        $data["textualFields"] = TextualField::loadRow($data["row"]->id);
+
+        $data["title"] = "#".$data["row"]->id;
+
+        if (count($path) === 7 && $path[6] === "raw") {
+            // raw/debug view
+
+            if (! $data["isManager"]) {
+                (new ForbiddenController())->request($path);
                 return false;
             }
 
-            $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
-            $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
-            $data["relationalFields"] = RelationalField::loadRow($row->id);
-            $data["textualFields"] = TextualField::loadRow($row->id);
-
-            if (isset($_GET["debug"])) {
-                if (! Application::$instance->hasAdminPermissions()) {
-                    (new ForbiddenController())->request($path);
-                    return false;
-                }
-
-                $data["actions"] = RowAction::loadAll($row->id);
-                $data["row"] = $row;
-                $data["tabpage"] = "row_debug";
-                $data["title"] = "#".$row->id;
-                return true;
-            }
-
-            if (isset($_GET["flag"]) && ! $row->flagged) {
-                $row->flag(Application::$instance->user->id);
-            } else if (isset($_GET["unflag"]) && $row->flagged) {
-                $row->unflag(Application::$instance->user->id);
-            }
-
-            if (isset($_GET["delete"]) && ! $row->deleted) {
-                $row->delete(Application::$instance->user->id);
-            } else if (isset($_GET["restore"]) && $row->deleted) {
-                $row->restore(Application::$instance->user->id);
-            }
-
-            if (isset($_GET["deletePerm"]) && $row->deleted && $data["isManager"]) {
-                $row->deletePermanently(Application::$instance->user->id);
-                Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
-            }
-
-            $editForm = new EditForm();
-            $editForm->init($row, $data["relationalColumns"], $data["relationalFields"], $data["textualColumns"], $data["textualFields"]);
-            $editForm->process();
-            $data["editForm"] = $editForm;
-
-            $commentForm = new CommentForm();
-            $commentForm->init($row);
-            if ($commentForm->process()) {
-                // reset textarea after saving comment
-                $commentForm = new CommentForm();
-                $commentForm->init($row);
-            }
-            $data["commentForm"] = $commentForm;
-
-            $participants = Participant::loadList($data["project"]->id);
-            $assigneeForm = new AssigneeForm();
-            $assigneeForm->init($row, $participants, $row->assigneeId);
-            $assigneeForm->process();
-            $data["assigneeForm"] = $assigneeForm;
-
-            $data["actions"] = RowAction::loadAll($row->id);
-            $data["row"] = $row;
-            $data["tabpage"] = "row";
-            $data["title"] = "#".$row->id;
-
+            $data["actions"] = RowAction::loadAll($data["row"]->id);
+            $data["tabpage"] = "row_raw";
             return true;
         }
 
-        (new NotFoundController())->request($path);
-        return false;
+        if (count($path) !== 6) {
+            (new NotFoundController())->request($path);
+            return false;
+        }
+
+        if (isset($_GET["flag"]) && ! $data["row"]->flagged) {
+            $data["row"]->flag(Application::$instance->user->id);
+        } else if (isset($_GET["unflag"]) && $data["row"]->flagged) {
+            $data["row"]->unflag(Application::$instance->user->id);
+        }
+
+        if (isset($_GET["delete"]) && ! $data["row"]->deleted) {
+            $data["row"]->delete(Application::$instance->user->id);
+        } else if (isset($_GET["restore"]) && $data["row"]->deleted) {
+            $data["row"]->restore(Application::$instance->user->id);
+        } else if (isset($_GET["deletePerm"]) && $data["row"]->deleted && $data["isManager"]) {
+            $data["row"]->deletePermanently(Application::$instance->user->id);
+            Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
+        }
+
+        $editForm = new EditForm();
+        $editForm->init($data["row"], $data["relationalColumns"], $data["relationalFields"], $data["textualColumns"], $data["textualFields"]);
+        $editForm->process();
+        $data["editForm"] = $editForm;
+
+        $commentForm = new CommentForm();
+        $commentForm->init($data["row"]);
+        if ($commentForm->process()) {
+            // reset textarea after saving comment
+            $commentForm = new CommentForm();
+            $commentForm->init($data["row"]);
+        }
+        $data["commentForm"] = $commentForm;
+
+        $participants = Participant::loadList($data["project"]->id);
+        $assigneeForm = new AssigneeForm();
+        $assigneeForm->init($data["row"], $participants, $data["row"]->assigneeId);
+        $assigneeForm->process();
+        $data["assigneeForm"] = $assigneeForm;
+
+        $data["actions"] = RowAction::loadAll($data["row"]->id);
+        $data["tabpage"] = "row";
+
+        return true;
     }
 }

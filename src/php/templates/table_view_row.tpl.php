@@ -36,9 +36,9 @@ use DBConstructor\Util\MarkdownParser;
                                   '</ul>'.
                                 '</details>';
 
-      if ($data["isAdmin"]) {
+      if ($data["isManager"]) {
         $header->dropdownActions[] = [
-          "href" => "?debug",
+          "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/raw/",
           "icon" => "wrench",
           "text" => "Debug-Ansicht",
           "divider" => true,
