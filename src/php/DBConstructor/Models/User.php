@@ -49,7 +49,7 @@ class User
      */
     public static function loadId(string $id)
     {
-        return User::loadSingle("id", $id);
+        return User::loadSingle("SELECT * FROM `dbc_user` WHERE `id`=?", $id);
     }
 
     /**
@@ -87,9 +87,9 @@ class User
     /**
      * @return User|null
      */
-    protected static function loadSingle(string $column, string $value)
+    protected static function loadSingle(string $sql, string $param)
     {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_user` WHERE `$column`=?", [$value]);
+        MySQLConnection::$instance->execute($sql, [$param]);
         $result = MySQLConnection::$instance->getSelectedRows();
 
         if (count($result) != 1) {
@@ -104,11 +104,32 @@ class User
      */
     public static function loadUsername(string $username)
     {
-        return User::loadSingle("username", $username);
+        return User::loadSingle("SELECT * FROM `dbc_user` WHERE `username`=?", $username);
+    }
+
+    /**
+     * @return User|null
+     */
+    public static function loadWithCreator(string $id)
+    {
+        // @formatter:off
+        return User::loadSingle("SELECT u.*, ".
+                                            "c.`firstname` AS `creator_firstname`, ".
+                                            "c.`lastname` AS `creator_lastname` ".
+                                     "FROM `dbc_user` u ".
+                                     "LEFT JOIN `dbc_user` c ON u.`creator_id` = c.`id` ".
+                                     "WHERE u.`id`=?", $id);
+        // @formatter:on
     }
 
     /** @var string */
     public $id;
+
+    /** @var string|null */
+    public $creatorFirstName;
+
+    /** @var string|null */
+    public $creatorLastName;
 
     /** @var string */
     public $username;
@@ -134,6 +155,9 @@ class User
     /** @var string|null */
     public $lastLogin;
 
+    /** @var string */
+    public $created;
+
     /**
      * @param array<string, string> $data
      */
@@ -148,6 +172,15 @@ class User
         $this->locked = $data["locked"] == "1";
         $this->firstLogin = $data["firstlogin"];
         $this->lastLogin = $data["lastlogin"];
+        $this->created = $data["created"];
+
+        if (isset($data["creator_firstname"])) {
+            $this->creatorFirstName = $data["creator_firstname"];
+        }
+
+        if (isset($data["creator_lastname"])) {
+            $this->creatorLastName = $data["creator_lastname"];
+        }
     }
 
     public function edit(string $username, string $firstname, string $lastname, bool $admin, bool $locked)

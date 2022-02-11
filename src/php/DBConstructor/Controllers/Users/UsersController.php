@@ -43,7 +43,7 @@ class UsersController extends Controller
                 return;
             }
 
-            $user = User::loadId($path[1]);
+            $user = User::loadWithCreator($path[1]);
 
             if ($user == null) {
                 (new NotFoundController())->request($path);
@@ -58,6 +58,8 @@ class UsersController extends Controller
             $form = new UserForm();
             $form->init($user);
             $form->process();
+
+            $data["edituser"] = $user;
 
             $data["page"] = "users_form";
             $data["title"] = "Benutzer bearbeiten";
