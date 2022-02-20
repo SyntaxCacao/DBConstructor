@@ -1,0 +1,80 @@
+.modal-open-within {
+  // Problem: Doesn't properly work with iOS Safari
+  // https://stackoverflow.com/questions/14270084/overflow-xhidden-doesnt-prevent-content-from-overflowing-in-mobile-browsers
+  overflow: hidden;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  height: 100%;
+  left: 0;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 200;
+}
+
+.modal-open {
+  display: flex;
+}
+
+.modal-container {
+  margin: auto;
+}
+
+.modal-dialog {
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.8) 0 0 5px 0;
+  margin: $spacer-3;
+  max-width: 500px;
+}
+
+.modal-dialog-lg {
+  max-width: 800px;
+}
+
+.modal-dialog-xl {
+  max-width: $container-width-default;
+}
+
+.modal-header {
+  align-items: center; // x is larger than h3
+  border-bottom: 1px solid $color-border-primary;
+  display: flex;
+  font-size: $font-size-larger;
+  font-weight: $font-weight-bold;
+  padding: $spacer-3;
+
+  h3 {
+    @include one-line-text;
+  }
+}
+
+.modal-x {
+  margin-left: auto;
+  padding-left: $spacer-1;
+}
+
+.modal-content {
+  padding: $spacer-3;
+
+  :not(:last-child) {
+    padding-bottom: $spacer-2;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  padding: 0 $spacer-3 $spacer-3 $spacer-3;
+
+  .button:not(:last-child) {
+    margin-right: $spacer-2;
+  }
+}
+
+.modal-action-right {
+  margin-left: auto;
+}
