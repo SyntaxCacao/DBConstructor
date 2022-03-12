@@ -29,6 +29,11 @@ class EditForm extends RowForm
         parent::__construct("table-view-edit", true);
     }
 
+    public function getRowId()
+    {
+        return $this->row->id;
+    }
+
     /**
      * @param array<RelationalColumn> $relationalColumns
      * @param array<string, RelationalField> $relationalFields

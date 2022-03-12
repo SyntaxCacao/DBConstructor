@@ -6,13 +6,18 @@ namespace DBConstructor\Controllers\Projects\Tables;
 
 use DBConstructor\Forms\Fields\Field;
 use DBConstructor\Models\RelationalColumn;
+use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\TextualField;
+use Exception;
 
 class RelationalSelectField extends Field
 {
     /** @var RelationalColumn */
     public $column;
+
+    /** @var string */
+    public $rowId;
 
     /** @var array<string, Row> */
     public $rows;
@@ -20,10 +25,11 @@ class RelationalSelectField extends Field
     /** @var array<string, array<string, TextualField>> */
     public $table;
 
-    public function __construct(RelationalColumn $column)
+    public function __construct(RelationalColumn $column, string $rowId = null)
     {
         parent::__construct("relational-".$column->id);
         $this->column = $column;
+        $this->rowId = $rowId;
         $this->required = false;
 
         // TODO: Anders machen!!!!!
@@ -98,6 +104,14 @@ class RelationalSelectField extends Field
     {
         if (! ($this->value === null || array_key_exists($this->value, $this->rows))) {
             return ["Wählen Sie eine Option"];
+        }
+
+        if ($this->value !== null && $this->rowId !== null) {
+            try {
+                RelationalField::testRecursion($this->rowId, $this->value);
+            } catch (Exception $exception) {
+                return ["Der gewählte Datensatz referenziert diesen Datensatz unmittelbar oder mittelbar, dies wird (zur Zeit) nicht unterstützt."];
+            }
         }
 
         return [];

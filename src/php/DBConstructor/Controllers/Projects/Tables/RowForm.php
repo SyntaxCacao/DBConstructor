@@ -40,7 +40,7 @@ abstract class RowForm extends Form
 
     public function addRelationalField(RelationalColumn $column, string $storedValue = null, string $stepId = null): string
     {
-        $field = new RelationalSelectField($column);
+        $field = new RelationalSelectField($column, $this->getRowId());
 
         if ($stepId !== null) {
             $field->name = "step-".$stepId."-".$field->name;
@@ -173,5 +173,13 @@ abstract class RowForm extends Form
 
             $column->generateInput($this->fields[$fieldName], $errorMessages, $this->isEdit);
         }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRowId()
+    {
+        return null;
     }
 }

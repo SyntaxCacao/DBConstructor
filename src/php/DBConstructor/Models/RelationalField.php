@@ -6,6 +6,7 @@ namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
+use Exception;
 
 class RelationalField
 {
@@ -163,6 +164,36 @@ class RelationalField
 
         foreach ($fields as $field) {
             $field->revalidate($field->columnNullable);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function testRecursion(string $rowId, string $value)
+    {
+        $rows = [$value, $rowId];
+        RelationalField::testRecursion_internal($rowId, $rows);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function testRecursion_internal(string $rowId, array &$rows)
+    {
+        $fields = RelationalField::loadReferencingFields($rowId);
+
+        foreach ($fields as $field) {
+            if (in_array($field->rowId, $rows)) {
+                throw new Exception("Recursion test failed");
+            }
+
+            $rows[] = $field->rowId;
+
+            RelationalField::testRecursion_internal($rowId, $rows);
+
+            $key = array_search($field->rowId, $rows);
+            unset($rows[$key]);
         }
     }
 
