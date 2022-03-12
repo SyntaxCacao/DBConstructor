@@ -165,7 +165,13 @@ abstract class RowForm extends Form
     public function generateFields()
     {
         foreach ($this->columns as $fieldName => $column) {
-            $column->generateInput($this->fields[$fieldName], $this->isEdit);
+            if (array_key_exists($fieldName, $this->issues)) {
+                $errorMessages = $this->issues[$fieldName];
+            } else {
+                $errorMessages = [];
+            }
+
+            $column->generateInput($this->fields[$fieldName], $errorMessages, $this->isEdit);
         }
     }
 }

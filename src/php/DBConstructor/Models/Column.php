@@ -59,9 +59,9 @@ abstract class Column
         $this->created = $data["created"];
     }
 
-    public abstract function generateInput(Field $field, bool $edit = false);
+    public abstract function generateInput(Field $field, array $errorMessages, bool $edit = false);
 
-    protected function generateInput_internal(Field $field, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
+    protected function generateInput_internal(Field $field, array $errorMessages, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
     {
         echo '<h2 class="main-subheading">'.htmlentities($this->label).'</h2>';
         echo '<div class="row page-table-insert-row break-md">';
@@ -76,6 +76,11 @@ abstract class Column
         echo ' form-block" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'" '.$labelData.'>';
         echo '<p class="page-table-insert-label">'.$insertLabel.'</p>';
         echo $field->generateField();
+
+        foreach ($errorMessages as $errorMessage) {
+            echo '<p class="form-error">'.htmlentities($errorMessage).'</p>';
+        }
+
         echo '</label>';
 
         // rules

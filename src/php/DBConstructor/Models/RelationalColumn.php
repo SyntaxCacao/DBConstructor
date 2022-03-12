@@ -95,7 +95,7 @@ class RelationalColumn extends Column
         $this->nullable = $nullable;
     }
 
-    public function generateInput(Field $field, bool $edit = false)
+    public function generateInput(Field $field, array $errorMessages, bool $edit = false)
     {
         // TODO Do actual validation
         // See workaround in validation.js
@@ -108,7 +108,7 @@ class RelationalColumn extends Column
         $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
         $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
 
-        $this->generateInput_internal($field, $edit, $this->nullable, $validationIndicator, false, "Auswahl", 'data-nullable="'.var_export($this->nullable, true).'"');
+        $this->generateInput_internal($field, $errorMessages, $edit, $this->nullable, $validationIndicator, false, "Auswahl", 'data-nullable="'.var_export($this->nullable, true).'"');
     }
 
     public function move(int $newPosition)

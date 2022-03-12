@@ -212,12 +212,12 @@ class TextualColumn extends Column
     /**
      * @throws JsonException
      */
-    public function generateInput(Field $field, bool $edit = false)
+    public function generateInput(Field $field, array $errorMessages, bool $edit = false)
     {
         $validator = $this->getValidationType()->buildValidator();
         $valid = $validator->validate($field->value);
 
-        parent::generateInput_internal($field, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
+        parent::generateInput_internal($field, $errorMessages, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
     }
 
     /**
