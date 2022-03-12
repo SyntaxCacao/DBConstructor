@@ -190,7 +190,7 @@ class RelationalField
 
             $rows[] = $field->rowId;
 
-            RelationalField::testRecursion_internal($rowId, $rows);
+            RelationalField::testRecursion_internal($field->rowId, $rows);
 
             $key = array_search($field->rowId, $rows);
             unset($rows[$key]);
