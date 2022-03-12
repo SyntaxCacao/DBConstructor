@@ -60,8 +60,13 @@ class ExportForm extends Form
                 throw new Exception("Could not create tmp dir");
             }
 
-            $files = [];
             $tables = Table::loadList($this->project->id);
+
+            foreach ($tables as $table) {
+                Row::setExportId($table->id);
+            }
+
+            $files = [];
 
             foreach ($tables as $table) {
                 $table = $table["obj"];
@@ -89,7 +94,6 @@ class ExportForm extends Form
 
                 fputcsv($tableFile, $columnsArray);
 
-                Row::setExportId($table->id);
                 $rows = Row::loadListExport($table->id);
                 $relationalFields = RelationalField::loadTable($table->id);
                 $textualFields = TextualField::loadTable($table->id);
