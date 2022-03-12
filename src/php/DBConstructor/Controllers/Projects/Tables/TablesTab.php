@@ -25,7 +25,7 @@ class TablesTab extends TabController
     public function request(array $path, array &$data): bool
     {
         if (count($path) <= 3) { // <= because this can be access with /projects/x/ and /projects/x/tables
-            $data["tables"] = Table::loadList($data["project"]->id);
+            $data["tables"] = Table::loadList($data["project"]->id, true);
             $data["tabpage"] = "list";
             return true;
         }

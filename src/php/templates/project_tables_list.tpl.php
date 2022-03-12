@@ -22,11 +22,9 @@
 <?php } ?>
       </header>
 <?php if (count($data["tables"]) > 0) { ?>
-      <p style="margin-bottom: 16px">Relationen können sich nur auf Tabellen beziehen, die in der Übersicht über Ihnen positioniert sind.</p>
       <div class="table-wrapper">
         <table class="table">
           <tr class="table-heading">
-            <th class="table-cell">Position</th>
             <th class="table-cell">Bezeichnung</th>
             <th class="table-cell">Technischer Name</th>
             <th class="table-cell">Datensätze</th>
@@ -39,12 +37,11 @@
         foreach ($data["tables"] as $table) {
           $count += 1; ?>
           <tr class="table-row">
-            <td class="table-cell"><?php echo $table["obj"]->position; ?></td>
             <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table["obj"]->id ?>/"><?php echo htmlentities($table["obj"]->label); ?></a></td>
             <td class="table-cell table-cell-code"><?php echo htmlentities($table["obj"]->name); ?></td>
             <td class="table-cell"><?php echo $table["rows"]; ?></td>
 <?php     if ($data["isManager"]) { ?>
-            <td class="table-cell table-cell-actions"><a class="button <?php if ($count == 1) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-up"></span>nach oben</a><a class="button <?php if ($count == $all) { ?>button-disabled <?php } ?>button-smallest"><span class="bi bi-arrow-down"></span>nach unten</a></td>
+            <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table["obj"]->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
           </tr>
 <?php   } ?>

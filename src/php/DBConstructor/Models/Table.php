@@ -47,32 +47,17 @@ class Table
     }
 
     /**
+     * @param bool $orderByLabel List will be ordered by labels if true, by names if false.
      * @return array<array{obj: Table, rows: string}>
      */
-    public static function loadList(string $projectId): array
+    public static function loadList(string $projectId, bool $orderByLabel = false): array
     {
-        MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `position`", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `".($orderByLabel ? "label" : "name")."`", [$projectId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
         foreach ($result as $row) {
             $list[] = ["obj" => new Table($row), "rows" => $row["count"]];
-        }
-
-        return $list;
-    }
-
-    /**
-     * @return array<Table>
-     */
-    public static function loadListAbove(string $projectId, string $position): array
-    {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_table` WHERE `project_id`=? AND `position`<? ORDER BY `position`", [$projectId, $position]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $list = [];
-
-        foreach ($result as $row) {
-            $list[] = new Table($row);
         }
 
         return $list;
