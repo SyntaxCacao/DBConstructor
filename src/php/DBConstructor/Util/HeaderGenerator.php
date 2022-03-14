@@ -113,7 +113,7 @@ class HeaderGenerator
                     $this->generateAction($action, false, true);
                 }
 
-                echo '</details>';
+                echo '</ul></details>';
             }
 
             echo '</nav>';
