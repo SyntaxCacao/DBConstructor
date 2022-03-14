@@ -48,7 +48,7 @@ class Table
 
     /**
      * @param bool $orderByLabel List will be ordered by labels if true, by names if false.
-     * @return array<array{obj: Table, rows: string}>
+     * @return array<Table>
      */
     public static function loadList(string $projectId, bool $orderByLabel = false): array
     {
@@ -57,7 +57,7 @@ class Table
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = ["obj" => new Table($row), "rows" => $row["count"]];
+            $list[] = new Table($row);
         }
 
         return $list;
@@ -84,6 +84,9 @@ class Table
     /** @var string */
     public $created;
 
+    /** @var int|null */
+    public $rowCount;
+
     /**
      * @param array<string, string> $data
      */
@@ -96,6 +99,10 @@ class Table
         $this->description = $data["description"];
         $this->position = $data["position"];
         $this->created = $data["created"];
+
+        if (isset($data["count"])) {
+            $this->rowCount = $data["count"];
+        }
     }
 
     public function edit(string $name, string $label, string $description = null)

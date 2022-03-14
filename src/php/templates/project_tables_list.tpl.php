@@ -37,11 +37,11 @@
         foreach ($data["tables"] as $table) {
           $count += 1; ?>
           <tr class="table-row">
-            <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table["obj"]->id ?>/"><?php echo htmlentities($table["obj"]->label); ?></a></td>
-            <td class="table-cell table-cell-code"><?php echo htmlentities($table["obj"]->name); ?></td>
-            <td class="table-cell"><?php echo $table["rows"]; ?></td>
+            <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table->id ?>/"><?php echo htmlentities($table->label); ?></a></td>
+            <td class="table-cell table-cell-code"><?php echo htmlentities($table->name); ?></td>
+            <td class="table-cell"><?php echo $table->rowCount; ?></td>
 <?php     if ($data["isManager"]) { ?>
-            <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table["obj"]->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+            <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
           </tr>
 <?php   } ?>

@@ -54,7 +54,6 @@ class RelationalColumnForm extends Form
         $tables = Table::loadList($this->projectId, true);
 
         foreach ($tables as $table) {
-            $table = $table["obj"];
             $field->addOption($table->id, $table->label." (".$table->name.")");
         }
 

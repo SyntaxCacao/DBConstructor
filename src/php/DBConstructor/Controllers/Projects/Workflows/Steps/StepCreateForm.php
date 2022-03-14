@@ -37,7 +37,7 @@ class StepCreateForm extends Form
         $tables = Table::loadList($projectId);
 
         foreach ($tables as $table) {
-            $field->addOption($table["obj"]->id, $table["obj"]->label);
+            $field->addOption($table->id, $table->label);
         }
 
         $this->addField($field);

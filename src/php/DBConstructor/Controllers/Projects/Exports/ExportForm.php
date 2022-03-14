@@ -69,7 +69,6 @@ class ExportForm extends Form
             $files = [];
 
             foreach ($tables as $table) {
-                $table = $table["obj"];
                 $tableFile = fopen("$tmpDir/$table->name.csv", "c");
 
                 if (! $tableFile) {
