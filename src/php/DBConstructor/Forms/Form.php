@@ -9,9 +9,6 @@ use DBConstructor\Forms\Fields\Field;
 abstract class Form
 {
     /** @var string */
-    protected $name;
-
-    /** @var string */
     public $buttonLabel = "Speichern";
 
     /** @var array<string, Field> */
@@ -22,6 +19,9 @@ abstract class Form
 
     /** @var array<string> */
     protected $missing = [];
+
+    /** @var string */
+    protected $name;
 
     public function __construct(string $name)
     {
