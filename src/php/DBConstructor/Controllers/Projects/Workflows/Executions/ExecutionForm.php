@@ -147,12 +147,18 @@ class ExecutionForm extends RowForm
             }
 
             foreach ($this->stepsFields[$step->id] as $fieldName) {
+                if (array_key_exists($fieldName, $this->issues)) {
+                    $errorMessages = $this->issues[$fieldName];
+                } else {
+                    $errorMessages = [];
+                }
+
                 if (isset($this->depending[$fieldName])) {
                     // TODO: Find solution that doesn't require style attribute
                     echo '<div class="form-group-depend" data-depends-on="'.htmlentities($this->depending[$fieldName]["field"]).'" data-depends-on-value="'.htmlentities($this->depending[$fieldName]["value"]).'" style="padding-left: 0">';
                 }
 
-                $this->columns[$fieldName]->generateInput($this->fields[$fieldName], $this->isEdit);
+                $this->columns[$fieldName]->generateInput($this->fields[$fieldName], $errorMessages, $this->isEdit);
 
                 if (isset($this->depending[$fieldName])) {
                     echo '</div>';
