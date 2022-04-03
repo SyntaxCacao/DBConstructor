@@ -17,7 +17,7 @@ class IntegerRule extends Rule
     {
         if ($value !== null) {
             // regEx: value may have a sign, value may not have leading zeros
-            $this->setResult(preg_match("/^(?:0|-?[1-9]+[0-9]*)$/", $value) === 1);
+            $this->setResult(preg_match("/^(?:0|-?[1-9]+[0-9]*)$/D", $value) === 1);
         }
     }
 }

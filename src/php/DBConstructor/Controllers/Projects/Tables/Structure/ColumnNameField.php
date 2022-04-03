@@ -30,7 +30,7 @@ class ColumnNameField extends TextField
             return strtolower($value) != "id";
         }, 'Der Name "id" ist reserviert.', true);
         $this->validationClosures[] = new ValidationClosure(static function ($value) {
-            return preg_match("/^[A-Za-z0-9-_]+$/", $value);
+            return preg_match("/^[A-Za-z0-9-_]+$/D", $value);
         }, "Spaltennamen dürfen nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.", true);
 
         if (is_null($column)) {

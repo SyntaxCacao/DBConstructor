@@ -46,7 +46,7 @@ class TableForm extends Form
         $field->maxLength = 30;
         $field->monospace = true;
         $field->validationClosures[] = new ValidationClosure(function ($value) {
-            return preg_match("/^[A-Za-z0-9-_]+$/", $value);
+            return preg_match("/^[A-Za-z0-9-_]+$/D", $value);
         }, "Tabellennamen dürfen nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.", true);
 
         if (is_null($table)) {

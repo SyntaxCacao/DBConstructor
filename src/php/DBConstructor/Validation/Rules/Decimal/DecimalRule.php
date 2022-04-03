@@ -16,7 +16,7 @@ class DecimalRule extends Rule
     public function validate(string $value = null)
     {
         if ($value !== null) {
-            $this->setResult(preg_match("/^(?:0|-?[1-9]+[0-9]*)(?:\.[0-9]*[1-9]+)?$/", $value) === 1);
+            $this->setResult(preg_match("/^(?:0|-?[1-9]+[0-9]*)(?:\.[0-9]*[1-9]+)?$/D", $value) === 1);
         }
     }
 }

@@ -22,7 +22,7 @@ class DecimalDigitsRule extends Rule
     {
         if ($value !== null) {
             $matches = [];
-            $result = preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/", $value, $matches);
+            $result = preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/D", $value, $matches);
             $this->setResult($result === 1 && (! isset($matches[2]) || strlen($matches[2]) <= $this->decimalDigits));
         }
     }

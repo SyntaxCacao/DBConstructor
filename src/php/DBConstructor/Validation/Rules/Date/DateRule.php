@@ -16,7 +16,7 @@ class DateRule extends Rule
     public function validate(string $value = null)
     {
         if ($value !== null) {
-            $this->setResult(preg_match("/^[1-9][0-9]{3}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2][0-9]|3[0-1])$/", $value) === 1);
+            $this->setResult(preg_match("/^[1-9][0-9]{3}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2][0-9]|3[0-1])$/D", $value) === 1);
         }
     }
 }
