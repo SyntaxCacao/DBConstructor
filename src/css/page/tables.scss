@@ -110,6 +110,14 @@
     text-decoration: $text-decoration-invalid;
     text-decoration-skip-ink: none;
   }
+
+  .form-input {
+    // Fix display of text-decoration on Chrome
+    // https://github.com/SyntaxCacao/DBConstructor/issues/62
+    line-height: 29px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 @media (min-width: $breakpoint-md) {
