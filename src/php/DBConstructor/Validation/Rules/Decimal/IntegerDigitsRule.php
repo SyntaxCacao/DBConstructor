@@ -21,7 +21,6 @@ class IntegerDigitsRule extends Rule
     public function validate(string $value = null)
     {
         if ($value !== null) {
-            $matches = [];
             $result = preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/D", $value, $matches);
             $this->setResult($result === 1 && strlen(trim($matches[1], "-")) <= $this->integerDigits);
         }

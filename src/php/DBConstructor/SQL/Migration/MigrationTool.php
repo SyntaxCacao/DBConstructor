@@ -43,8 +43,6 @@ class MigrationTool
                     continue;
                 }
 
-                $matches = [];
-
                 // Check whether file has a valid migration file name and has not been applied already
                 if (! preg_match("/^V(\d{4})__.+\.sql$/", $file, $matches) || intval($matches[1]) === 0 || intval($matches[1]) <= $lastId) {
                     continue;

@@ -17,8 +17,6 @@ class MarkdownParser
         // remove \r
         $str = preg_replace("/\r/", "", $str);
 
-        $matches = [];
-
         if ($str == "") {
             return "";
         } else if (preg_match("/^(\X*?)(?:\A|\n)`{3,}\n(\X*?)\n`{3,}(?:\n|\z)(\X*)$/", $str, $matches)) {
@@ -41,8 +39,6 @@ class MarkdownParser
 
     public function parseLines(string $str): string
     {
-        $matches = [];
-
         if ($str == "") {
             return "";
         } else if ($this->headings > 0 && preg_match("/^(\X*?)(?:\A|\n)(#{1,".$this->headings."}) (.*)(?:\n|\z)(\X*)$/", $str, $matches)) {
@@ -100,8 +96,6 @@ class MarkdownParser
 
     public function parseInline(string $str): string
     {
-        $matches = [];
-
         if ($str == "") {
             return "";
         } else if (preg_match("/^(.*)\[(.+)]\((https?:\/\/[a-zA-ZÄÖÜäöü0-9:\-.]+(?:\/[a-zA-ZÄÖÜäöü0-9.\/=\-_~?&#:+]*)?)\)(.*)$/", $str, $matches)) {

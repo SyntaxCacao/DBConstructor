@@ -155,8 +155,6 @@ class TextualColumn extends Column
             if ($field->value === null) {
                 $html .= ' table-cell-null';
             } else if ($this->type === TextualColumn::TYPE_DECIMAL) {
-                //if (is_numeric($value)) {
-                $matches = [];
                 if (preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/", $value, $matches)) {
                     $html .= ' table-cell-numeric';
 
