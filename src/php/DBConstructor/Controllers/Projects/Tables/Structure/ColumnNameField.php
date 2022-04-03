@@ -39,7 +39,8 @@ class ColumnNameField extends TextField
             }, "Die Tabelle enthält bereits eine Spalte mit diesem Namen.");
         } else {
             $this->validationClosures[] = new ValidationClosure(function ($value) {
-                return $value == $this->column->name || Column::isNameAvailable($this->tableId, $value);
+                // using strtolower() for case-insensitive comparison
+                return strtolower($value) === strtolower($this->column->name) || Column::isNameAvailable($this->tableId, $value);
             }, "Die Tabelle enthält bereits eine Spalte mit diesem Namen.");
 
             $this->defaultValue = $column->name;
