@@ -10,7 +10,7 @@ class DateRule extends Rule
 {
     public function __construct()
     {
-        $this->description = "Ist eine Datumsangabe im Format YYYY-MM-DD (Jahr 1000-9999)";
+        $this->description = "Ist eine Datumsangabe im Format YYYY-MM-DD (Jahr 1000–9999)";
     }
 
     public function validate(string $value = null)
