@@ -105,6 +105,9 @@ class MarkdownParser
             } else {
                 return $this->parseInline($matches[1]).'<a href="'.htmlspecialchars($matches[3]).'">'.$this->parseInline($matches[2])."</a>".$this->parseInline($matches[4]);
             }
+        } else if (preg_match("/^(.*)`(.+)`(.*)$/U", $str, $matches)) {
+            // code
+            return $this->parseInline($matches[1])."<code>".htmlspecialchars($matches[2])."</code>".$this->parseInline($matches[3]);
         } else if (preg_match("/^(.*)\*\*(.+)\*\*(.*)$/U", $str, $matches) || preg_match("/^(.*)__(.+)__(.*)$/U", $str, $matches)) {
             // bold
             return $this->parseInline($matches[1])."<strong>".$this->parseInline($matches[2])."</strong>".$this->parseInline($matches[3]);
@@ -114,9 +117,6 @@ class MarkdownParser
         } else if (preg_match("/^(.*)~~(.+)~~(.*)$/U", $str, $matches)) {
             // strikethrough
             return $this->parseInline($matches[1])."<s>".$this->parseInline($matches[2])."</s>".$this->parseInline($matches[3]);
-        } else if (preg_match("/^(.*)`(.+)`(.*)$/U", $str, $matches)) {
-            // code
-            return $this->parseInline($matches[1])."<code>".htmlspecialchars($matches[2])."</code>".$this->parseInline($matches[3]);
         } else if (preg_match("/^(.*)(https?:\/\/[a-zA-ZÄÖÜäöü0-9:\-.]+(?:\/[a-zA-ZÄÖÜäöü0-9.\/=\-_~?&#:+]*)?)(.*)$/", $str, $matches)) {
             // automatic linking
             // last check, not necessary to do recursion again for surrounding parts, calling htmlspecialchars directly instead
