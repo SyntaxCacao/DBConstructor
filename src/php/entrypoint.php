@@ -22,13 +22,13 @@ $developmentMode = false;
 
 set_exception_handler(function ($throwable) {
     // Parse error in Application.php would cause $developmentMode to not be properly set
-    error_log("Unhandled exception in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage());
+    error_log("Unhandled ".get_class($throwable)." in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage());
 
     if ($GLOBALS["developmentMode"]) {
-        echo "<b>Unhandled exception: </b>".$throwable->getMessage()."<br><br>Stack trace:<br><pre>".$throwable->getTraceAsString()."</pre>thrown in <b>".$throwable->getFile()."</b> on line <b>".$throwable->getLine()."</b>.";
+        echo "<b>Unhandled ".get_class($throwable).": </b>".$throwable->getMessage()."<br><br>Stack trace:<br><pre>".$throwable->getTraceAsString()."</pre>thrown in <b>".$throwable->getFile()."</b> on line <b>".$throwable->getLine()."</b>.";
 
         while ($throwable = $throwable->getPrevious()) {
-            echo "<br><br><hr><br><b>Caused by: </b>".$throwable->getMessage()."<br><br>Stack trace:<br><pre>".$throwable->getTraceAsString()."</pre>thrown in <b>".$throwable->getFile()."</b> on line <b>".$throwable->getLine()."</b>.";
+            echo "<br><br><hr><br><b>Caused by ".get_class($throwable).":</b> ".$throwable->getMessage()."<br><br>Stack trace:<br><pre>".$throwable->getTraceAsString()."</pre>thrown in <b>".$throwable->getFile()."</b> on line <b>".$throwable->getLine()."</b>.";
         }
     } else {
         echo "Unhandled exception.";
