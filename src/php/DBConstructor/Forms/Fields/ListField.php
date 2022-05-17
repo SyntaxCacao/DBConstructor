@@ -69,7 +69,9 @@ class ListField extends GroupableField
 
                 foreach ($this->columns as $column) {
                     if (isset($row[$column->name])) {
-                        $html .= $column->generateField($this->name, $index+1, $row[$column->name]);
+                        // $row[$column->name] needs to be cast to string, as PHP stores
+                        // numeric keys as ints even if they were put in the array as strings
+                        $html .= $column->generateField($this->name, $index+1, (string) $row[$column->name]);
                     } else {
                         $html .= $column->generateField($this->name, $index+1);
                     }

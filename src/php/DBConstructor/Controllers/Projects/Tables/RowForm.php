@@ -92,7 +92,9 @@ abstract class RowForm extends Form
             $field = new SelectField($fieldName);
 
             foreach ($type->options as $name => $label) {
-                $field->addOption($name, $label);
+                // $name needs to be cast to string as PHP stores
+                // numeric keys as ints even if they were put in the array as strings
+                $field->addOption((string) $name, $label);
             }
         } else if ($column->type == TextualColumn::TYPE_DATE) {
             $field = new TextField($fieldName);

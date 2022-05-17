@@ -75,6 +75,8 @@ class SelectField extends GroupableField
             if (! is_null($value)) {
                 // TODO Why is this necessary?
                 // Exception thrown with mainpage defaultValue in ProjectSettingsForm, $value somehow becomes int
+                // => $value, which was a key in an array, needs to be cast to string as PHP stores
+                // numeric keys as ints even if they were put in the array as strings
                 if (is_int($value)) {
                     $html .= ' value="'.htmlentities((string) $value).'"';
                 } else {
