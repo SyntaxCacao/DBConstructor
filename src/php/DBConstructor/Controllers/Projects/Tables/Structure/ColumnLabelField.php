@@ -14,7 +14,7 @@ class ColumnLabelField extends TextField
         parent::__construct("label", "Bezeichnung");
         $this->description = "Diese Bezeichnung wird auf der Plattform verwendet, der Technische Name für den Export";
         $this->minLength = 3;
-        $this->maxLength = 30;
+        $this->maxLength = 64;
 
         if (! is_null($column)) {
             $this->defaultValue = $column->label;

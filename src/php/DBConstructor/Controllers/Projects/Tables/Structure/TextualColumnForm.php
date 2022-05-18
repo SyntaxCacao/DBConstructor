@@ -158,12 +158,12 @@ class TextualColumnForm extends Form
 
         $labelColumn = "label";
         $listColumn = new ListFieldColumn($labelColumn, "Bezeichnung");
-        $listColumn->maxLength = 30;
+        $listColumn->maxLength = 64;
         $field->addColumn($listColumn);
 
         $nameColumn = "name";
         $listColumn = new ListFieldColumn($nameColumn, "Technischer Name");
-        $listColumn->maxLength = 30;
+        $listColumn->maxLength = 64;
         $listColumn->monospace = true;
         $field->addColumn($listColumn);
 

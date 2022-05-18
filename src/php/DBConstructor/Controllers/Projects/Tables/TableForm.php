@@ -34,7 +34,7 @@ class TableForm extends Form
 
         $field = new TextField("label", "Bezeichnung");
         $field->minLength = 3;
-        $field->maxLength = 30;
+        $field->maxLength = 64;
 
         if (! is_null($table)) {
             $field->defaultValue = $table->label;
@@ -43,7 +43,7 @@ class TableForm extends Form
         $this->addField($field);
 
         $field = new TextField("name", "Technischer Name");
-        $field->maxLength = 30;
+        $field->maxLength = 64;
         $field->monospace = true;
         $field->validationClosures[] = new ValidationClosure(function ($value) {
             return preg_match("/^[A-Za-z0-9-_]+$/D", $value);

@@ -54,7 +54,7 @@ class StepEditForm extends Form
         // label
         $field = new TextField("label", "Bezeichnung");
         $field->defaultValue = $step->label;
-        $field->maxLength = 60;
+        $field->maxLength = 64;
         $field->required = false;
 
         $this->addField($field);

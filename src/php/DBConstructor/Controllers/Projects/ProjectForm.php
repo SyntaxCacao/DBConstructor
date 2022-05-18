@@ -32,7 +32,7 @@ class ProjectForm extends Form
         // label
         $field = new TextField("label", "Bezeichnung");
         $field->minLength = 3;
-        $field->maxLength = 30;
+        $field->maxLength = 64;
 
         if (! is_null($project)) {
             $field->defaultValue = $project->label;

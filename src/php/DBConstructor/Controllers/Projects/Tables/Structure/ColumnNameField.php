@@ -23,7 +23,7 @@ class ColumnNameField extends TextField
         $this->tableId = $tableId;
 
         $this->description = "Verwendbar sind alphanumerische Zeichen, Bindestriche und Unterstriche";
-        $this->maxLength = 30;
+        $this->maxLength = 64;
         $this->monospace = true;
 
         $this->validationClosures[] = new ValidationClosure(static function ($value) {

@@ -30,7 +30,7 @@ class WorkflowForm extends Form
         // label
         $field = new TextField("label", "Bezeichnung");
         $field->minLength = 3;
-        $field->maxLength = 60;
+        $field->maxLength = 64;
 
         if ($workflow !== null) {
             $field->defaultValue = $workflow->label;
