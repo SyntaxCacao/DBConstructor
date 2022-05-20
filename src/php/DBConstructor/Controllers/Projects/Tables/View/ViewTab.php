@@ -13,6 +13,7 @@ use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\RowAction;
+use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
@@ -119,6 +120,26 @@ class ViewTab extends TabController
 
             $data["actions"] = RowAction::loadAll($data["row"]->id);
             $data["tabpage"] = "row_raw";
+            return true;
+        }
+
+        if (count($path) === 7 && $path[6] === "references") {
+            $fields = RelationalField::loadReferencingFields($data["row"]->id, true);
+
+            $data["tables"] = Table::loadList($data["project"]->id, true);
+            $data["references"] = [];
+            $data["referencesCount"] = count($fields);
+
+            foreach ($fields as $field) {
+                $data["references"][$field->rowTableId][] = $field;
+            }
+
+            if ($data["referencesCount"] === 0) {
+                $data["tabpage"] = "row_references_blank";
+            } else {
+                $data["tabpage"] = "row_references";
+            }
+
             return true;
         }
 

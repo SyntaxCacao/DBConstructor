@@ -36,6 +36,13 @@ use DBConstructor\Util\MarkdownParser;
                                   '</ul>'.
                                 '</details>';
 
+      $header->dropdownActions[] = [
+        "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/references/",
+        "icon" => "arrow-up-right",
+        "text" => "Referenzen finden",
+        "divider" => true
+      ];
+
       if ($data["isManager"]) {
         $header->dropdownActions[] = [
           "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/raw/",

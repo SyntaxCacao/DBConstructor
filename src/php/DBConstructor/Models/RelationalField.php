@@ -54,12 +54,35 @@ class RelationalField
     }
 
     /**
+     * @param bool $extended Includes additional information needed when displaying referencing fields
      * @return array<RelationalField>
      */
-    public static function loadReferencingFields(string $rowId): array
+    public static function loadReferencingFields(string $rowId, bool $extended = false): array
     {
-        //MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id`=r.`id` LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=? AND r.`valid`=TRUE", [$rowId]);
-        MySQLConnection::$instance->execute("SELECT f.*, c.`nullable` AS `column_nullable` FROM `dbc_field_relational` f LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` WHERE f.`target_row_id`=?", [$rowId]);
+        $sql = "SELECT f.*, ";
+
+        if ($extended) {
+            $sql .= "r.`table_id` AS `row_table_id`, ".
+                "r.`valid` AS `row_valid`, ".
+                "c.`name` as `column_name`, ".
+                "c.`label` as `column_label`, ";
+        }
+
+        $sql .= "c.`nullable` AS `column_nullable` ".
+            "FROM `dbc_field_relational` f ";
+
+        if ($extended) {
+            $sql .= "LEFT JOIN `dbc_row` r ON f.`row_id`=r.`id` ";
+        }
+
+        $sql .= "LEFT JOIN `dbc_column_relational` c ON f.`column_id`=c.`id` ".
+            "WHERE f.`target_row_id`=?";
+
+        if ($extended) {
+            $sql .= " ORDER BY f.`row_id` DESC, c.`position`";
+        }
+
+        MySQLConnection::$instance->execute($sql, [$rowId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $fields = [];
 
@@ -203,8 +226,20 @@ class RelationalField
     /** @var string */
     public $rowId;
 
+    /** @var string|null */
+    public $rowTableId;
+
+    /** @var bool|null */
+    public $rowValid;
+
     /** @var string */
     public $columnId;
+
+    /** @var string|null */
+    public $columnName;
+
+    /** @var string|null */
+    public $columnLabel;
 
     /** @var bool|null */
     public $columnNullable;
@@ -236,6 +271,22 @@ class RelationalField
         $this->rowId = $data["row_id"];
         $this->columnId = $data["column_id"];
         $this->targetRowId = $data["target_row_id"];
+
+        if (isset($data["row_table_id"])) {
+            $this->rowTableId = $data["row_table_id"];
+        }
+
+        if (isset($data["row_valid"])) {
+            $this->rowValid = $data["row_valid"] == 1;
+        }
+
+        if (isset($data["column_name"])) {
+            $this->columnName = $data["column_name"];
+        }
+
+        if (isset($data["column_label"])) {
+            $this->columnLabel = $data["column_label"];
+        }
 
         if (isset($data["column_nullable"])) {
             $this->columnNullable = $data["column_nullable"] == "1";
