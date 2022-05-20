@@ -91,6 +91,11 @@
   margin-top: 0;
 }
 
+#form-table-view-edit .form-actions {
+  // Adds space missing in this form due to it's special design
+  margin-top: 16px; // Equals .form-group margin-bottom
+}
+
 // //
 
 @media (max-width: $breakpoint-md) {
