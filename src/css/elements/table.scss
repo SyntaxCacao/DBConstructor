@@ -71,11 +71,13 @@
 
 .table-cell-invalid {
   text-decoration: $text-decoration-invalid;
+  -webkit-text-decoration: $text-decoration-invalid;
   text-decoration-skip-ink: none;
 
   a {
     // !important to override .main-link:hover
     // inherit instead of none to fix decoration color on Chrome
     text-decoration: inherit !important;
+    -webkit-text-decoration: inherit !important;
   }
 }
