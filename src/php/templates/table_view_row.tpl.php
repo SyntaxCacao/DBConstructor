@@ -87,7 +87,7 @@ use DBConstructor\Util\MarkdownParser;
     <div class="column width-7">
       <?php $data["editForm"]->generate() ?>
     </div>
-    <div class="column width-5">
+    <div class="column width-5 page-table-view-row-column-right">
       <div class="timeline">
 <?php foreach ($data["actions"] as $action) {
         /** @var RowAction $action */

@@ -96,6 +96,15 @@
   margin-top: 16px; // Equals .form-group margin-bottom
 }
 
+@media (max-width: $breakpoint-md) {
+  // Adds space between "save" button and timeline on small devices
+  // TODO Replace with some sort of heading before timeline
+
+  .page-table-view-row-column-right {
+    margin-top: $spacer-5;
+  }
+}
+
 // //
 
 @media (max-width: $breakpoint-md) {
