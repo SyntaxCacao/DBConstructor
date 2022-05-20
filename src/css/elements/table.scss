@@ -74,6 +74,8 @@
   text-decoration-skip-ink: none;
 
   a {
-    text-decoration: none !important;
+    // !important to override .main-link:hover
+    // inherit instead of none to fix decoration color on Chrome
+    text-decoration: inherit !important;
   }
 }
