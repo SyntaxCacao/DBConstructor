@@ -8,9 +8,9 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Project
 {
-    public static function create(string $label, string $description = null): string
+    public static function create(string $label, string $description = null, string $notes = null): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_project` (`label`, `description`) VALUES (?, ?)", [$label, $description]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_project` (`label`, `description`, `notes`) VALUES (?, ?, ?)", [$label, $description, $notes]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -75,6 +75,9 @@ class Project
     /** @var string|null */
     public $description;
 
+    /** @var string|null */
+    public $notes;
+
     /** @var string */
     public $created;
 
@@ -87,14 +90,16 @@ class Project
         $this->mainPageId = $data["mainpage_id"];
         $this->label = $data["label"];
         $this->description = $data["description"];
+        $this->notes = $data["notes"];
         $this->created = $data["created"];
     }
 
-    public function edit(string $label, string $description = null)
+    public function edit(string $label, string $description = null, string $notes = null)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=? WHERE `id`=?", [$label, $description, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=?, `notes`=? WHERE `id`=?", [$label, $description, $notes, $this->id]);
         $this->label = $label;
         $this->description = $description;
+        $this->notes = $notes;
     }
 
     public function setMainPage(string $pageId)

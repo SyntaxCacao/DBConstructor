@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects;
 
 use DBConstructor\Application;
+use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
-use DBConstructor\Forms\Form;
 use DBConstructor\Forms\Fields\TextField;
+use DBConstructor\Forms\Form;
 use DBConstructor\Models\Page;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\Project;
@@ -42,12 +43,26 @@ class ProjectForm extends Form
 
         // description
         $field = new TextField("description", "Beschreibung");
+        $field->description = "Wird in der Projektübersicht angezeigt";
         $field->expand = true;
         $field->maxLength = 150;
         $field->required = false;
 
         if (! is_null($project)) {
             $field->defaultValue = $project->description;
+        }
+
+        $this->addField($field);
+
+        // notes
+        $field = new MarkdownField("notes", "Hinweise");
+        $field->description = "Werden neben der Tabellenübersicht angezeigt";
+        $field->larger = false;
+        $field->maxLength = 20000;
+        $field->required = false;
+
+        if (! is_null($project)) {
+            $field->defaultValue = $project->notes;
         }
 
         $this->addField($field);
@@ -65,13 +80,13 @@ class ProjectForm extends Form
     {
         if (is_null($this->project)) {
             // create
-            $id = Project::create($data["label"], $data["description"]);
+            $id = Project::create($data["label"], $data["description"], $data["notes"]);
             Participant::create(Application::$instance->user->id, $id, true);
 
             Application::$instance->redirect("projects/$id", "created");
         } else {
             // edit
-            $this->project->edit($data["label"], $data["description"]);
+            $this->project->edit($data["label"], $data["description"], $data["notes"]);
 
             if (isset($data["mainpage"])) {
                 $this->project->setMainPage($data["mainpage"]);

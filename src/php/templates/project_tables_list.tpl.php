@@ -1,3 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+use DBConstructor\Util\MarkdownParser;
+
+/** @var array $data */
+
+?>
 <main class="container">
 <?php if (isset($data["request"]["created"])) { ?>
   <div class="alerts">
@@ -56,7 +65,17 @@
         <h1 class="main-heading">Beschreibung</h1>
       </header>
       <div class="markdown">
-        <p><?php if (is_null($data["project"]->description)) { ?>Es ist keine Beschreibung angegeben.<?php } else { echo htmlentities($data["project"]->description); } ?></p>
+<?php if (! is_null($data["project"]->notes)) {
+        echo "<p>";
+        if (is_null($data["project"]->description)) {
+          echo "Es ist keine Beschreibung vorhanden.";
+        } else {
+          echo htmlentities($data["project"]->description);
+        }
+        echo "</p>";
+      } else {
+        echo (new MarkdownParser())->parse($data["project"]->notes);
+      } ?>
         <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
       </div>
     </div>
