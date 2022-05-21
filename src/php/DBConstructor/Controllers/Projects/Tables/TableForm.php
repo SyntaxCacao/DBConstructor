@@ -63,7 +63,8 @@ class TableForm extends Form
 
         $this->addField($field);
 
-        $field = new MarkdownField("description", "Beschreibung");
+        $field = new MarkdownField("description", "Erläuterung");
+        $field->description = "Wird bei der Datenerfassung angezeigt";
         $field->larger = false;
         $field->maxLength = 20000;
         $field->required = false;

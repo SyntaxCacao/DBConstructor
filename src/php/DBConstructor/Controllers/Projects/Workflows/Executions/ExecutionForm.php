@@ -146,6 +146,10 @@ class ExecutionForm extends RowForm
                 echo '<div class="markdown">'.(new MarkdownParser())->parse($step->description).'</div>';
             }
 
+            if ($step->tableDescription !== null) {
+                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->tableDescription).'</div>';
+            }
+
             foreach ($this->stepsFields[$step->id] as $fieldName) {
                 if (array_key_exists($fieldName, $this->issues)) {
                     $errorMessages = $this->issues[$fieldName];

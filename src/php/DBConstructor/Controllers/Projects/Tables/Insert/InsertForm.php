@@ -9,18 +9,15 @@ use DBConstructor\Controllers\Projects\Tables\RowForm;
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
-use DBConstructor\Forms\Fields\TextareaField;
-use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
+use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
-use DBConstructor\Validation\Types\BooleanType;
-use DBConstructor\Validation\Types\SelectionType;
-use DBConstructor\Validation\Types\TextType;
+use DBConstructor\Util\MarkdownParser;
 use Exception;
 
 class InsertForm extends RowForm
@@ -31,8 +28,8 @@ class InsertForm extends RowForm
     /** @var string */
     public $projectId;
 
-    /** @var string */
-    public $tableId;
+    /** @var Table */
+    public $table;
 
     public function __construct()
     {
@@ -45,10 +42,10 @@ class InsertForm extends RowForm
      * @throws Exception
      * @throws JsonException
      */
-    public function init(string $projectId, string $tableId, array $relationalColumns, array $textualColumns, bool $nextNew = false)
+    public function init(string $projectId, Table $table, array $relationalColumns, array $textualColumns, bool $nextNew = false)
     {
         $this->projectId = $projectId;
-        $this->tableId = $tableId;
+        $this->table = $table;
         $this->relationalColumns = $relationalColumns;
         $this->textualColumns = $textualColumns;
 
@@ -139,7 +136,7 @@ class InsertForm extends RowForm
 
         // Database insertion
 
-        $id = Row::create($this->tableId, Application::$instance->user->id, $data["comment"], $data["flag"], $data["assignee"]);
+        $id = Row::create($this->table->id, Application::$instance->user->id, $data["comment"], $data["flag"], $data["assignee"]);
 
         if (count($relationalFields) > 0) {
             // Validity may be set incorrectly when referencing same row
@@ -156,7 +153,7 @@ class InsertForm extends RowForm
         // Next
 
         if ($data["next"] == "show") {
-            Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId/view/$id");
+            Application::$instance->redirect("projects/$this->projectId/tables/{$this->table->id}/view/$id");
         } else {
             $this->next = $data["next"];
         }
@@ -170,5 +167,14 @@ class InsertForm extends RowForm
         echo $this->fields["flag"]->generateGroup();
         echo $this->fields["assignee"]->generateGroup();
         echo $this->fields["next"]->generateGroup();
+    }
+
+    public function generateFields()
+    {
+        if ($this->table->description !== null) {
+            echo '<div class="markdown">'.(new MarkdownParser())->parse($this->table->description).'</div>';
+        }
+
+        parent::generateFields();
     }
 }

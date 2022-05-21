@@ -8,6 +8,7 @@ use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
+use DBConstructor\Util\JsonException;
 
 class InsertTab extends TabController
 {
@@ -16,6 +17,9 @@ class InsertTab extends TabController
         parent::__construct("Daten erfassen", "insert", "pencil");
     }
 
+    /**
+     * @throws JsonException
+     */
     public function request(array $path, array &$data): bool
     {
         if (count($path) !== 5) {
@@ -32,7 +36,7 @@ class InsertTab extends TabController
         }
 
         $form = new InsertForm();
-        $form->init($data["project"]->id, $data["table"]->id, $relationalColumns, $textualColumns);
+        $form->init($data["project"]->id, $data["table"], $relationalColumns, $textualColumns);
         $success = $form->process();
 
         if ($success && isset($form->next) && $form->next == "new") {
@@ -40,7 +44,7 @@ class InsertTab extends TabController
             // dafür muss ein neues Formular generiert werden, damit nicht die
             // Werte des gerade angelegten Datensatzes in den Feldern stehen.
             $form = new InsertForm();
-            $form->init($data["project"]->id, $data["table"]->id, $relationalColumns, $textualColumns, true);
+            $form->init($data["project"]->id, $data["table"], $relationalColumns, $textualColumns, true);
         }
 
         $data["form"] = $form;

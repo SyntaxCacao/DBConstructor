@@ -75,7 +75,8 @@ class WorkflowStep
     {
         // @formatter:off
         MySQLConnection::$instance->execute("SELECT s.*, ".
-                                                       "t.`label` AS `table_label` ".
+                                                       "t.`label` AS `table_label`, ".
+                                                       "t.`description` AS `table_description` ".
                                                 "FROM `dbc_workflow_step` s ".
                                                 "LEFT JOIN `dbc_table` t ON `s`.`table_id` = `t`.`id` ".
                                                 "WHERE `workflow_id`=? ".
@@ -274,6 +275,9 @@ class WorkflowStep
     public $tableLabel;
 
     /** @var string|null */
+    public $tableDescription;
+
+    /** @var string|null */
     public $label;
 
     /** @var string|null */
@@ -301,6 +305,10 @@ class WorkflowStep
         $this->position = $data["position"];
         $this->relationalColumnData = $data["relcoldata"];
         $this->textualColumnData = $data["txtcoldata"];
+
+        if (isset($data["table_description"])) {
+            $this->tableDescription = $data["table_description"];
+        }
     }
 
     public function delete(Workflow $workflow, string $userId)
