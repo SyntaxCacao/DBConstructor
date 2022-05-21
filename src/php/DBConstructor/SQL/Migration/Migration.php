@@ -28,7 +28,7 @@ class Migration
                                                    "`id` INT UNSIGNED NOT NULL PRIMARY KEY,".
                                                    "`success` BOOLEAN NOT NULL,".
                                                    "`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP".
-                                                 ")");
+                                                 ") DEFAULT CHARSET=utf8mb4");
         // @formatter:on
     }
 
