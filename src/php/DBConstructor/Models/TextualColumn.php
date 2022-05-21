@@ -44,11 +44,11 @@ class TextualColumn extends Column
     /**
      * @throws JsonException
      */
-    public static function create(string $tableId, string $name, string $label, string $description = null, string $position, string $type, Type $validationType): string
+    public static function create(string $tableId, string $name, string $label, string $instructions = null, string $position, string $type, Type $validationType): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
 
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_textual` (`table_id`, `name`, `label`, `description`, `position`, `type`, `rules`) VALUES (?, ?, ?, ?, ?, ?, ?)", [$tableId, $name, $label, $description, $position, $type, $validationType->toJson()]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_textual` (`table_id`, `name`, `label`, `instructions`, `position`, `type`, `rules`) VALUES (?, ?, ?, ?, ?, ?, ?)", [$tableId, $name, $label, $instructions, $position, $type, $validationType->toJson()]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -117,15 +117,15 @@ class TextualColumn extends Column
     /**
      * @throws JsonException
      */
-    public function edit(string $name, string $label, string $description = null, string $type, Type $validationType)
+    public function edit(string $name, string $label, string $instructions = null, string $type, Type $validationType)
     {
         $rules = $validationType->toJson();
 
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `name`=?, `label`=?, `description`=?, `type`=?, `rules`=? WHERE `id`=?", [$name, $label, $description, $type, $rules, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `name`=?, `label`=?, `instructions`=?, `type`=?, `rules`=? WHERE `id`=?", [$name, $label, $instructions, $type, $rules, $this->id]);
 
         $this->name = $name;
         $this->label = $label;
-        $this->description = $description;
+        $this->instructions = $instructions;
         $this->type = $type;
         $this->rules = $rules;
         $this->validationType = $validationType;

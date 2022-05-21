@@ -76,7 +76,7 @@ class WorkflowStep
         // @formatter:off
         MySQLConnection::$instance->execute("SELECT s.*, ".
                                                        "t.`label` AS `table_label`, ".
-                                                       "t.`description` AS `table_description` ".
+                                                       "t.`instructions` AS `table_instructions` ".
                                                 "FROM `dbc_workflow_step` s ".
                                                 "LEFT JOIN `dbc_table` t ON `s`.`table_id` = `t`.`id` ".
                                                 "WHERE `workflow_id`=? ".
@@ -275,13 +275,13 @@ class WorkflowStep
     public $tableLabel;
 
     /** @var string|null */
-    public $tableDescription;
+    public $tableInstructions;
 
     /** @var string|null */
     public $label;
 
     /** @var string|null */
-    public $description;
+    public $instructions;
 
     /** @var string */
     public $position;
@@ -301,13 +301,13 @@ class WorkflowStep
         $this->tableId = $data["table_id"];
         $this->tableLabel = $data["table_label"];
         $this->label = $data["label"];
-        $this->description = $data["description"];
+        $this->instructions = $data["instructions"];
         $this->position = $data["position"];
         $this->relationalColumnData = $data["relcoldata"];
         $this->textualColumnData = $data["txtcoldata"];
 
-        if (isset($data["table_description"])) {
-            $this->tableDescription = $data["table_description"];
+        if (isset($data["table_instructions"])) {
+            $this->tableInstructions = $data["table_instructions"];
         }
     }
 
@@ -317,12 +317,12 @@ class WorkflowStep
         $workflow->setUpdated($userId);
     }
 
-    public function edit(Workflow $workflow, string $userId, string $label = null, string $description = null, string $relationalColumnData = null, string $textualColumnData = null)
+    public function edit(Workflow $workflow, string $userId, string $label = null, string $instructions = null, string $relationalColumnData = null, string $textualColumnData = null)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_workflow_step` SET `label`=?, `description`=?, `relcoldata`=?, `txtcoldata`=? WHERE `id`=?", [$label, $description, $relationalColumnData, $textualColumnData, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_workflow_step` SET `label`=?, `instructions`=?, `relcoldata`=?, `txtcoldata`=? WHERE `id`=?", [$label, $instructions, $relationalColumnData, $textualColumnData, $this->id]);
         $workflow->setUpdated($userId);
         $this->label = $label;
-        $this->description = $description;
+        $this->instructions = $instructions;
         $this->relationalColumnData = $relationalColumnData;
         $this->textualColumnData = $textualColumnData;
     }

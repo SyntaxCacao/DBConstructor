@@ -37,7 +37,7 @@ abstract class Column
     public $label;
 
     /** @var string|null */
-    public $description;
+    public $instructions;
 
     /** @var string */
     public $position;
@@ -54,7 +54,7 @@ abstract class Column
         $this->tableId = $data["table_id"];
         $this->name = $data["name"];
         $this->label = $data["label"];
-        $this->description = $data["description"];
+        $this->instructions = $data["instructions"];
         $this->position = $data["position"];
         $this->created = $data["created"];
     }
@@ -90,14 +90,14 @@ abstract class Column
         echo $validationIndicator;
         echo '</div></div>';
 
-        // description
+        // instructions
         if (! $edit) {
-            echo '<div class="column width-5 page-table-insert-description"><p class="page-table-insert-label">Erläuterung</p>';
+            echo '<div class="column width-5 page-table-insert-instructions"><p class="page-table-insert-label">Erläuterung</p>';
 
-            if (is_null($this->description)) {
+            if (is_null($this->instructions)) {
                 echo '<div class="markdown"><p><em>Keine Erläuterung vorhanden</em></p></div>';
             } else {
-                echo '<div class="markdown">'.(new MarkdownParser)->parse($this->description).'</div>';
+                echo '<div class="markdown">'.(new MarkdownParser)->parse($this->instructions).'</div>';
             }
 
             echo '</div>';

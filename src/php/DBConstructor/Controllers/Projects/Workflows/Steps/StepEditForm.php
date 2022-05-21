@@ -59,9 +59,9 @@ class StepEditForm extends Form
 
         $this->addField($field);
 
-        // description
-        $field = new MarkdownField("description", "Erläuterungen");
-        $field->defaultValue = $step->description;
+        // instructions
+        $field = new MarkdownField("instructions", "Erläuterungen");
+        $field->defaultValue = $step->instructions;
         $field->maxLength = 20000;
         $field->larger = false;
         $field->required = false;
@@ -186,7 +186,7 @@ class StepEditForm extends Form
     {
         $relationalColumnData = WorkflowStep::writeRelationalColumnData($this->relationalColumns, $data);
         $textualColumnData = WorkflowStep::writeTextualColumnData($this->textualColumns, $data);
-        $this->step->edit($this->workflow, Application::$instance->user->id, $data["label"], $data["description"], $relationalColumnData, $textualColumnData);
+        $this->step->edit($this->workflow, Application::$instance->user->id, $data["label"], $data["instructions"], $relationalColumnData, $textualColumnData);
         Application::$instance->redirect("projects/".$this->projectId."/workflows/".$this->workflow->id."/steps", "saved");
     }
 }

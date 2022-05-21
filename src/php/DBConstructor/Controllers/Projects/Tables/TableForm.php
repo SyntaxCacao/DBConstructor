@@ -70,7 +70,7 @@ class TableForm extends Form
         $field->required = false;
 
         if (! is_null($table)) {
-            $field->defaultValue = $table->description;
+            $field->defaultValue = $table->instructions;
         }
 
         $this->addField($field);

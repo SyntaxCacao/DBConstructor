@@ -9,11 +9,11 @@ use DBConstructor\SQL\MySQLConnection;
 
 class RelationalColumn extends Column
 {
-    public static function create(string $tableId, string $targetTableId, /*string $labelColumnId, */ string $name, string $label, string $description = null, string $position, bool $nullable): string
+    public static function create(string $tableId, string $targetTableId, /*string $labelColumnId, */ string $name, string $label, string $instructions = null, string $position, bool $nullable): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
 
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `description`, `position`, `nullable`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $description, $position, intval($nullable)]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `instructions`, `position`, `nullable`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $instructions, $position, intval($nullable)]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -86,12 +86,12 @@ class RelationalColumn extends Column
         Row::revalidateAllInvalid($this->tableId);
     }
 
-    public function edit(string $name, string $label, string $description = null, bool $nullable)
+    public function edit(string $name, string $label, string $instructions = null, bool $nullable)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `name`=?, `label`=?, `description`=?, `nullable`=? WHERE `id`=?", [$name, $label, $description, intval($nullable), $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `name`=?, `label`=?, `instructions`=?, `nullable`=? WHERE `id`=?", [$name, $label, $instructions, intval($nullable), $this->id]);
         $this->name = $name;
         $this->label = $label;
-        $this->description = $description;
+        $this->instructions = $instructions;
         $this->nullable = $nullable;
     }
 

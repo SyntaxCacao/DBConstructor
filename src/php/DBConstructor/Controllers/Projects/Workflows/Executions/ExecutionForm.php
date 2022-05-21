@@ -142,12 +142,12 @@ class ExecutionForm extends RowForm
                 echo '<h2 class="main-subheading"><em>'.htmlentities($step->getLabel()).'</em></h2>';
             }
 
-            if ($step->description !== null) {
-                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->description).'</div>';
+            if ($step->instructions !== null) {
+                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->instructions).'</div>';
             }
 
-            if ($step->tableDescription !== null) {
-                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->tableDescription).'</div>';
+            if ($step->tableInstructions !== null) {
+                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->tableInstructions).'</div>';
             }
 
             foreach ($this->stepsFields[$step->id] as $fieldName) {

@@ -8,7 +8,7 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Table
 {
-    public static function create(string $projectId, string $name, string $label, string $description = null): string
+    public static function create(string $projectId, string $name, string $label, string $instructions = null): string
     {
         MySQLConnection::$instance->execute("SELECT `position` FROM `dbc_table` WHERE `project_id`=? ORDER BY `position` DESC LIMIT 1", [$projectId]);
 
@@ -19,7 +19,7 @@ class Table
             $position = intval($result[0]["position"]) + 1;
         }
 
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_table` (`project_id`, `name`, `label`, `description`, `position`) VALUES (?, ?, ?, ?, ?)", [$projectId, $name, $label, $description, $position]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_table` (`project_id`, `name`, `label`, `instructions`, `position`) VALUES (?, ?, ?, ?, ?)", [$projectId, $name, $label, $instructions, $position]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -76,7 +76,7 @@ class Table
     public $label;
 
     /** @var string|null */
-    public $description;
+    public $instructions;
 
     /** @var string */
     public $position;
@@ -96,7 +96,7 @@ class Table
         $this->projectId = $data["project_id"];
         $this->name = $data["name"];
         $this->label = $data["label"];
-        $this->description = $data["description"];
+        $this->instructions = $data["instructions"];
         $this->position = $data["position"];
         $this->created = $data["created"];
 
@@ -105,11 +105,11 @@ class Table
         }
     }
 
-    public function edit(string $name, string $label, string $description = null)
+    public function edit(string $name, string $label, string $instructions = null)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `label`=?, `name`=?, `description`=? WHERE `id`=?", [$label, $name, $description, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `label`=?, `name`=?, `instructions`=? WHERE `id`=?", [$label, $name, $instructions, $this->id]);
         $this->label = $label;
         $this->name = $name;
-        $this->description = $description;
+        $this->instructions = $instructions;
     }
 }

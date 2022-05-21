@@ -74,8 +74,8 @@ class RelationalColumnForm extends Form
 
         $this->addField($field);
 
-        // description
-        $this->addField(new ColumnDescriptionField($column));
+        // instructions
+        $this->addField(new ColumnInstructionsField($column));
 
         // position
         $this->addField(new ColumnPositionField(RelationalColumn::loadList($tableId), $column));
@@ -88,7 +88,7 @@ class RelationalColumnForm extends Form
     {
         if (is_null($this->column)) {
             // create
-            $id = RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["description"], $data["position"], $data["null-allowed"]);
+            $id = RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["instructions"], $data["position"], $data["null-allowed"]);
 
             if (! $this->tableEmpty) {
                 RelationalField::fill($this->tableId, $id, $data["null-allowed"]);
@@ -96,7 +96,7 @@ class RelationalColumnForm extends Form
         } else {
             // edit
             $nullAllowedChanged = $data["null-allowed"] != $this->column->nullable;
-            $this->column->edit($data["name"], $data["label"], $data["description"], $data["null-allowed"]);
+            $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["null-allowed"]);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));
