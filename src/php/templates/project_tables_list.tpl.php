@@ -65,7 +65,7 @@ use DBConstructor\Util\MarkdownParser;
         <h1 class="main-heading">Beschreibung</h1>
       </header>
       <div class="markdown">
-<?php if (! is_null($data["project"]->notes)) {
+<?php if (is_null($data["project"]->notes)) {
         echo "<p>";
         if (is_null($data["project"]->description)) {
           echo "Es ist keine Beschreibung vorhanden.";
