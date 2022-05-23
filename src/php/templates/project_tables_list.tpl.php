@@ -74,7 +74,7 @@ use DBConstructor\Util\MarkdownParser;
         }
         echo "</p>";
       } else {
-        echo (new MarkdownParser())->parse($data["project"]->notes);
+        echo MarkdownParser::parse($data["project"]->notes);
       } ?>
         <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
       </div>

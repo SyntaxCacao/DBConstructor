@@ -15,6 +15,9 @@ module.exports = function(grunt) {
       php: {
         src: 'dist/php/*'
       },
+      'php-vendor': {
+        src: 'dist/php-vendor/*'
+      },
       sql: {
         src: 'dist/sql/*'
       }
@@ -54,6 +57,12 @@ module.exports = function(grunt) {
         cwd: 'src/php',
         src: '**',
         dest: 'dist/php'
+      },
+      'php-vendor': {
+        expand: true,
+        cwd: 'src/php-vendor',
+        src: '**',
+        dest: 'dist/php-vendor'
       },
       readme: {
         src: 'README.md',
@@ -127,6 +136,7 @@ module.exports = function(grunt) {
   grunt.registerTask('js', ['clean:js', 'uglify', 'version:js']);
   grunt.registerTask('misc', ['copy:config', 'copy:favicon', 'copy:htaccess', 'copy:license', 'copy:readme', 'version:txt']);
   grunt.registerTask('php', ['clean:php', 'copy:php']);
+  grunt.registerTask('php-vendor', ['clean:php-vendor', 'copy:php-vendor']);
   grunt.registerTask('sql', ['clean:sql', 'copy:sql']);
 
   grunt.registerTask('version', 'Writes version number to version.txt and versionizes files', function(task) {
@@ -154,5 +164,5 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['css', 'fonts', 'js', 'misc', 'php', 'sql']);
+  grunt.registerTask('default', ['css', 'fonts', 'js', 'misc', 'php', 'php-vendor', 'sql']);
 }

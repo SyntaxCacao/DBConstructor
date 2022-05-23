@@ -50,7 +50,12 @@ class MarkdownField extends TextareaField
             'public static void main(String[] args) {'.PHP_EOL.
             '    System.out.println("Hello, world!");'.PHP_EOL.
             '}'.PHP_EOL.
-            '```'.PHP_EOL.
+            '```'.PHP_EOL.PHP_EOL.
+            'Tabelle:'.PHP_EOL.PHP_EOL.
+            '| Kopfzelle 1 | Kopfzelle 2 |'.PHP_EOL.
+            '| ----------- | ----------- |'.PHP_EOL.
+            '| Zelle 1/1   | Zelle 2/1   |'.PHP_EOL.
+            '| Zelle 1/2   | Zelle 2/2   |'.PHP_EOL.
             '</pre></div>'.
             '</div></div>';
     }

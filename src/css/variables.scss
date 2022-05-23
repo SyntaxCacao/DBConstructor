@@ -100,6 +100,15 @@ $column-padding: $spacer-5;
 $main-header-margin-bottom: $spacer-3;
 $main-header-margin-top: $spacer-5;
 
+// table //
+
+$table-header-background-color: $color-background-gray;
+$table-header-font-weight: $font-weight-bold;
+
+$table-row-hover-background-color: lighten($color-background-gray, 1%);
+
+$table-cell-border: 1px solid $color-border-primary;
+
 // timeline //
 
 $timeline-icon-color-background: #eaeef2; // primer --color-timeline-badge-bg

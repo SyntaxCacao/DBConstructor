@@ -172,7 +172,7 @@ class InsertForm extends RowForm
     public function generateFields()
     {
         if ($this->table->instructions !== null) {
-            echo '<div class="markdown">'.(new MarkdownParser())->parse($this->table->instructions).'</div>';
+            echo '<div class="markdown">'.MarkdownParser::parse($this->table->instructions).'</div>';
         }
 
         parent::generateFields();

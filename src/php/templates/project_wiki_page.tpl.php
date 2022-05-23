@@ -76,7 +76,7 @@ use DBConstructor\Util\MarkdownParser;
       ];
 
       $header->generate(); ?>
-      <div class="markdown"><?php echo (new MarkdownParser)->parse($data["state"]->text) ?></div>
+      <div class="markdown"><?php echo MarkdownParser::parse($data["state"]->text) ?></div>
     </div>
   </div>
 </main>

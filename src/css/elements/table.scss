@@ -12,11 +12,11 @@
 
 /*:not(.table-row-heading)*/
 .table-row:hover .table-cell {
-  background-color: lighten($color-background-gray, 1%); // prev Primer --color-bg-secondary #fafbfc
+  background-color: $table-row-hover-background-color; // prev Primer --color-bg-secondary #fafbfc
 }
 
 .table-cell {
-  border: 1px solid $color-border-primary;
+  border: $table-cell-border;
   padding: $spacer-2 $spacer-3;
   text-align: left; // reset th
 
@@ -26,8 +26,8 @@
 }
 
 .table-heading .table-cell {
-  background-color: $color-background-gray;
-  font-weight: 600; // TODO
+  background-color: $table-header-background-color;
+  font-weight: $table-header-font-weight;
 }
 
 .table-cell-code-addition {

@@ -1,0 +1,8 @@
+{
+    "config": {
+        "vendor-dir": "src/php-vendor"
+    },
+    "require": {
+        "erusev/parsedown": "1.7.4"
+    }
+}

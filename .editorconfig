@@ -17,3 +17,6 @@ indent_size = 4
 
 [*.tpl.php]
 indent_size = 2
+
+[{composer.json,composer.lock}]
+indent_size = 4

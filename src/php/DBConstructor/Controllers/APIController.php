@@ -38,7 +38,7 @@ class APIController extends Controller
 
         // markdown
         if (count($path) === 2 && $path[1] === "markdown") {
-            echo (new MarkdownParser())->parse($_REQUEST["src"]);
+            echo MarkdownParser::parse($_REQUEST["src"]);
             return;
         }
 

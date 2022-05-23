@@ -2,23 +2,24 @@
   hyphens: auto;
   text-align: justify;
 
-  pre, li {
+  pre, li, table {
     @include user-select(text);
   }
 
   h1, h2, h3,
   h4, h5, h6,
-  p, ul, ol {
+  p, ul, ol,
+  table {
     line-height: $line-height-paragraph;
     margin-bottom: $spacer-2;
     margin-top: $spacer-2;
   }
 
-  :first-child {
+  > :first-child {
     margin-top: 0;
   }
 
-  :last-child {
+  > :last-child {
     margin-bottom: 0;
   }
 
@@ -34,7 +35,7 @@
     font-size: 14px;
   }
 
-  h4 {
+  h4, h5, h6 {
     font-size: 14px;
     font-style: italic;
   }
@@ -60,11 +61,11 @@
     line-height: $line-height-paragraph;
   }
 
-  ul li {
+  ul > li {
     list-style: disc;
   }
 
-  ol li {
+  ol > li {
     list-style: decimal;
   }
 
@@ -77,11 +78,11 @@
     margin-top: $spacer-2;
     padding: $spacer-1 $spacer-3;
 
-    > p:first-child {
+    > :first-child {
       margin-top: 0;
     }
 
-    > p:last-child {
+    > :last-child {
       margin-bottom: 0;
     }
   }
@@ -91,7 +92,7 @@
     hyphens: none;
   }
 
-  code {
+  :not(pre) code {
     border-radius: 2px;
     font-size: 85%;
     padding: 1px 4px 2px 4px;
@@ -106,5 +107,25 @@
     margin-top: $spacer-2;
     overflow: auto;
     padding: $spacer-3;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: $table-cell-border;
+    padding: $spacer-1 $spacer-3; // $spacer-1 to compensate line-height 1.5
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: $table-header-background-color;
+    font-weight: $table-header-font-weight;
+  }
+
+  tbody tr:hover td {
+    background-color: $table-row-hover-background-color;
   }
 }

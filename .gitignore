@@ -2,12 +2,12 @@
 
 # build files
 /dist/
-# ! has no effect if parent directory is excluded
-# https://git-scm.com/docs/gitignore # Pattern format, 4
-#!/dist/.htaccess
 
 # npm
 /node_modules/
+
+# composer
+/src/php-vendor/
 
 # IntelliJ
 /.idea/

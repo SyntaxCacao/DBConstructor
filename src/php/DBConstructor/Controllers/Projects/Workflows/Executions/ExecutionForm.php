@@ -143,11 +143,11 @@ class ExecutionForm extends RowForm
             }
 
             if ($step->instructions !== null) {
-                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->instructions).'</div>';
+                echo '<div class="markdown">'.MarkdownParser::parse($step->instructions).'</div>';
             }
 
             if ($step->tableInstructions !== null) {
-                echo '<div class="markdown">'.(new MarkdownParser())->parse($step->tableInstructions).'</div>';
+                echo '<div class="markdown">'.MarkdownParser::parse($step->tableInstructions).'</div>';
             }
 
             foreach ($this->stepsFields[$step->id] as $fieldName) {

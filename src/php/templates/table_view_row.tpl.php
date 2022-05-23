@@ -127,7 +127,7 @@ use DBConstructor\Util\MarkdownParser;
         <div class="timeline-comment">
           <div class="box">
             <div class="box-row box-row-header"><p><span class="hide-md">Kommentar von </span><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> am <?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr</p></div>
-            <div class="box-row markdown"><?= (new MarkdownParser())->parse($action->data) ?></div>
+            <div class="box-row markdown"><?= MarkdownParser::parse($action->data) ?></div>
           </div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_CREATION) { ?>

@@ -97,7 +97,7 @@ abstract class Column
             if (is_null($this->instructions)) {
                 echo '<div class="markdown"><p><em>Keine Erläuterung vorhanden</em></p></div>';
             } else {
-                echo '<div class="markdown">'.(new MarkdownParser)->parse($this->instructions).'</div>';
+                echo '<div class="markdown">'.MarkdownParser::parse($this->instructions).'</div>';
             }
 
             echo '</div>';
