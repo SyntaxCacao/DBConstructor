@@ -8,6 +8,27 @@
   margin-left: $spacer-5+$timeline-line-width;
 }
 
+.timeline-item:first-child {
+  // Ensures that the timeline does not begin before the icon of the first item
+  // https://stackoverflow.com/a/61619447/5489107
+
+  border-left-color: #fff; // makes default line invisible while retaining its effect on element width
+  position: relative;
+
+  &::after { // adjusted line instead of default line
+    border-left: $timeline-line-width solid $timeline-line-color;
+    bottom: 0;
+    content: "";
+    height: 50%;
+    left: -$timeline-line-width;
+    position: absolute;
+  }
+
+  .timeline-item-icon {
+    z-index: 10; // so that line is not above icon
+  }
+}
+
 .timeline-filler {
   content: " ";
   height: $spacer-5;
