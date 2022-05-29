@@ -11,13 +11,17 @@
           <th class="table-cell"></th>
           <th class="table-cell">ID</th>
 <?php   foreach($data["relationalColumns"] as $column) {
-          /** @var \DBConstructor\Models\RelationalColumn $column */ ?>
+          /** @var \DBConstructor\Models\RelationalColumn $column */
+          if (! $column->hide) { ?>
           <th class="table-cell" title="<?= htmlentities($column->name) ?>"><a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $column->targetTableId ?>/"><?= htmlentities($column->label) ?></a></th>
-<?php   }
+<?php     }
+        }
         foreach($data["textualColumns"] as $column) {
-          /** @var \DBConstructor\Models\TextualColumn $column */ ?>
+          /** @var \DBConstructor\Models\TextualColumn $column */
+          if (! $column->hide) { ?>
           <th class="table-cell" title="<?= htmlentities($column->name) ?>"><?= htmlentities($column->label) ?></th>
-<?php   } ?>
+<?php     }
+        } ?>
           <th class="table-cell">Zuordnung</th>
           <th class="table-cell">Letzte Aktivität</th>
           <th class="table-cell">Angelegt</th>
@@ -30,6 +34,9 @@
           <td class="table-cell table-cell-numeric"><?= $row->id ?></td>
 <?php     foreach($data["relationalColumns"] as $column) {
             /** @var \DBConstructor\Models\RelationalColumn $column */
+            if ($column->hide) {
+              continue;
+            }
             if (isset($data["relationalFields"][$row->id][$column->id])) {
               /** @var \DBConstructor\Models\RelationalField $field */
               $field = $data["relationalFields"][$row->id][$column->id] ?>
@@ -44,6 +51,9 @@
           }
           foreach($data["textualColumns"] as $column) {
             /** @var \DBConstructor\Models\TextualColumn $column */
+            if ($column->hide) {
+              continue;
+            }
             if (isset($data["textualFields"][$row->id][$column->id])) {
               echo $column->generateCellValue($data["textualFields"][$row->id][$column->id]);
             } else {

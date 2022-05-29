@@ -378,6 +378,9 @@ class TextualColumnForm extends Form
 
         $this->addField($field);
 
+        // hide
+        $this->addField(new ColumnHideField($column));
+
         // fill-value
         if (! isset($column) && ! $tableEmpty) {
             $field = new TextField("fill-value", "Füllwert");
@@ -465,7 +468,7 @@ class TextualColumnForm extends Form
 
         if (is_null($this->column)) {
             // create
-            $id = TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["instructions"], $data["position"], $data["type"], $type);
+            $id = TextualColumn::create($this->tableId, $data["name"], $data["label"], $data["instructions"], $data["position"], $data["type"], $type, $data["hide"]);
 
             if (! $this->tableEmpty) {
                 TextualField::fill($this->tableId, $id, $data["fill-value"], $type);
@@ -473,7 +476,7 @@ class TextualColumnForm extends Form
         } else {
             // edit
             $oldRules = $this->column->rules;
-            $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["type"], $type);
+            $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["type"], $type, $data["hide"]);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));

@@ -66,13 +66,16 @@ class RelationalColumnForm extends Form
 
         // null-allowed
         $field = new CheckboxField("null-allowed", "Angabe ist optional");
-        $field->description = "Wenn kein Wert angegeben wird, wird NULL gespeichert.";
+        $field->description = "Wenn kein Wert angegeben wird, wird NULL gespeichert";
 
         if (! is_null($column)) {
             $field->defaultValue = $column->nullable;
         }
 
         $this->addField($field);
+
+        // hide
+        $this->addField(new ColumnHideField($column));
 
         // instructions
         $this->addField(new ColumnInstructionsField($column));
@@ -88,7 +91,7 @@ class RelationalColumnForm extends Form
     {
         if (is_null($this->column)) {
             // create
-            $id = RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["instructions"], $data["position"], $data["null-allowed"]);
+            $id = RelationalColumn::create($this->tableId, $data["target-table"], $data["name"], $data["label"], $data["instructions"], $data["position"], $data["null-allowed"], $data["hide"]);
 
             if (! $this->tableEmpty) {
                 RelationalField::fill($this->tableId, $id, $data["null-allowed"]);
@@ -96,7 +99,7 @@ class RelationalColumnForm extends Form
         } else {
             // edit
             $nullAllowedChanged = $data["null-allowed"] != $this->column->nullable;
-            $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["null-allowed"]);
+            $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["null-allowed"], $data["hide"]);
 
             if ($this->column->position != $data["position"]) {
                 $this->column->move(intval($data["position"]));
