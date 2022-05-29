@@ -45,7 +45,7 @@ textarea {
 
 .form-input,
 .form-select {
-  width: 275px;
+  width: $forms-input-width;
 }
 
 .form-block .form-field, // legacy for login page
@@ -100,8 +100,21 @@ textarea {
 .form-list-row {
   margin-bottom: $spacer-2;
 
-  input {
+  .form-input {
+    margin-bottom: $spacer-1;
     margin-right: $spacer-2;
+  }
+}
+
+@media (min-width: $breakpoint-sm + 1) {
+  .form-list-row {
+    display: flex;
+
+    .form-input {
+      flex-basis: $forms-input-width;
+      margin-bottom: 0;
+      width: 0;
+    }
   }
 }
 
