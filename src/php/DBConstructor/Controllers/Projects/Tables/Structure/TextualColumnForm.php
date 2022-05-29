@@ -156,6 +156,10 @@ class TextualColumnForm extends Form
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_SELECTION;
 
+        if ($column !== null && $column->type === TextualColumn::TYPE_SELECTION) {
+            $field->description = "Eine nachträgliche Änderung technischer Namen führt derzeit nicht zur Anpassung bestehender Datensätze";
+        }
+
         $labelColumn = "label";
         $listColumn = new ListFieldColumn($labelColumn, "Bezeichnung");
         $listColumn->maxLength = 64;
