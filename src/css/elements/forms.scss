@@ -162,7 +162,8 @@ textarea {
 
   .form-checkbox {
     display: inline-block;
-    margin: 1px 12px 0 0;
+    margin: 1px 10px 0 0;
+    min-width: 16px; // so that checkbox won't become too small on iOS Safari https://stackoverflow.com/q/34220553
 
     // BUG flickering (possibly because of label) in Safari macOS
     //-webkit-transform: translateZ(0); // https://stackoverflow.com/questions/30454423/safari-8-label-checkbox-hover-flicker-how-to-prevent
