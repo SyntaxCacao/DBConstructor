@@ -6,6 +6,7 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   line-height: normal; // https://stackoverflow.com/questions/9323596/placeholder-text-is-not-vertically-centered-in-safari#37799250
+  margin: 0; // iOS Safari sets a margin-top for inputs by default
 
   @include appearance(none);
 }
