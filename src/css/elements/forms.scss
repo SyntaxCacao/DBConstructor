@@ -157,12 +157,12 @@ textarea {
   margin-bottom: 12px; // TODO doesnnot $spacer-3 = 16px;
 
   .form-label {
-    line-height: 1; // .form-checkbox position is too high with 1.2
+    line-height: inherit;
   }
 
   .form-checkbox {
     display: inline-block;
-    margin: 1px 10px 0 0;
+    margin: 1px 10px 0 0; // margin-top to vertically align checkbox with label (0 is best for iOS, 1px is best for macOS and ok for Chrome on Windows, 2px is best for Firefox on Windows)
     min-width: 16px; // so that checkbox won't become too small on iOS Safari https://stackoverflow.com/q/34220553
 
     // BUG flickering (possibly because of label) in Safari macOS
