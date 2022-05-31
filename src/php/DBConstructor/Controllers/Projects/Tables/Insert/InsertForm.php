@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Tables\Insert;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Projects\Tables\RowForm;
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
@@ -25,9 +26,6 @@ class InsertForm extends RowForm
     /** @var string|null */
     public $next;
 
-    /** @var string */
-    public $projectId;
-
     /** @var Table */
     public $table;
 
@@ -42,9 +40,8 @@ class InsertForm extends RowForm
      * @throws Exception
      * @throws JsonException
      */
-    public function init(string $projectId, Table $table, array $relationalColumns, array $textualColumns, bool $nextNew = false)
+    public function init(Table $table, array $relationalColumns, array $textualColumns, bool $nextNew = false)
     {
-        $this->projectId = $projectId;
         $this->table = $table;
         $this->relationalColumns = $relationalColumns;
         $this->textualColumns = $textualColumns;
@@ -79,7 +76,7 @@ class InsertForm extends RowForm
 
         $field->addOption(Application::$instance->user->id, "Mir zuordnen");
 
-        $participants = Participant::loadList($projectId);
+        $participants = Participant::loadList(ProjectsController::$projectId);
 
         foreach ($participants as $participant) {
             if ($participant->userId != Application::$instance->user->id) {
@@ -153,7 +150,7 @@ class InsertForm extends RowForm
         // Next
 
         if ($data["next"] == "show") {
-            Application::$instance->redirect("projects/$this->projectId/tables/{$this->table->id}/view/$id");
+            Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/{$this->table->id}/view/$id");
         } else {
             $this->next = $data["next"];
         }

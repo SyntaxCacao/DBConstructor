@@ -37,7 +37,7 @@ class TablesTab extends TabController
             }
 
             $form = new TableForm();
-            $form->init($data["project"]->id);
+            $form->init();
             $form->process();
             $data["form"] = $form;
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Workflows\Executions;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Projects\Tables\RowForm;
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
@@ -24,9 +25,6 @@ class ExecutionForm extends RowForm
 {
     /** @var array<string, array{field: string, value: string}> */
     public $depending = [];
-
-    /** @var string */
-    public $projectId;
 
     /** @var array<string, array<string, RelationalColumn>> */
     public $relationalColumnTable;
@@ -60,9 +58,8 @@ class ExecutionForm extends RowForm
      * @param array<string, array<string, TextualColumn>> $textualColumns
      * @throws JsonException
      */
-    public function init(string $projectId, string $workflowId, array $steps, array $relationalColumns, array $textualColumns)
+    public function init(string $workflowId, array $steps, array $relationalColumns, array $textualColumns)
     {
-        $this->projectId = $projectId;
         $this->workflowId = $workflowId;
         $this->steps = $steps;
         $this->relationalColumnTable = $relationalColumns;
@@ -73,7 +70,7 @@ class ExecutionForm extends RowForm
             $this->textualDataTable[$step->id] = WorkflowStep::readTextualColumnData($textualColumns[$step->tableId], $step->textualColumnData);
         }
 
-        $participants = Participant::loadList($projectId);
+        $participants = Participant::loadList(ProjectsController::$projectId);
 
         foreach ($steps as $step) {
             foreach ($this->relationalDataTable[$step->id] as $columnId => $columnData) {
@@ -279,6 +276,6 @@ class ExecutionForm extends RowForm
 
         // Next
 
-        Application::$instance->redirect("projects/$this->projectId/workflows", "inserted");
+        Application::$instance->redirect("projects/".ProjectsController::$projectId."/workflows", "inserted");
     }
 }

@@ -27,7 +27,7 @@ class ParticipantsTab extends TabController
             }
 
             $form = new ParticipantAddForm();
-            $form->init($data["project"]->id);
+            $form->init();
             $form->process();
             $data["form"] = $form;
 

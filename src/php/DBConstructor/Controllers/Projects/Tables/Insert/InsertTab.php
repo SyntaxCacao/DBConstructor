@@ -36,7 +36,7 @@ class InsertTab extends TabController
         }
 
         $form = new InsertForm();
-        $form->init($data["project"]->id, $data["table"], $relationalColumns, $textualColumns);
+        $form->init($data["table"], $relationalColumns, $textualColumns);
         $success = $form->process();
 
         if ($success && isset($form->next) && $form->next == "new") {
@@ -44,7 +44,7 @@ class InsertTab extends TabController
             // dafür muss ein neues Formular generiert werden, damit nicht die
             // Werte des gerade angelegten Datensatzes in den Feldern stehen.
             $form = new InsertForm();
-            $form->init($data["project"]->id, $data["table"], $relationalColumns, $textualColumns, true);
+            $form->init($data["table"], $relationalColumns, $textualColumns, true);
         }
 
         $data["form"] = $form;

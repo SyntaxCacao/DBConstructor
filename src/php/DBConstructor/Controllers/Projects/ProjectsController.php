@@ -20,6 +20,12 @@ use DBConstructor\Models\Project;
 
 class ProjectsController extends Controller
 {
+    /** @var bool|null */
+    public static $isManager;
+
+    /** @var string|null */
+    public static $projectId;
+
     public function request(array $path)
     {
         // /projects/
@@ -66,6 +72,7 @@ class ProjectsController extends Controller
 
         $project = Project::load($path[1]);
         $data["project"] = $project;
+        ProjectsController::$projectId = $project->id;
 
         if (is_null($project)) {
             (new NotFoundController())->request($path);
@@ -87,6 +94,7 @@ class ProjectsController extends Controller
         }
 
         $data["isManager"] = $participant->isManager;
+        ProjectsController::$isManager = $participant->isManager;
 
         // tabs
         $tabRouter = new TabRouter();

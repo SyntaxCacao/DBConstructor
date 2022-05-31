@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Tables;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\ValidationClosure;
 use DBConstructor\Forms\Form;
@@ -13,9 +14,6 @@ use DBConstructor\Models\Table;
 
 class TableForm extends Form
 {
-    /** @var string; */
-    public $projectId;
-
     /** @var Table|null */
     public $table;
 
@@ -27,9 +25,8 @@ class TableForm extends Form
     /**
      * @param Table|null $table null on creation
      */
-    public function init(string $projectId, Table $table = null)
+    public function init(Table $table = null)
     {
-        $this->projectId = $projectId;
         $this->table = $table;
 
         $field = new TextField("label", "Bezeichnung");
@@ -51,11 +48,11 @@ class TableForm extends Form
 
         if (is_null($table)) {
             $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return Table::isNameAvailable($this->projectId, $value);
+                return Table::isNameAvailable(ProjectsController::$projectId, $value);
             }, "Dieser Tabellenname ist bereits vergeben.");
         } else {
             $field->validationClosures[] = new ValidationClosure(function ($value) {
-                return $value == $this->table->name || Table::isNameAvailable($this->projectId, $value);
+                return $value == $this->table->name || Table::isNameAvailable(ProjectsController::$projectId, $value);
             }, "Dieser Tabellenname ist bereits vergeben.");
 
             $field->defaultValue = $table->name;
@@ -80,8 +77,8 @@ class TableForm extends Form
     {
         if (is_null($this->table)) {
             // create
-            $id = Table::create($this->projectId, $data["name"], $data["label"], $data["description"]);
-            Application::$instance->redirect("projects/$this->projectId/tables/$id");
+            $id = Table::create(ProjectsController::$projectId, $data["name"], $data["label"], $data["description"]);
+            Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/$id");
         } else {
             // edit
             $this->table->edit($data["name"], $data["label"], $data["description"]);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Workflows\Steps;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextField;
@@ -17,9 +18,6 @@ use DBConstructor\Util\JsonException;
 
 class StepEditForm extends Form
 {
-    /** @var string */
-    public $projectId;
-
     /** @var array<RelationalColumn> */
     public $relationalColumns;
 
@@ -43,9 +41,8 @@ class StepEditForm extends Form
      * @param array<TextualColumn> $textualColumns
      * @throws JsonException
      */
-    public function init(string $projectId, Workflow $workflow, array $steps, WorkflowStep $step, array $relationalColumns, array $textualColumns)
+    public function init(Workflow $workflow, array $steps, WorkflowStep $step, array $relationalColumns, array $textualColumns)
     {
-        $this->projectId = $projectId;
         $this->workflow = $workflow;
         $this->step = $step;
         $this->relationalColumns = $relationalColumns;
@@ -187,6 +184,6 @@ class StepEditForm extends Form
         $relationalColumnData = WorkflowStep::writeRelationalColumnData($this->relationalColumns, $data);
         $textualColumnData = WorkflowStep::writeTextualColumnData($this->textualColumns, $data);
         $this->step->edit($this->workflow, Application::$instance->user->id, $data["label"], $data["instructions"], $relationalColumnData, $textualColumnData);
-        Application::$instance->redirect("projects/".$this->projectId."/workflows/".$this->workflow->id."/steps", "saved");
+        Application::$instance->redirect("projects/".ProjectsController::$projectId."/workflows/".$this->workflow->id."/steps", "saved");
     }
 }

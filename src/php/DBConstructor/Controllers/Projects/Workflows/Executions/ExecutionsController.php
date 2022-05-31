@@ -47,7 +47,7 @@ class ExecutionsController
             }
 
             $form = new ExecutionForm();
-            $form->init($data["project"]->id, $workflow->id, $steps, $relationalColumns, $textualColumns);
+            $form->init($workflow->id, $steps, $relationalColumns, $textualColumns);
             $form->process();
             $data["form"] = $form;
 

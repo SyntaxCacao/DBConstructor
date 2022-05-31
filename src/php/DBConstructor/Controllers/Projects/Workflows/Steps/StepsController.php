@@ -47,7 +47,7 @@ class StepsController
         if (count($path) === 6 && $path[4] === "steps" && $path[5] === "create") {
             // create
             $form = new StepCreateForm();
-            $form->init($data["project"]->id, $workflow);
+            $form->init($workflow);
             $form->process();
             $data["form"] = $form;
 
@@ -82,7 +82,7 @@ class StepsController
             $textualColumns = TextualColumn::loadList($step->tableId);
 
             $form = new StepEditForm();
-            $form->init($data["project"]->id, $workflow, $steps, $step, $relationalColumns, $textualColumns);
+            $form->init($workflow, $steps, $step, $relationalColumns, $textualColumns);
             $form->process();
             $data["form"] = $form;
 

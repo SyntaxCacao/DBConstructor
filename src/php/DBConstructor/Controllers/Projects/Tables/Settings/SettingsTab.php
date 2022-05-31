@@ -28,7 +28,7 @@ class SettingsTab extends TabController
         }
 
         $form = new TableForm();
-        $form->init($data["project"]->id, $data["table"]);
+        $form->init($data["table"]);
         $data["saved"] = $form->process();
         $data["form"] = $form;
 

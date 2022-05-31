@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Workflows\Steps;
 
 use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\Table;
@@ -13,9 +14,6 @@ use DBConstructor\Models\WorkflowStep;
 
 class StepCreateForm extends Form
 {
-    /** @var string */
-    public $projectId;
-
     /** @var Workflow */
     public $workflow;
 
@@ -24,9 +22,8 @@ class StepCreateForm extends Form
         parent::__construct("step-create-form");
     }
 
-    public function init(string $projectId, Workflow $workflow)
+    public function init(Workflow $workflow)
     {
-        $this->projectId = $projectId;
         $this->workflow = $workflow;
 
         $this->buttonLabel = "Weiter";
@@ -34,7 +31,7 @@ class StepCreateForm extends Form
         $field = new SelectField("table", "Tabelle wählen");
         $field->description = "Die Auswahl kann später nicht mehr verändert werden.";
 
-        $tables = Table::loadList($projectId);
+        $tables = Table::loadList(ProjectsController::$projectId);
 
         foreach ($tables as $table) {
             $field->addOption($table->id, $table->label);
@@ -46,6 +43,6 @@ class StepCreateForm extends Form
     public function perform(array $data)
     {
         $stepId = WorkflowStep::create($this->workflow, Application::$instance->user->id, $data["table"]);
-        Application::$instance->redirect("projects/$this->projectId/workflows/".$this->workflow->id."/steps/$stepId/edit");
+        Application::$instance->redirect("projects/".ProjectsController::$projectId."/workflows/".$this->workflow->id."/steps/$stepId/edit");
     }
 }
