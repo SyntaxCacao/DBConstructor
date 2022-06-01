@@ -47,7 +47,7 @@ class StepsController
         if (count($path) === 6 && $path[4] === "steps" && $path[5] === "create") {
             // create
             $form = new StepCreateForm();
-            $form->init($workflow);
+            $form->init($workflow, $data["project"]->manualOrder);
             $form->process();
             $data["form"] = $form;
 

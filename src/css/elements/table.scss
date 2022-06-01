@@ -46,6 +46,14 @@
   padding-bottom: 0.5px;
   padding-top: 0;
 
+  .button {
+    // floating to eliminate spaces in between buttons
+    float: left;
+
+    // clearfix not necessary here since table cell has appropriate height anyway
+    //@include clearfix;
+  }
+
   .button:not(:last-child) {
     margin-right: $spacer-2;
   }

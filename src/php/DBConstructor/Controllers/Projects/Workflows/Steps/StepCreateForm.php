@@ -22,7 +22,7 @@ class StepCreateForm extends Form
         parent::__construct("step-create-form");
     }
 
-    public function init(Workflow $workflow)
+    public function init(Workflow $workflow, bool $manualOrder)
     {
         $this->workflow = $workflow;
 
@@ -31,7 +31,7 @@ class StepCreateForm extends Form
         $field = new SelectField("table", "Tabelle wählen");
         $field->description = "Die Auswahl kann später nicht mehr verändert werden.";
 
-        $tables = Table::loadList(ProjectsController::$projectId);
+        $tables = Table::loadList(ProjectsController::$projectId, $manualOrder, true);
 
         foreach ($tables as $table) {
             $field->addOption($table->id, $table->label);

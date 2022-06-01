@@ -78,6 +78,9 @@ class Project
     /** @var string|null */
     public $notes;
 
+    /** @var bool */
+    public $manualOrder;
+
     /** @var string */
     public $created;
 
@@ -91,15 +94,17 @@ class Project
         $this->label = $data["label"];
         $this->description = $data["description"];
         $this->notes = $data["notes"];
+        $this->manualOrder = $data["manualorder"] === "1";
         $this->created = $data["created"];
     }
 
-    public function edit(string $label, string $description = null, string $notes = null)
+    public function edit(string $label, string $description = null, string $notes = null, bool $manualOrder)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=?, `notes`=? WHERE `id`=?", [$label, $description, $notes, $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_project` SET `label`=?, `description`=?, `notes`=?, `manualorder`=? WHERE `id`=?", [$label, $description, $notes, intval($manualOrder), $this->id]);
         $this->label = $label;
         $this->description = $description;
         $this->notes = $notes;
+        $this->manualOrder = $manualOrder;
     }
 
     public function setMainPage(string $pageId)

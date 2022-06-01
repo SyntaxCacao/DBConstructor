@@ -52,7 +52,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new RelationalColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $data["isEmpty"]);
+                $form->init($data["project"]->id, $data["project"]->manualOrder, $data["table"]->id, $data["table"]->position, $data["isEmpty"]);
                 $form->process();
                 $data["form"] = $form;
 
@@ -87,7 +87,7 @@ class StructureTab extends TabController
                 }
 
                 $form = new RelationalColumnForm();
-                $form->init($data["project"]->id, $data["table"]->id, $data["table"]->position, $data["isEmpty"], $column);
+                $form->init($data["project"]->id, $data["project"]->manualOrder, $data["table"]->id, $data["table"]->position, $data["isEmpty"], $column);
                 $form->process();
                 $data["form"] = $form;
 

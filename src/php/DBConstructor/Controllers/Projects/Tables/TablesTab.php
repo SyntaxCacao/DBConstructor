@@ -18,15 +18,24 @@ use DBConstructor\Models\Table;
 
 class TablesTab extends TabController
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct("Übersicht", "tables", "signpost-split");
     }
 
     public function request(array $path, array &$data): bool
     {
         if (count($path) <= 3) { // <= because this can be access with /projects/x/ and /projects/x/tables
-            $data["tables"] = Table::loadList($data["project"]->id, true);
+            $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true);
             $data["tabpage"] = "list";
+
+            if (isset($_REQUEST["move"]) && isset($_REQUEST["position"]) &&
+                intval($_REQUEST["move"]) !== 0 && intval($_REQUEST["position"]) !== 0 &&
+                intval($_REQUEST["position"]) <= count($data["tables"])) {
+                $data["tables"][$_REQUEST["move"]]->move(intval($_REQUEST["position"]));
+                $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true);
+            }
+
             return true;
         }
 

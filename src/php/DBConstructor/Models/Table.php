@@ -47,17 +47,19 @@ class Table
     }
 
     /**
-     * @param bool $orderByLabel List will be ordered by labels if true, by names if false.
-     * @return array<Table>
+     * @param bool $manualOrder Tables will be ordered by (manually assigned) position if true, by names/labels if false.
+     * @param bool $orderByLabel If $manualOrder is false, tables will be ordered by labels if true, by names if false.
+     * @return array<string, Table>
      */
-    public static function loadList(string $projectId, bool $orderByLabel = false): array
+    public static function loadList(string $projectId, bool $manualOrder = false, bool $orderByLabel = false): array
     {
-        MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `".($orderByLabel ? "label" : "name")."`", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `".($manualOrder ? "position" : ($orderByLabel ? "label" : "name"))."`", [$projectId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
         foreach ($result as $row) {
-            $list[] = new Table($row);
+            $table = new Table($row);
+            $list[$table->id] = $table;
         }
 
         return $list;
@@ -111,5 +113,21 @@ class Table
         $this->label = $label;
         $this->name = $name;
         $this->instructions = $instructions;
+    }
+
+    public function move(int $newPosition)
+    {
+        $oldPosition = intval($this->position);
+
+        if ($oldPosition > $newPosition) {
+            // move down
+            MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `position`=`position`+1 WHERE `project_id`=? AND `position`<? AND `position`>=?", [$this->projectId, $oldPosition, $newPosition]);
+        } else {
+            // move up
+            MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `position`=`position`-1 WHERE `project_id`=? AND `position`>? AND `position`<=?", [$this->projectId, $oldPosition, $newPosition]);
+        }
+
+        MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `position`=? WHERE `id`=?", [$newPosition, $this->id]);
+        $this->position = (string) $newPosition;
     }
 }

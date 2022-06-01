@@ -50,7 +50,13 @@ use DBConstructor\Util\MarkdownParser;
             <td class="table-cell table-cell-code"><?php echo htmlentities($table->name); ?></td>
             <td class="table-cell"><?php echo $table->rowCount; ?></td>
 <?php     if ($data["isManager"]) { ?>
-            <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+            <td class="table-cell table-cell-actions">
+              <a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a>
+<?php       if ($data["project"]->manualOrder) { ?>
+              <a class="button button-smallest<?php if ($count === 1) echo " button-disabled" ?>"<?php if ($count !== 1) { ?> href="?move=<?= $table->id ?>&position=<?= $count-1 ?>" title="Nach oben verschieben"<?php } ?>><span class="bi bi-arrow-up no-margin"></span></a>
+              <a class="button button-smallest<?php if ($count === $all) echo " button-disabled" ?>"<?php if ($count !== $all) { ?> href="?move=<?= $table->id ?>&position=<?= $count+1 ?>" title="Nach unten verschieben"<?php } ?>><span class="bi bi-arrow-down no-margin"></span></a>
+<?php       } ?>
+            </td>
 <?php     } ?>
           </tr>
 <?php   } ?>

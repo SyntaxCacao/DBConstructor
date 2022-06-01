@@ -35,7 +35,7 @@ class RelationalColumnForm extends Form
     /**
      * @param RelationalColumn|null $column null on creation
      */
-    public function init(string $projectId, string $tableId, string $tablePosition, bool $tableEmpty, RelationalColumn $column = null)
+    public function init(string $projectId, bool $manualOrder, string $tableId, string $tablePosition, bool $tableEmpty, RelationalColumn $column = null)
     {
         $this->projectId = $projectId;
         $this->tableId = $tableId;
@@ -51,7 +51,7 @@ class RelationalColumnForm extends Form
         // target-table
         $field = new SelectField("target-table", "Zieltabelle");
 
-        $tables = Table::loadList($this->projectId, true);
+        $tables = Table::loadList($this->projectId, $manualOrder, true);
 
         foreach ($tables as $table) {
             $field->addOption($table->id, $table->label." (".$table->name.")");

@@ -67,6 +67,16 @@ class ProjectForm extends Form
 
         $this->addField($field);
 
+        // table order
+        if (! is_null($project)) {
+            // when changing names of field or its options, update edit section of perform() accordingly
+            $field = new SelectField("tableorder", "Anordnung der Tabellen in der Übersicht");
+            $field->defaultValue = $project->manualOrder ? "manual" : "auto";
+            $field->addOption("auto", "Alphabetisch");
+            $field->addOption("manual", "Manuell");
+            $this->addField($field);
+        }
+
         // wiki main page
         if (! is_null($project) && ! is_null($project->mainPageId)) {
             $field = new SelectField("mainpage", "Wiki-Hauptseite");
@@ -86,7 +96,7 @@ class ProjectForm extends Form
             Application::$instance->redirect("projects/$id", "created");
         } else {
             // edit
-            $this->project->edit($data["label"], $data["description"], $data["notes"]);
+            $this->project->edit($data["label"], $data["description"], $data["notes"], $data["tableorder"] === "manual");
 
             if (isset($data["mainpage"])) {
                 $this->project->setMainPage($data["mainpage"]);

@@ -124,9 +124,11 @@ class ViewTab extends TabController
         }
 
         if (count($path) === 7 && $path[6] === "references") {
+            // references view
+
             $fields = RelationalField::loadReferencingFields($data["row"]->id, true);
 
-            $data["tables"] = Table::loadList($data["project"]->id, true);
+            $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true);
             $data["references"] = [];
             $data["referencesCount"] = count($fields);
 
@@ -190,6 +192,8 @@ class ViewTab extends TabController
             (new NotFoundController())->request($path);
             return false;
         }
+
+        // dataset view
 
         if (isset($_GET["flag"]) && ! $data["row"]->flagged) {
             $data["row"]->flag(Application::$instance->user->id);
