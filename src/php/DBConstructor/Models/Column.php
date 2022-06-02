@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DBConstructor\Models;
 
+use DBConstructor\Application;
+use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Forms\Fields\Field;
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\MarkdownParser;
@@ -67,7 +69,55 @@ abstract class Column
 
     protected function generateInput_internal(Field $field, array $errorMessages, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
     {
+        // header
+        echo '<header class="main-subheader">';
         echo '<h2 class="main-subheading">'.htmlentities($this->label).'</h2>';
+
+        $instructionsModalId = "";
+
+        if (ProjectsController::$isManager || ($edit && $this->instructions !== null)) {
+            echo '<div class="main-header-actions">';
+
+            // instructions button
+            if ($edit && $this->instructions !== null) {
+                $instructionsModalId = 'modal-instructions-'.($isTextual ? "txt"  : "rel").'-'.$this->id;
+                echo '<a class="button button-small main-header-action js-open-modal" href="#" tabindex="-1" title="Erläuterungen anzeigen" data-modal="'.$instructionsModalId.'">';
+                echo '<span class="bi bi-book no-margin"></span>';
+                echo '</a>';
+            }
+
+            // edit button
+            if (ProjectsController::$isManager) {
+                echo '<a class="button button-small main-header-action" href="'.Application::$instance->config["baseurl"].'/projects/'.ProjectsController::$projectId.'/tables/'.$this->tableId.'/structure/'.($isTextual ? "textual" : "relational").'/'.$this->id.'/edit/" tabindex="-1" title="Feld bearbeiten">';
+                echo '<span class="bi bi-pencil no-margin"></span>';
+                echo '</a>';
+            }
+
+            echo '</div>';
+        }
+
+        echo '</header>';
+
+        // (instructions modal)
+        if ($instructionsModalId !== "") {
+            echo '<div class="modal" id="'.$instructionsModalId.'">';
+            echo '<div class="modal-container">';
+            echo '<div class="modal-dialog modal-dialog-lg">';
+            echo '<header class="modal-header">';
+            echo '<h3>Erläuterung</h3>';
+            echo '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+            echo '</header>';
+            echo '<div class="modal-content markdown">';
+            echo MarkdownParser::parse($this->instructions);
+            echo '</div>';
+            echo '<div class="modal-actions">';
+            echo '<a class="button modal-action modal-action-right js-close-modal">Schließen</a>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        }
+
         echo '<div class="row page-table-insert-row break-md">';
 
         // field

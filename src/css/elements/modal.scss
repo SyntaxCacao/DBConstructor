@@ -30,6 +30,7 @@
   box-shadow: rgba(0, 0, 0, 0.8) 0 0 5px 0;
   margin: $spacer-3;
   max-width: 500px;
+  min-width: 200px;
 }
 
 .modal-dialog-lg {
@@ -49,6 +50,8 @@
   padding: $spacer-3;
 
   h3 {
+    line-height: 1.25; // increase becomes necessary as overflow: none cuts off part of the font vertically with line-height: 1
+
     @include one-line-text;
   }
 }
@@ -61,9 +64,11 @@
 .modal-content {
   padding: $spacer-3;
 
+  /*
   :not(:last-child) {
     padding-bottom: $spacer-2;
   }
+  */
 }
 
 .modal-actions {

@@ -134,6 +134,10 @@ class HeaderGenerator
                 echo ' button-danger';
             }
 
+            if (isset($action["selected"]) && $action["selected"] === true) {
+                echo ' button-selected';
+            }
+
             echo ' main-header-action';
 
             if (! $always) {

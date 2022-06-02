@@ -22,7 +22,8 @@ button {
   white-space: nowrap;
 }
 
-.button:hover {
+.button:hover,
+.button-selected {
   background-color: #f3f4f6;
   border-color: #e1e4e8; // same as without hover, to override browser styles
 }

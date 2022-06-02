@@ -1,13 +1,18 @@
-.main-header {
+.main-header,
+.main-subheader {
   align-items: center;
-  border-bottom: 1px solid $color-border-primary;
   display: flex;
+}
+
+.main-header {
+  border-bottom: 1px solid $color-border-primary;
   margin-bottom: $main-header-margin-bottom;
   margin-top: $main-header-margin-top;
   padding-bottom: $spacer-2;
 }
 
-.main-header-header {
+.main-header-header,
+.main-subheader .main-subheading {
   // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size/36247448#36247448
   min-width: 0;
 }
@@ -42,10 +47,22 @@
   @include one-line-text;
 }
 
+.main-subheader {
+  margin-bottom: $spacer-2;
+  margin-top: $spacer-3;
+
+  .main-subheading {
+    line-height: 30px; // = height of .button-small, so that heading has same height even if no actions are present
+    margin: 0;
+  }
+}
+
 .main-subheading {
   font-size: 18px;
   margin-bottom: $spacer-3;
   margin-top: $spacer-4;
+
+  @include one-line-text;
 }
 
 .main-link {

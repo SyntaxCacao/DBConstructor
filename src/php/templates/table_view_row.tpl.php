@@ -15,19 +15,12 @@ use DBConstructor\Util\MarkdownParser;
       $header->escapeTitle = false;
       $header->subtitle = "Zuletzt bearbeitet von ".$data["row"]->lastEditorFirstName." ".$data["row"]->lastEditorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["row"]->lastUpdated))." Uhr";
 
-      if ($data["row"]->flagged) {
-        $header->buttonActions[] = [
-          "href" => "?unflag",
-          "icon" => "flag-fill",
-          "text" => "Markiert",
-        ];
-      } else {
-        $header->buttonActions[] = [
-          "href" => "?flag",
-          "icon" => "flag",
-          "text" => "Markieren"
-        ];
-      }
+      $header->buttonActions[] = [
+        "href" => $data["row"]->flagged ? "?unflag" : "?flag",
+        "icon" => "flag",
+        "selected" => $data["row"]->flagged,
+        "text" => "Markieren"
+      ];
 
       $header->additionalHTML = '<details class="dropdown main-header-action">'.
                                   '<summary><span class="button button-small"><span class="bi bi-person"></span>'.(isset($data["row"]->assigneeId) ? "Zuweisung: ".($data["row"]->assigneeId === $data["user"]->id ? "mir" : htmlentities($data["row"]->assigneeFirstName." ".$data["row"]->assigneeLastName)) : "Zuweisen").'</span></summary>'.
@@ -88,6 +81,12 @@ use DBConstructor\Util\MarkdownParser;
       <?php $data["editForm"]->generate() ?>
     </div>
     <div class="column width-5 page-table-view-row-column-right">
+      <header class="main-subheader">
+        <h2 class="main-subheading">Historie</h2>
+        <div class="main-header-actions">
+          <a class="button button-small<?= $data["filtered"] ? " button-selected" : "" ?> main-header-action" href="<?= $data["filtered"] ? $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/" : "?filtered" ?>" title="Änderungen ausblenden"><span class="bi bi-funnel"></span>Filtern</a>
+        </div>
+      </header>
       <div class="timeline">
 <?php foreach ($data["actions"] as $action) {
         /** @var RowAction $action */

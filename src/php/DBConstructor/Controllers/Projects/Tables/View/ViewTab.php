@@ -230,7 +230,9 @@ class ViewTab extends TabController
         $assigneeForm->process();
         $data["assigneeForm"] = $assigneeForm;
 
-        $data["actions"] = RowAction::loadAll($data["row"]->id);
+        $data["filtered"] = isset($_REQUEST["filtered"]);
+
+        $data["actions"] = RowAction::loadAll($data["row"]->id, $data["filtered"]);
         $data["tabpage"] = "row";
 
         return true;

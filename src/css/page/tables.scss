@@ -87,8 +87,11 @@
 
 // //
 
-#form-table-view-edit .main-subheading:first-of-type {
-  margin-top: 0;
+#form-table-view-edit,
+.page-table-view-row-column-right {
+  .main-subheader:first-of-type {
+    margin-top: 0;
+  }
 }
 
 #form-table-view-edit .form-actions {
