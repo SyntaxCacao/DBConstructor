@@ -23,7 +23,7 @@ use DBConstructor\Util\MarkdownParser;
       ];
 
       $header->additionalHTML = '<details class="dropdown main-header-action">'.
-                                  '<summary><span class="button button-small"><span class="bi bi-person"></span>'.(isset($data["row"]->assigneeId) ? "Zuweisung: ".($data["row"]->assigneeId === $data["user"]->id ? "mir" : htmlentities($data["row"]->assigneeFirstName." ".$data["row"]->assigneeLastName)) : "Zuweisen").'</span></summary>'.
+                                  '<summary><span class="button button-small page-table-view-button-assignee"><span class="bi bi-person"></span>'.(isset($data["row"]->assigneeId) ? '<span class="hide-down-sm">Zuweisung: </span>'.($data["row"]->assigneeId === $data["user"]->id ? "mir" : '<span class="hide-down-sm">'.htmlentities($data["row"]->assigneeFirstName).' </span>'.htmlentities($data["row"]->assigneeLastName)) : "Zuweisen").'</span></summary>'.
                                   '<ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">'.
                                     '<li class="dropdown-item dropdown-item-form">'.$data["assigneeForm"]->generate().'</li>'.
                                   '</ul>'.
