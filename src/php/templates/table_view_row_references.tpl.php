@@ -25,18 +25,20 @@ use DBConstructor\Util\HeaderGenerator;
           continue;
         } ?>
   <h2 class="main-subheading"><?= htmlentities($table->label) ?></h2>
-  <table class="table">
-    <tr class="table-heading">
-      <th class="table-cell">ID</th>
-      <th class="table-cell">Feld</th>
-    </tr>
+  <div class="table-wrapper">
+    <table class="table">
+      <tr class="table-heading">
+        <th class="table-cell">ID</th>
+        <th class="table-cell">Feld</th>
+      </tr>
 <?php   foreach ($data["references"][$table->id] as $field) {
           /** @var RelationalField $field */?>
-    <tr class="table-row">
-      <td class="table-cell<?= ! $field->rowValid ? " table-cell-invalid" : "" ?>  table-cell-numeric"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/view/<?= $field->rowId ?>/"><?= $field->rowId ?></a></td>
-      <td class="table-cell"><?= htmlentities($field->columnLabel) ?> <span class="table-cell-code-addition"><?= htmlentities($field->columnName) ?></span></td>
-    </tr>
+      <tr class="table-row">
+        <td class="table-cell<?= ! $field->rowValid ? " table-cell-invalid" : "" ?>  table-cell-numeric"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/view/<?= $field->rowId ?>/"><?= $field->rowId ?></a></td>
+        <td class="table-cell"><?= htmlentities($field->columnLabel) ?> <span class="table-cell-code-addition"><?= htmlentities($field->columnName) ?></span></td>
+      </tr>
 <?php   } ?>
-  </table>
+    </table>
+  </div>
 <?php } ?>
 </main>
