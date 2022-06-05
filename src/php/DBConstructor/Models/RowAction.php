@@ -41,7 +41,7 @@ class RowAction
     /**
      * @return array<RowAction>
      */
-    public static function loadAll(string $rowId, bool $filter): array
+    public static function loadAll(string $rowId, bool $filter = false): array
     {
         // @formatter:off
         //$t = "(SELECT * FROM `dbc_row_action` WHERE `action` <> 'assignment' OR `data` IS NULL) UNION (SELECT a.`id`, a.`row_id`, a.`user_id`, a.`action`, CONCAT_WS(' ', u.`firstname`, u.`lastname`) AS `data`, a.`created` FROM `dbc_row_action` a LEFT JOIN `dbc_user` u ON a.`data`= u.`id` WHERE a.`action` = 'assignment' AND a.`data` IS NOT NULL) ORDER BY `id`"
