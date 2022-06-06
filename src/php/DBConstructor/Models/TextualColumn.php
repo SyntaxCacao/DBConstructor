@@ -56,7 +56,7 @@ class TextualColumn extends Column
     /**
      * @return TextualColumn|null
      */
-    public static function load($id)
+    public static function load(string $id)
     {
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_column_textual` WHERE `id`=?", [$id]);
         $result = MySQLConnection::$instance->getSelectedRows();
