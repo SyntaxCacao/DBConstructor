@@ -60,7 +60,7 @@ class Project
      */
     public static function loadParticipating(string $userId): array
     {
-        return Project::loadList("SELECT pr.* FROM `dbc_project` pr LEFT JOIN `dbc_participant` pa ON pr.`id` = pa.`project_id` WHERE pa.`user_id`=? ORDER BY pr.`label`", [$userId]);
+        return Project::loadList("SELECT pr.* FROM `dbc_project` pr LEFT JOIN `dbc_participant` pa ON pr.`id` = pa.`project_id` WHERE pa.`user_id`=? AND pa.`removed` IS NULL ORDER BY pr.`label`", [$userId]);
     }
 
     /** @var string */

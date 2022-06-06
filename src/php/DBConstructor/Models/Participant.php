@@ -8,17 +8,25 @@ use DBConstructor\SQL\MySQLConnection;
 
 class Participant
 {
-    public static function countManagers(string $projectId): int
+    public static function add(string $userId, string $projectId, bool $manager): string
     {
-        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_participant` WHERE `project_id`=? AND `manager`=TRUE", [$projectId]);
-        return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
+        $participant = Participant::loadFromUser($projectId, $userId, true);
+
+        if ($participant === null) {
+            // create
+            MySQLConnection::$instance->execute("INSERT INTO `dbc_participant` (`user_id`, `project_id`, `manager`) VALUES (?, ?, ?)", [$userId, $projectId, intval($manager)]);
+            return MySQLConnection::$instance->getLastInsertId();
+        } else {
+            // revive
+            $participant->revive();
+            return $participant->id;
+        }
     }
 
-    public static function create(string $userId, string $projectId, bool $manager): string
+    public static function countManagers(string $projectId): int
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_participant` (`user_id`, `project_id`, `manager`) VALUES (?, ?, ?)", [$userId, $projectId, intval($manager)]);
-
-        return MySQLConnection::$instance->getLastInsertId();
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_participant` WHERE `project_id`=? AND `manager`=TRUE AND `removed` IS NULL", [$projectId]);
+        return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
     }
 
     /**
@@ -39,17 +47,17 @@ class Participant
     /**
      * @return Participant|null
      */
-    public static function loadFromId(string $projectId, string $participantId)
+    public static function loadFromId(string $projectId, string $participantId, bool $includeRemoved = false)
     {
-        return Participant::load("SELECT * FROM `dbc_participant` WHERE `id`=? AND `project_id`=?", [$participantId, $projectId]);
+        return Participant::load("SELECT * FROM `dbc_participant` WHERE `id`=? AND `project_id`=?".($includeRemoved ? "" : " AND `removed` IS NULL"), [$participantId, $projectId]);
     }
 
     /**
      * @return Participant|null
      */
-    public static function loadFromUser(string $projectId, string $userId)
+    public static function loadFromUser(string $projectId, string $userId, bool $includeRemoved = false)
     {
-        return Participant::load("SELECT * FROM `dbc_participant` WHERE `user_id`=? AND `project_id`=?", [$userId, $projectId]);
+        return Participant::load("SELECT * FROM `dbc_participant` WHERE `user_id`=? AND `project_id`=?".($includeRemoved ? "" : " AND `removed` IS NULL"), [$userId, $projectId]);
     }
 
     /**
@@ -57,7 +65,7 @@ class Participant
      */
     public static function loadList(string $projectId): array
     {
-        MySQLConnection::$instance->execute("SELECT p.*, u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname`, u.`locked` AS `user_locked` FROM `dbc_participant` p LEFT JOIN `dbc_user` u ON p.`user_id`=u.`id` WHERE p.`project_id`=? ORDER BY p.`manager` DESC, u.`lastname`, u.`firstname`", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT p.*, u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname`, u.`locked` AS `user_locked` FROM `dbc_participant` p LEFT JOIN `dbc_user` u ON p.`user_id`=u.`id` WHERE p.`project_id`=? AND p.`removed` IS NULL ORDER BY p.`manager` DESC, u.`lastname`, u.`firstname`", [$projectId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
@@ -93,6 +101,9 @@ class Participant
     /** @var string */
     public $created;
 
+    /** @var string|null */
+    public $removed;
+
     /**
      * @param array<string, string> $data
      */
@@ -116,11 +127,7 @@ class Participant
         $this->projectId = $data["project_id"];
         $this->isManager = $data["manager"] == "1";
         $this->created = $data["created"];
-    }
-
-    public function delete()
-    {
-        MySQLConnection::$instance->execute("DELETE FROM `dbc_participant` WHERE `id`=?", [$this->id]);
+        $this->removed = $data["removed"];
     }
 
     public function demote()
@@ -137,5 +144,17 @@ class Participant
             MySQLConnection::$instance->execute("UPDATE `dbc_participant` SET `manager`=TRUE WHERE `id`=?", [$this->id]);
             $this->isManager = true;
         }
+    }
+
+    public function remove()
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_participant` SET `removed`=CURRENT_TIMESTAMP WHERE `id`=?", [$this->id]);
+        $this->removed = " "; // so that it is not null
+    }
+
+    public function revive()
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_participant` SET `removed`=NULL WHERE `id`=?", [$this->id]);
+        $this->removed = null;
     }
 }

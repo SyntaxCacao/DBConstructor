@@ -38,7 +38,7 @@ class ParticipantAddForm extends Form
 
     public function perform(array $data)
     {
-        Participant::create($data["user"], ProjectsController::$projectId, $data["role"] === "manager");
+        Participant::add($data["user"], ProjectsController::$projectId, $data["role"] === "manager");
         Application::$instance->redirect("projects/".ProjectsController::$projectId."/participants", "added");
     }
 }

@@ -71,7 +71,7 @@ class ParticipantsTab extends TabController
                 $participant = Participant::loadFromId($data["project"]->id, $_REQUEST["remove"]);
 
                 if (! is_null($participant) && (! $participant->isManager || $data["managerCount"] > 1)) {
-                    $participant->delete();
+                    $participant->remove();
                     $data["managerCount"] -= 1;
 
                     if ($participant->userId == Application::$instance->user->id) {

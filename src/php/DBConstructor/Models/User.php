@@ -26,7 +26,7 @@ class User
 
     public static function countNotParticipating(string $projectId): int
     {
-        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ?) = 0", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ? AND p.`removed` IS NULl) = 0", [$projectId]);
         return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
     }
 
@@ -57,7 +57,7 @@ class User
      */
     public static function loadList(): array
     {
-        MySQLConnection::$instance->execute("SELECT u.*, (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id`) AS `count` FROM `dbc_user` u ORDER BY u.`lastname`, u.`firstname`");
+        MySQLConnection::$instance->execute("SELECT u.*, (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`removed` IS NULL) AS `count` FROM `dbc_user` u ORDER BY u.`lastname`, u.`firstname`");
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
@@ -73,7 +73,7 @@ class User
      */
     public static function loadNotParticipatingList(string $projectId): array
     {
-        MySQLConnection::$instance->execute("SELECT DISTINCT u.* FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ?) = 0 ORDER BY u.`lastname`, u.`firstname`", [$projectId]);
+        MySQLConnection::$instance->execute("SELECT DISTINCT u.* FROM `dbc_user` u LEFT JOIN `dbc_participant` p ON u.`id` = p.`user_id` WHERE u.`locked` = FALSE AND (SELECT COUNT(*) FROM `dbc_participant` p WHERE p.`user_id` = u.`id` AND p.`project_id` = ? AND p.`removed` IS NULL) = 0 ORDER BY u.`lastname`, u.`firstname`", [$projectId]);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
