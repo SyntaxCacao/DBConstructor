@@ -154,7 +154,7 @@ class Participant
 
     public function revive()
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_participant` SET `removed`=NULL WHERE `id`=?", [$this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_participant` SET `created`=CURRENT_TIMESTAMP, `removed`=NULL WHERE `id`=?", [$this->id]);
         $this->removed = null;
     }
 }
