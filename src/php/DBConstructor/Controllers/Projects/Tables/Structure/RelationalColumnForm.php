@@ -110,6 +110,11 @@ class RelationalColumnForm extends Form
             }
         }
 
-        Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId", "saved");
+        if (empty($_REQUEST["return"])) {
+            Application::$instance->redirect("projects/$this->projectId/tables/$this->tableId", "saved");
+        } else {
+            header("Location: ".urldecode($_REQUEST["return"]));
+            exit;
+        }
     }
 }

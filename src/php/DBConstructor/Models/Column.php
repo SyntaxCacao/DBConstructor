@@ -88,7 +88,7 @@ abstract class Column
 
             // edit button
             if (ProjectsController::$isManager) {
-                echo '<a class="button button-small main-header-action" href="'.Application::$instance->config["baseurl"].'/projects/'.ProjectsController::$projectId.'/tables/'.$this->tableId.'/structure/'.($isTextual ? "textual" : "relational").'/'.$this->id.'/edit/" tabindex="-1" title="Feld bearbeiten">';
+                echo '<a class="button button-small main-header-action" href="'.Application::$instance->config["baseurl"].'/projects/'.ProjectsController::$projectId.'/tables/'.$this->tableId.'/structure/'.($isTextual ? "textual" : "relational").'/'.$this->id.'/edit/?return='.urlencode($_SERVER["REQUEST_URI"]).'" tabindex="-1" title="Feld bearbeiten">';
                 echo '<span class="bi bi-pencil no-margin"></span>';
                 echo '</a>';
             }
