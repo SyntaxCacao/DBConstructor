@@ -260,8 +260,8 @@ class TextualColumn extends Column
 
         $value = str_replace("\n", " ", $value);
 
-        if (strlen($value) > 30) {
-            return substr($value, 0, 30)."...";
+        if (strlen($value) > 40) {
+            return substr($value, 0, 40)."...";
         } else {
             return $value;
         }
