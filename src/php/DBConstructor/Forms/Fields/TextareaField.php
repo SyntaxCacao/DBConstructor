@@ -88,6 +88,21 @@ class TextareaField extends GroupableField
         return $html;
     }
 
+    /**
+     * Removes carriage return characters (\r) so that line breaks
+     * are represented only by line feed characters (\n).
+     * All browsers use \r\n to represent line breaks according to
+     * the HTTP specifications.
+     */
+    public function insertValue($value)
+    {
+        if ($value !== "") {
+            // preg_replace() might by faster than str_replace() using PHP 7
+            // https://nabtron.com/preg_replace-vs-str_replace/
+            $this->value = preg_replace("/\r/", "", $value);
+        }
+    }
+
     public function validate(): array
     {
         $issues = [];
