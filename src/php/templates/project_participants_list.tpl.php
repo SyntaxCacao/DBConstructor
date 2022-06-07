@@ -30,11 +30,11 @@
 <?php   if ($data["isManager"]) { ?>
         <td class="table-cell table-cell-actions">
 <?php     if ($participant->isManager) { ?>
-          <a class="button <?php if ($data["managerCount"] <= 1) echo "button-disabled " ?>button-smallest js-confirm"<?php if ($data["managerCount"] > 1) echo ' href="?demote='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass <?php if ($participant->userId !== $data["user"]->id) { echo htmlentities($participant->firstName." ".$participant->lastName); ?> nicht weiter Manager sein soll?<?php } else { ?>Sie nicht weiter Manager sein wollen?<?php } ?>"><span class="bi bi-arrow-down"></span>Zurückstufen</a>
-<?php     } else {?>
-          <a class="button button-smallest js-confirm" href="?promote=<?php echo $participant->id ?>" data-confirm-message="Sind Sie sicher, dass Sie <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> zum Manager machen wollen?"><span class="bi bi-arrow-up"></span>Befördern</a>
-<?php     } ?>
-          <a class="button <?php if ($participant->isManager && $data["managerCount"] <= 1) echo "button-disabled " ?>button-smallest js-confirm"<?php if (! $participant->isManager || $data["managerCount"] > 1) echo ' href="?remove='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass Sie <?php if ($participant->userId !== $data["user"]->id) { echo htmlentities($participant->firstName." ".$participant->lastName); ?> aus diesem Projekt entfernen<?php } else { ?>das Projekt verlassen<?php } ?> möchten?"><span class="bi bi-person-x"></span>Entfernen</a>
+          <a class="button <?php if ($data["managerCount"] <= 1) echo "button-disabled " ?>button-smallest js-confirm"<?php if ($data["managerCount"] > 1) echo ' href="?demote='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass <?php if ($participant->userId !== $data["user"]->id) { echo htmlentities($participant->firstName." ".$participant->lastName); ?> nicht weiter Manager sein soll?<?php } else { ?>Sie nicht weiter Manager sein wollen?<?php } ?>"><span class="bi bi-arrow-down"></span>Zurückstufen</a><!--
+--><?php  } else { ?>
+          <a class="button button-smallest js-confirm" href="?promote=<?php echo $participant->id ?>" data-confirm-message="Sind Sie sicher, dass Sie <?php echo htmlentities($participant->firstName." ".$participant->lastName) ?> zum Manager machen wollen?"><span class="bi bi-arrow-up"></span>Befördern</a><!--
+--><?php  } ?><!--
+       --><a class="button <?php if ($participant->isManager && $data["managerCount"] <= 1) echo "button-disabled " ?>button-smallest js-confirm"<?php if (! $participant->isManager || $data["managerCount"] > 1) echo ' href="?remove='.$participant->id.'"' ?> data-confirm-message="Sind Sie sicher, dass Sie <?php if ($participant->userId !== $data["user"]->id) { echo htmlentities($participant->firstName." ".$participant->lastName); ?> aus diesem Projekt entfernen<?php } else { ?>das Projekt verlassen<?php } ?> möchten?"><span class="bi bi-person-x"></span>Entfernen</a>
         </td>
 <?php   } ?>
       </tr>
