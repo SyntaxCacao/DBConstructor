@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Exports;
 
 use DBConstructor\Application;
+use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Forms\Form;
@@ -35,6 +36,10 @@ class ExportForm extends Form
 
         $field = new SelectField("format", "Format");
         $field->addOptions(Export::FORMATS);
+        $this->addField($field);
+
+        $field = new CheckboxField("internalid", "Interne ID mit ausgeben");
+        $field->description = "Kann die Auffindbarkeit exportierter Datensätze auf dieser Plattform verbessern";
         $this->addField($field);
 
         $field = new TextareaField("note", "Bemerkung");
@@ -77,6 +82,10 @@ class ExportForm extends Form
 
                 $columnsArray = ["id"];
 
+                if ($data["internalid"]) {
+                    $columnsArray[] = "_intid";
+                }
+
                 // headings relational
                 $relationalColumns = RelationalColumn::loadList($table->id);
 
@@ -99,6 +108,10 @@ class ExportForm extends Form
 
                 foreach ($rows as $row) {
                     $rowCsv = [$row->exportId];
+
+                    if ($data["internalid"]) {
+                        $columnsArray[] = $row->id;
+                    }
 
                     /*
                     if (! isset($fields[$row->id])) {
