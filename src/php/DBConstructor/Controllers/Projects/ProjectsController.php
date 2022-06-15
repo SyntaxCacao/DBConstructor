@@ -84,7 +84,7 @@ class ProjectsController extends Controller
 
         if (is_null($participant)) {
             if (isset($_GET["join"]) && Application::$instance->hasAdminPermissions()) {
-                $participantId = Participant::create(Application::$instance->user->id, $project->id, true);
+                $participantId = Participant::add(Application::$instance->user->id, $project->id, true);
                 $participant = Participant::loadFromId($project->id, $participantId);
                 $data["joined"] = true;
             } else {

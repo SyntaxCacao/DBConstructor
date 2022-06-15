@@ -91,7 +91,7 @@ class ProjectForm extends Form
         if (is_null($this->project)) {
             // create
             $id = Project::create($data["label"], $data["description"], $data["notes"]);
-            Participant::create(Application::$instance->user->id, $id, true);
+            Participant::add(Application::$instance->user->id, $id, true);
 
             Application::$instance->redirect("projects/$id", "created");
         } else {
