@@ -110,7 +110,7 @@ class ExportForm extends Form
                     $rowCsv = [$row->exportId];
 
                     if ($data["internalid"]) {
-                        $columnsArray[] = $row->id;
+                        $rowCsv[] = $row->id;
                     }
 
                     /*
