@@ -49,11 +49,28 @@ class Table
     /**
      * @param bool $manualOrder Tables will be ordered by (manually assigned) position if true, by names/labels if false.
      * @param bool $orderByLabel If $manualOrder is false, tables will be ordered by labels if true, by names if false.
+     * @param bool $rowCount If true, number of rows (not deleted) for each table will be included.
+     * @param string|null $assigneeId If not null, number of rows assigned to the given user will be included for each table.
      * @return array<string, Table>
      */
-    public static function loadList(string $projectId, bool $manualOrder = false, bool $orderByLabel = false): array
+    public static function loadList(string $projectId, bool $manualOrder = false, bool $orderByLabel = false, bool $rowCount = false, string $assigneeId = null): array
     {
-        MySQLConnection::$instance->execute("SELECT t.*, (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `count` FROM `dbc_table` t WHERE `project_id`=? ORDER BY `".($manualOrder ? "position" : ($orderByLabel ? "label" : "name"))."`", [$projectId]);
+        $sql = "SELECT t.*";
+        $params = [];
+
+        if ($rowCount) {
+            $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` = FALSE) AS `rowCount`";
+        }
+
+        if ($assigneeId !== null) {
+            $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`assignee_id` = ?) AS `assignedCount`";
+            $params[] = $assigneeId;
+        }
+
+        $sql .= " FROM `dbc_table` t WHERE `project_id`=? ORDER BY `".($manualOrder ? "position" : ($orderByLabel ? "label" : "name"))."`";
+        $params[] = $projectId;
+
+        MySQLConnection::$instance->execute($sql, $params);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 
@@ -86,8 +103,11 @@ class Table
     /** @var string */
     public $created;
 
-    /** @var int|null */
+    /** @var string|null */
     public $rowCount;
+
+    /** @var string|null */
+    public $assignedCount;
 
     /**
      * @param array<string, string> $data
@@ -102,8 +122,12 @@ class Table
         $this->position = $data["position"];
         $this->created = $data["created"];
 
-        if (isset($data["count"])) {
-            $this->rowCount = $data["count"];
+        if (isset($data["rowCount"])) {
+            $this->rowCount = $data["rowCount"];
+        }
+
+        if (isset($data["assignedCount"])) {
+            $this->assignedCount = $data["assignedCount"];
         }
     }
 

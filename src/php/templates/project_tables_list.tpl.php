@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use DBConstructor\Models\RowLoader;
 use DBConstructor\Util\MarkdownParser;
 
 /** @var array $data */
@@ -36,7 +37,7 @@ use DBConstructor\Util\MarkdownParser;
           <tr class="table-heading">
             <th class="table-cell">Bezeichnung</th>
             <th class="table-cell">Technischer Name</th>
-            <th class="table-cell">Datensätze</th>
+            <th class="table-cell" title="Zahl der nicht als gelöscht markierten Datensätze in der Tabelle">Datensätze</th>
 <?php   if ($data["isManager"]) { ?>
             <th class="table-cell"></th>
 <?php   } ?>
@@ -48,7 +49,7 @@ use DBConstructor\Util\MarkdownParser;
           <tr class="table-row">
             <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table->id ?>/"><?php echo htmlentities($table->label); ?></a></td>
             <td class="table-cell table-cell-code"><?php echo htmlentities($table->name); ?></td>
-            <td class="table-cell"><?php echo $table->rowCount; ?></td>
+            <td class="table-cell"><?php echo number_format(intval($table->rowCount), 0, ",", "."); if (intval($table->assignedCount) > 0) echo '&nbsp; <a class="main-link page-table-list-assigned-counter" href="'.$data["baseurl"].'/projects/'.$data["project"]->id.'/tables/'.$table->id.'/view/?field-assignee='.$data["user"]->id.'&field-deleted='.RowLoader::FILTER_DELETED_INCLUDE.'" title="Mir zugewiesene Datensätze"><span class="bi bi-bell-fill"></span> <strong>'.number_format(intval($table->assignedCount), 0, ",", ".").'</strong>'; ?></td>
 <?php     if ($data["isManager"]) { ?>
             <td class="table-cell table-cell-actions">
               <a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a><!--
