@@ -98,8 +98,8 @@ class HeaderGenerator
 
                 echo '">';
 
-                echo '<summary>'; // TODO Remove style attribute
-                echo '<span class="button button-small"><span class="bi bi-three-dots" style="margin-right: 0"></span></span>';
+                echo '<summary>';
+                echo '<span class="button button-small"><span class="bi bi-three-dots no-margin"></span></span>';
                 echo '</summary>';
                 echo '<ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">';
 

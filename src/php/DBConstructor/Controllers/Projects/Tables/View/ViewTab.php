@@ -7,6 +7,7 @@ namespace DBConstructor\Controllers\Projects\Tables\View;
 use DBConstructor\Application;
 use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
+use DBConstructor\Controllers\Projects\Tables\TableGenerator;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
@@ -33,10 +34,10 @@ class ViewTab extends TabController
         if (count($path) <= 5) {
             // table view
 
-            $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
-            $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
+            $relationalColumns = RelationalColumn::loadList($data["table"]->id);
+            $textualColumns = TextualColumn::loadList($data["table"]->id);
 
-            if (count($data["relationalColumns"]) === 0 && count($data["textualColumns"]) === 0) {
+            if (count($relationalColumns) === 0 && count($textualColumns) === 0) {
                 $data["tabpage"] = "blank";
                 return true;
             }
@@ -46,51 +47,66 @@ class ViewTab extends TabController
             $participants = Participant::loadList($data["project"]->id);
 
             // filter
-            $filterForm = new FilterForm();
-            $filterForm->init($participants);
+            $filterForm = new FilterForm($data["table"]->id);
+            $filterForm->init($participants, $relationalColumns, $textualColumns);
             $filterForm->process();
+            $loader = $filterForm->loader;
 
             $data["filterForm"] = $filterForm;
 
             // count rows
-            $data["rowCount"] = Row::countRowsFiltered($data["table"]->id, $filterForm);
+            $data["rowCount"] = $loader->getRowCount();
 
             if ($data["rowCount"] === 0) {
+                $data["generator"] = new TableGenerator();
+                $data["generator"]->rows = [];
                 return true;
             }
 
             // determine page
-            $data["pageCount"] = Row::calcPages($data["rowCount"]);
+            $data["pageCount"] = $loader->calcPages($data["rowCount"]);
 
             $page = 1;
 
-            if (isset($_GET["page"]) && intval($_GET["page"]) > 0) {
+            if (isset($_GET["page"]) && intval($_GET["page"]) > 1) {
                 $page = intval($_GET["page"]);
             }
 
             if ($page > $data["pageCount"]) {
-                $data["rowCount"] = 0;
+                $data["generator"] = new TableGenerator();
+                $data["generator"]->rows = [];
                 return true;
             }
 
             $data["currentPage"] = $page;
 
-            // load rows
-            $data["rows"] = Row::loadListFiltered($data["table"]->id, $filterForm, $page);
+            // prepare generator
+            $generator = new TableGenerator();
+            $generator->rowCount = $data["rowCount"];
+            $generator->projectId = $data["project"]->id;
+            $generator->tableId = $data["table"]->id;
+            $generator->relationalColumns = $relationalColumns;
+            $generator->textualColumns = $textualColumns;
+            $generator->rows = $loader->getRows($page);
 
-            // load fields
-            if (count($data["relationalColumns"]) > 0) {
-                $data["relationalFields"] = RelationalField::loadRows($data["rows"]);
-            } else {
-                $data["relationalFields"] = [];
+            if ($filterForm->showExportIdColumn) {
+                $data["metaColumns"] = TableGenerator::META_COLUMNS_DEFAULT;
+                $data["metaColumns"][] = TableGenerator::META_COLUMN_EXPORT_ID;
             }
 
-            if (count($data["textualColumns"]) > 0) {
-                $data["textualFields"] = TextualField::loadRows($data["rows"]);
+            if (count($relationalColumns) > 0) {
+                $generator->relationalFields = RelationalField::loadRows($generator->rows);
             } else {
-                $data["textualFields"] = [];
+                $generator->relationalFields = [];
             }
 
+            if (count($textualColumns) > 0) {
+                $generator->textualFields = TextualField::loadRows($generator->rows);
+            } else {
+                $generator->textualFields = [];
+            }
+
+            $data["generator"] = $generator;
             return true;
         }
 

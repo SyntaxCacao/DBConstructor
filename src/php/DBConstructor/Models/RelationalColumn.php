@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor\Models;
 
+use DBConstructor\Controllers\Projects\Tables\RelationalSelectField;
 use DBConstructor\Forms\Fields\Field;
 use DBConstructor\SQL\MySQLConnection;
 
@@ -98,18 +99,37 @@ class RelationalColumn extends Column
 
     public function generateInput(Field $field, array $errorMessages, bool $edit = false)
     {
-        // TODO Do actual validation
-        // See workaround in validation.js
+        /** @var RelationalSelectField $field */
         $validationIndicator = "";
 
         if (! $this->nullable) {
-            $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">Enthält einen Wert</p></div>';
+            if ($field->value === null) {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">Enthält einen Wert</p></div>';
+            } else {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check-lg"></span></div><p class="validation-step-description">Enthält einen Wert</p></div>';
+            }
         }
 
-        $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
-        $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
+        if ($field->selection === null) {
+            if ($field->value === null) {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
+            } else {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
+            }
 
-        $this->generateInput_internal($field, $errorMessages, $edit, $this->nullable, $validationIndicator, false, "Auswahl", 'data-nullable="'.var_export($this->nullable, true).'"');
+            $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
+        } else {
+            $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz existiert</p></div>';
+
+            if ($field->selection->valid && ! $field->selection->deleted) {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
+            } else {
+                $validationIndicator .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">Referenzierter Datensatz ist gültig</p></div>';
+            }
+        }
+
+        // valid value doesn't matter and therefore can always be true
+        $this->generateInput_internal($field, $errorMessages, $edit, true, $validationIndicator, false, "Auswahl");
     }
 
     public function move(int $newPosition)

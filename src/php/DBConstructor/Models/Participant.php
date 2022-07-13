@@ -32,7 +32,7 @@ class Participant
     /**
      * @return Participant|null
      */
-    public static function load(string $sql, array $params)
+    protected static function load(string $sql, array $params)
     {
         MySQLConnection::$instance->execute($sql, $params);
         $result = MySQLConnection::$instance->getSelectedRows();

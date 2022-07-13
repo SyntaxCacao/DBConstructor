@@ -67,23 +67,41 @@ abstract class Column
 
     public abstract function generateInput(Field $field, array $errorMessages, bool $edit = false);
 
-    protected function generateInput_internal(Field $field, array $errorMessages, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData)
+    protected function generateInput_internal(Field $field, array $errorMessages, bool $edit, bool $valid, string $validationIndicator, bool $isTextual, string $insertLabel, string $labelData = null)
     {
         // header
         echo '<header class="main-subheader">';
         echo '<h2 class="main-subheading">'.htmlentities($this->label).'</h2>';
-
-        $instructionsModalId = "";
 
         if (ProjectsController::$isManager || ($edit && $this->instructions !== null)) {
             echo '<div class="main-header-actions">';
 
             // instructions button
             if ($edit && $this->instructions !== null) {
-                $instructionsModalId = 'modal-instructions-'.($isTextual ? "txt"  : "rel").'-'.$this->id;
+                $instructionsModalId = 'modal-instructions-'.($isTextual ? "txt" : "rel").'-'.$this->id;
                 echo '<a class="button button-small main-header-action js-open-modal" href="#" tabindex="-1" title="Erläuterungen anzeigen" data-modal="'.$instructionsModalId.'">';
                 echo '<span class="bi bi-book no-margin"></span>';
                 echo '</a>';
+
+                // instructions modal
+                $modal = '<div class="modal" id="'.$instructionsModalId.'">';
+                $modal .= '<div class="modal-container">';
+                $modal .= '<div class="modal-dialog modal-dialog-lg">';
+                $modal .= '<header class="modal-header">';
+                $modal .= '<h3>Erläuterung</h3>';
+                $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+                $modal .= '</header>';
+                $modal .= '<div class="modal-content markdown">';
+                $modal .= MarkdownParser::parse($this->instructions);
+                $modal .= '</div>';
+                $modal .= '<div class="modal-actions">';
+                $modal .= '<a class="button modal-action modal-action-right js-close-modal">Schließen</a>';
+                $modal .= '</div>';
+                $modal .= '</div>';
+                $modal .= '</div>';
+                $modal .= '</div>';
+
+                Application::$instance->modals[] = $modal;
             }
 
             // edit button
@@ -98,36 +116,16 @@ abstract class Column
 
         echo '</header>';
 
-        // (instructions modal)
-        if ($instructionsModalId !== "") {
-            echo '<div class="modal" id="'.$instructionsModalId.'">';
-            echo '<div class="modal-container">';
-            echo '<div class="modal-dialog modal-dialog-lg">';
-            echo '<header class="modal-header">';
-            echo '<h3>Erläuterung</h3>';
-            echo '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
-            echo '</header>';
-            echo '<div class="modal-content markdown">';
-            echo MarkdownParser::parse($this->instructions);
-            echo '</div>';
-            echo '<div class="modal-actions">';
-            echo '<a class="button modal-action modal-action-right js-close-modal">Schließen</a>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-        }
-
         echo '<div class="row page-table-insert-row break-md">';
 
         // field
-        echo '<label class="column width-'.($edit ? '7' : '4').' '.($isTextual ? 'js-validate-within' : 'js-validate-relational');
+        echo '<label class="column width-'.($edit ? '7' : '4').($isTextual ? ' js-validate-within' : '');
 
-        if ($edit && ! $valid) {
+        if ($edit && $isTextual && ! $valid) {
             echo ' page-table-insert-invalid';
         }
 
-        echo ' form-block" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'" '.$labelData.'>';
+        echo ' form-block" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'"'.($labelData === null ? '' : ' '.$labelData).'>';
         echo '<p class="page-table-insert-label">'.$insertLabel.'</p>';
         echo $field->generateField();
 

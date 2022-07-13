@@ -98,6 +98,8 @@ module.exports = function(grunt) {
             'src/js/links.js',
             'src/js/form-lists.js',
             'src/js/modals.js',
+            'src/js/rowfilter.js',
+            'src/js/selector.js',
             'src/js/tabnav.js',
             'src/js/validation.js'
           ]

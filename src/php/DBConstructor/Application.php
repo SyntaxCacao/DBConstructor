@@ -25,6 +25,9 @@ class Application
     public $config = [];
 
     /** @var array<string> */
+    public $modals = [];
+
+    /** @var array<string> */
     public $path;
 
     /** @var User|null */

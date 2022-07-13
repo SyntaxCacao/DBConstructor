@@ -28,73 +28,16 @@ document.addEventListener("change", event => {
       }
     });
   }
-
-  const closestRelational = event.target.closest(".js-validate-relational");
-
-  if (closestRelational !== null && "data-rules-element" in closestRelational.attributes && "data-nullable" in closestRelational.attributes) {
-    const value = event.target.value;
-    const rulesElements = document.querySelector(closestRelational.attributes["data-rules-element"].value).querySelectorAll(".validation-step");
-
-    closestRelational.classList.remove("page-table-insert-invalid");
-
-    let existsIndex = 0;
-    let validIndex = 1;
-
-    if (closestRelational.attributes["data-nullable"].value === "false") {
-      if (value === "") {
-        setFailed(rulesElements.item(0));
-        closestRelational.classList.add("page-table-insert-invalid");
-      } else {
-        setSuccess(rulesElements.item(0));
-      }
-
-      existsIndex = 1;
-      validIndex = 2;
-    }
-
-    if (value === "") {
-      setSkipped(rulesElements.item(existsIndex));
-      setSkipped(rulesElements.item(validIndex));
-    } else {
-      setSuccess(rulesElements.item(existsIndex));
-
-      closestRelational.querySelectorAll("option").forEach(option => {
-        if (option.attributes["value"].value === value) {
-          if (option.attributes["data-valid"].value === "true") {
-            setSuccess(rulesElements.item(validIndex));
-          } else {
-            setFailed(rulesElements.item(validIndex));
-            closestRelational.classList.add("page-table-insert-invalid");
-          }
-        }
-      });
-    }
-  }
 });
 
 function setFailed(element) {
-  element = element.querySelector(".bi");
-  element.classList.remove("bi-check-lg");
-  element.classList.remove("bi-dash-lg");
-  element.classList.add("bi-x-lg");
+  element.querySelector(".bi").className = "bi bi-x-lg";
 }
 
 function setSkipped(element) {
-  element = element.querySelector(".bi");
-  element.classList.remove("bi-check-lg");
-  element.classList.remove("bi-x-lg");
-  element.classList.add("bi-dash-lg");
+  element.querySelector(".bi").className = "bi bi-dash-lg";
 }
 
 function setSuccess(element) {
-  element = element.querySelector(".bi");
-  element.classList.remove("bi-dash-lg");
-  element.classList.remove("bi-x-lg");
-  element.classList.add("bi-check-lg");
+  element.querySelector(".bi").className = "bi bi-check-lg";
 }
-
-// TODO Workaround to actually validate relational fields after loading the page
-// RelationalColumn#generateInput() sends static validation state, not real validation result
-document.querySelectorAll(".js-validate-relational select").forEach(element => {
-  element.dispatchEvent(new Event("change", {"bubbles": true}));
-});

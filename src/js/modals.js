@@ -2,6 +2,16 @@ function closeModal(element) {
   document.querySelector("body").classList.remove("modal-open-within");
   element.classList.remove("modal-open");
   //event.target.closest(".modal").classList.remove("modal-open");
+
+  /*
+  const closeEvent = new CustomEvent("closeModal", {
+    bubbles: false,
+    detail: {
+      element: element
+    }
+  });
+  document.dispatchEvent(closeEvent);
+  */
 }
 
 document.addEventListener("click", event => {
@@ -18,8 +28,18 @@ document.addEventListener("click", event => {
   } else {
     // open modal
     if (event.target.closest(".js-open-modal") !== null) {
+      const modal = document.getElementById(event.target.closest(".js-open-modal").attributes["data-modal"].value);
+
+      const openEvent = new CustomEvent("openModal", {
+        bubbles: false,
+        detail: {
+          element: modal
+        }
+      });
+      document.dispatchEvent(openEvent);
+
       document.querySelector("body").classList.add("modal-open-within");
-      document.getElementById(event.target.closest(".js-open-modal").attributes["data-modal"].value).classList.add("modal-open");
+      modal.classList.add("modal-open");
     }
   }
 });

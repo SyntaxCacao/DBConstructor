@@ -37,31 +37,52 @@
   margin-bottom: $main-header-margin-bottom;
   margin-top: $main-header-margin-top;
 
-  .button, .form-select {
-    display: block;
-
-    @media (max-width: $breakpoint-md) {
+  @media (max-width: $breakpoint-md) {
+    .button,
+    .form-input,
+    .form-select {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: $spacer-1;
       width: 100%;
+    }
+
+    .button {
+      text-align: center; // should maybe be a general rule?
     }
   }
 }
 
+.page-table-view-controls-row-expandable:not(.expanded) {
+  display: none;
+}
+
 @media (min-width: $breakpoint-md+1) {
-  .page-table-view-controls {
+  .page-table-view-controls-row {
     display: flex;
 
+    .button,
+    .form-input,
     .form-select {
-      min-width: 0;
-    }
-
-    .button, .form-select {
       &:not(:last-child) {
         margin-right: $spacer-2;
       }
     }
+
+    .form-input,
+    .form-select {
+      flex-grow: 1;
+      min-width: 0;
+    }
   }
+
+  .page-table-view-controls-row-expandable {
+    margin-top: $spacer-2;
+  }
+}
+
+.page-table-view-controls-expand {
+  padding-left: 10px;
+  padding-right: 10px
 }
 
 .page-table-view-icons {
@@ -140,5 +161,82 @@
       overflow-y: auto;
       padding-right: $container-padding;
     }
+  }
+}
+
+// //
+
+.page-table-selector {
+  align-items: center;
+  display: flex;
+  line-height: 30px;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.page-table-selector-value {
+  min-width: 0;
+
+  @include one-line-text;
+}
+
+.page-table-selector-indicator {
+  display: inline-flex;
+  margin-left: $spacer-2;
+}
+
+.page-table-selector-button {
+  margin-left: auto;
+  width: fit-content !important; // important because of .form-block
+}
+
+.page-table-selector-modal {
+  .modal-dialog {
+    max-width: 1000px;
+  }
+
+  .blankslate {
+    padding: $spacer-6 $spacer-5;
+  }
+
+  .blankslate-text {
+    margin-bottom: 0;
+    margin-top: $spacer-1;
+  }
+}
+
+.page-table-selector-modal-form {
+  display: flex;
+}
+
+.page-table-selector-modal-form-column,
+.page-table-selector-modal-form-value,
+.page-table-selector-modal-button {
+  margin-bottom: $spacer-2;
+}
+
+.page-table-selector-modal-form-column,
+.page-table-selector-modal-form-value {
+  margin-right: $spacer-2;
+  min-width: 120px; // just some low value
+}
+
+.page-table-selector-modal-form-value {
+  flex-grow: 1;
+}
+
+@media (max-width: 600px) {
+  .page-table-selector-modal-form {
+    display: initial;
+  }
+
+  .page-table-selector-modal-form-column,
+  .page-table-selector-modal-form-value,
+  .page-table-selector-modal-button {
+    width: 100%;
+  }
+
+  .page-table-selector-modal-button {
+    text-align: center;
   }
 }

@@ -1,5 +1,9 @@
 // hide utilities //
 
+.hide {
+  display: none !important;
+}
+
 @each $breakpoint, $width in $breakpoints {
   // .show-md: element shown on >= md
   @media (max-width: $width) {

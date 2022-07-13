@@ -178,7 +178,7 @@ abstract class RowForm extends Form
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getRowId()
     {

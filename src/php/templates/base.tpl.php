@@ -45,6 +45,7 @@
 <?php } ?>
     <?php require $data["page"].".tpl.php"?>
 
+<?php foreach (\DBConstructor\Application::$instance->modals as $modal) echo $modal; ?>
     <script src="<?php echo $data["baseurl"]; ?>/assets/build-<?php echo $data["version"]; ?>.min.js"></script>
   </body>
 </html>
