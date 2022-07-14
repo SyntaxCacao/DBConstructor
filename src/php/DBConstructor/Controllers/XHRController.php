@@ -15,7 +15,7 @@ use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
 
-class APIController extends Controller
+class XHRController extends Controller
 {
     /**
      * @throws JsonException

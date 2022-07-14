@@ -4,7 +4,7 @@ document.addEventListener("change", event => {
   if (closest !== null && "data-rules-element" in closest.attributes && "data-column-id" in closest.attributes) {
     let value = event.target.value;
 
-    fetch(document.body.attributes["data-baseurl"].value + "/api/validation/", {
+    fetch(document.body.attributes["data-baseurl"].value + "/xhr/validation/", {
       body: "id=" + encodeURIComponent(closest.attributes["data-column-id"].value) + "&value=" + encodeURIComponent(value),
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded"

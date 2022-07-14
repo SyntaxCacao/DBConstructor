@@ -11,7 +11,7 @@ function loadTable(modal, searchColumn, searchValue, page) {
     body += "&searchValue=" + encodeURIComponent(searchValue);
   }
 
-  fetch(document.body.dataset.baseurl + "/api/selector/" + modal.dataset.tableId, {
+  fetch(document.body.dataset.baseurl + "/xhr/selector/" + modal.dataset.tableId, {
     body: body,
     headers: new Headers({
       "Content-Type": "application/x-www-form-urlencoded"

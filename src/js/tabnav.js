@@ -35,7 +35,7 @@ document.addEventListener("click", event => {
 
     document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Laden...</em>";
 
-    fetch(document.body.attributes["data-baseurl"].value + "/api/markdown/", {
+    fetch(document.body.attributes["data-baseurl"].value + "/xhr/markdown/", {
       body: "src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value),
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded"

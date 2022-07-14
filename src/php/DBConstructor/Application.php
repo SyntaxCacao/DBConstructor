@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace DBConstructor;
 
-use DBConstructor\Controllers\APIController;
 use DBConstructor\Controllers\Exports\ExportsController;
 use DBConstructor\Controllers\LoginController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\ProjectsController;
 use DBConstructor\Controllers\Settings\UserSettingsController;
 use DBConstructor\Controllers\Users\UsersController;
+use DBConstructor\Controllers\XHRController;
 use DBConstructor\Models\User;
 use DBConstructor\SQL\Migration\MigrationTool;
 use DBConstructor\SQL\MySQLConnection;
@@ -136,8 +136,8 @@ class Application
             $controller = new ExportsController();
         } else if ($path[0] == "settings") {
             $controller = new UserSettingsController();
-        } else if ($path[0] == "api") {
-            $controller = new APIController();
+        } else if ($path[0] == "xhr") {
+            $controller = new XHRController();
         }
 
         if (! isset($controller)) {
