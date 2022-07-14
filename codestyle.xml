@@ -18,4 +18,18 @@
     <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="1" />
     <option name="SPACE_AFTER_TYPE_CAST" value="true" />
   </codeStyleSettings>
+  <codeStyleSettings language="SCSS">
+    <arrangement>
+      <rules>
+        <section>
+          <rule>
+            <match>
+              <NAME>.*</NAME>
+            </match>
+            <order>BY_NAME</order>
+          </rule>
+        </section>
+      </rules>
+    </arrangement>
+  </codeStyleSettings>
 </code_scheme>
