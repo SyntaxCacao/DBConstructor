@@ -10,7 +10,7 @@ document.addEventListener("click", function(event) {
     rows = event.target.parentNode.querySelector(".form-list-rows");
 
     rows.children[rows.children.length-1].querySelectorAll("input").forEach(function (element) {
-      element.name = "field-" + rows.attributes["data-list-name"].value + "-" + (count+1) + "-" + element.attributes["data-column-name"].value;
+      element.name = "field-" + rows.dataset.listName + "-" + (count+1) + "-" + element.dataset.columnName;
       element.value = null;
     });
 

@@ -1,7 +1,7 @@
 document.querySelectorAll(".js-confirm").forEach(function (element) {
   element.addEventListener("click", function (event) {
-    if (! event.target.classList.contains("button-disabled") && ! event.target.disabled && "data-confirm-message" in event.target.attributes) {
-      if (! confirm(event.target.attributes["data-confirm-message"].value)) {
+    if (! event.target.classList.contains("button-disabled") && ! event.target.disabled && "confirmMessage" in event.target.dataset) {
+      if (! confirm(event.target.dataset.confirmMessage)) {
         event.preventDefault();
       }
     }

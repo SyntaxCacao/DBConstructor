@@ -14,29 +14,29 @@ document.addEventListener("click", event => {
       const prev = event.target.parentNode.querySelector(".selected");
       prev.classList.remove("selected");
 
-      if (prev.attributes["data-tab-body"] !== null) {
-        document.querySelector(prev.attributes["data-tab-body"].value).style["display"] = "none";
+      if ("tabBody" in prev.dataset) {
+        document.querySelector(prev.dataset.tabBody).style["display"] = "none";
       }
 
       event.target.classList.add("selected");
 
-      if (event.target.attributes["data-tab-body"] !== null) {
-        document.querySelector(event.target.attributes["data-tab-body"].value).style["display"] = "initial";
+      if ("tabBody" in event.target.dataset) {
+        document.querySelector(event.target.dataset.tabBody).style["display"] = "initial";
       }
     }
   }
 
   // markdown preview
   if (event.target.matches(".js-markdown-tab")) {
-    if (document.querySelector(event.target.attributes["data-markdown-source"].value).value === "") {
-      document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Keine Eingabe vorhanden</em>";
+    if (document.querySelector(event.target.dataset.markdownSource).value === "") {
+      document.querySelector(event.target.dataset.tabBody).innerHTML = "<em>Keine Eingabe vorhanden</em>";
       return;
     }
 
-    document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Laden...</em>";
+    document.querySelector(event.target.dataset.tabBody).innerHTML = "<em>Laden...</em>";
 
-    fetch(document.body.attributes["data-baseurl"].value + "/xhr/markdown/", {
-      body: "src=" + encodeURIComponent(document.querySelector(event.target.attributes["data-markdown-source"].value).value),
+    fetch(document.body.dataset.baseurl + "/xhr/markdown/", {
+      body: "src=" + encodeURIComponent(document.querySelector(event.target.dataset.markdownSource).value),
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded"
       }),
@@ -45,10 +45,10 @@ document.addEventListener("click", event => {
     }).then(response => {
       if (response.ok) {
         response.text().then(text => {
-          document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = text;
+          document.querySelector(event.target.dataset.tabBody).innerHTML = text;
         });
       } else {
-        document.querySelector(event.target.attributes["data-tab-body"].value).innerHTML = "<em>Fehler bei der Verarbeitung</em>";
+        document.querySelector(event.target.dataset.tabBody).innerHTML = "<em>Fehler bei der Verarbeitung</em>";
       }
     });
   }

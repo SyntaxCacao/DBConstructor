@@ -28,7 +28,7 @@ document.addEventListener("click", event => {
   } else {
     // open modal
     if (event.target.closest(".js-open-modal") !== null) {
-      const modal = document.getElementById(event.target.closest(".js-open-modal").attributes["data-modal"].value);
+      const modal = document.getElementById(event.target.closest(".js-open-modal").dataset.modal);
 
       const openEvent = new CustomEvent("openModal", {
         bubbles: false,
