@@ -102,7 +102,7 @@ use DBConstructor\Util\MarkdownParser;
 <?php   } else if ($action->action === RowAction::ACTION_CHANGE) {
           $relational = $action->data[RowAction::CHANGE_DATA_IS_RELATIONAL];
           if ($relational) {
-            $column = $data["relationalColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]];
+            $column = $data["relationalColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]]->label ?? "(gelöschtes Feld)";
             $previous = $action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE];
             $new = $action->data[RowAction::CHANGE_DATA_NEW_VALUE];
 
@@ -114,13 +114,20 @@ use DBConstructor\Util\MarkdownParser;
               $new = "NULL";
             }
           } else {
-            $column = $data["textualColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]];
-            $previous = $column->generatePrintableValue($action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE]);
-            $new = $column->generatePrintableValue($action->data[RowAction::CHANGE_DATA_NEW_VALUE]);
+            if (isset($data["textualColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]])) {
+              $column = $data["textualColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]];
+              $previous = $column->generatePrintableValue($action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE]);
+              $new = $column->generatePrintableValue($action->data[RowAction::CHANGE_DATA_NEW_VALUE]);
+              $column = $column->label;
+            } else {
+              $column = "(gelöschtes Feld)";
+              $previous = $action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE];
+              $new = $action->data[RowAction::CHANGE_DATA_NEW_VALUE];
+            }
           } ?>
         <div class="timeline-item">
           <div class="timeline-item-icon"><span class="bi bi-pencil"></span></div>
-          <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat das Feld <span class="timeline-item-body-emphasis"><?= htmlentities($column->label) ?></span> von <span class="timeline-item-body-emphasis"><?= htmlentities($previous) ?></span> auf <span class="timeline-item-body-emphasis"><?= htmlentities($new) ?></span> gesetzt&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
+          <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat das Feld <span class="timeline-item-body-emphasis"><?= htmlentities($column) ?></span> von <span class="timeline-item-body-emphasis"><?= htmlentities($previous) ?></span> auf <span class="timeline-item-body-emphasis"><?= htmlentities($new) ?></span> gesetzt&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_COMMENT) { ?>
         <div class="timeline-comment">
