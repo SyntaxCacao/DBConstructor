@@ -86,7 +86,7 @@ document.addEventListener("click", event => {
 
   if (button !== null) {
     const modal = event.target.closest(".page-table-selector-modal");
-    const input = document.querySelector("input[name=field-relational-" + modal.dataset.columnId + "]")
+    const input = document.querySelector("#page-table-selector-" + modal.dataset.selectorId + "-input")
 
     if (input.value === button.dataset.rowId) {
       return;
