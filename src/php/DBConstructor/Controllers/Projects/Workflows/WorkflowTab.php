@@ -55,7 +55,7 @@ class WorkflowTab extends TabController
             return true;
         }
 
-        if (! ctype_digit($path[3])) {
+        if (! intval($path[3]) > 0) {
             (new NotFoundController())->request($path);
             return false;
         }

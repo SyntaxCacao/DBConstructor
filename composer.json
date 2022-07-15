@@ -3,6 +3,10 @@
         "vendor-dir": "src/php-vendor"
     },
     "require": {
-        "erusev/parsedown": "1.7.4"
+        "erusev/parsedown": "1.7.4",
+        "ext-ctype": "*",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-zip": "*"
     }
 }

@@ -58,7 +58,7 @@ class StepsController
 
         if (count($path) === 7 && $path[4] === "steps" && $path[6] === "edit") {
             // edit
-            if (! ctype_digit($path[5])) {
+            if (! intval($path[5]) > 0) {
                 (new NotFoundController())->request($path);
                 return false;
             }
