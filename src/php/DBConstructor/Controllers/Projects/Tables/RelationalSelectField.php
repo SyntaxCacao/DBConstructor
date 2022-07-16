@@ -14,6 +14,8 @@ use Exception;
 
 class RelationalSelectField extends Field
 {
+    public static $nextId = 1;
+
     /** @var RelationalColumn */
     public $column;
 
@@ -33,7 +35,7 @@ class RelationalSelectField extends Field
 
     public function generateField(): string
     {
-        $html = '<input name="field-'.htmlentities($this->name).'" type="hidden"';
+        $html = '<input id="page-table-selector-'.self::$nextId.'-input" name="field-'.htmlentities($this->name).'" type="hidden"';
 
         if ($this->value !== null) {
             $html .= ' value="'.$this->value.'"';
@@ -68,11 +70,11 @@ class RelationalSelectField extends Field
             $html .= '</span>';
         }
 
-        $html .= '<button class="button button-smallest page-table-selector-button js-open-modal" type="button" data-modal="modal-selector-'.$this->column->id.'"><span class="bi bi-pencil no-margin"></span></button>';
+        $html .= '<button class="button button-smallest page-table-selector-button js-open-modal" type="button" data-modal="modal-selector-'.self::$nextId.'"><span class="bi bi-pencil no-margin"></span></button>';
         $html .= '</div>';
 
         // selection modal
-        $modal = '<div class="modal page-table-selector-modal" id="modal-selector-'.$this->column->id.'" data-project-id="'.ProjectsController::$projectId.'" data-table-id="'.$this->column->targetTableId.'" data-column-id="'.$this->column->id.'">';
+        $modal = '<div class="modal page-table-selector-modal" id="modal-selector-'.self::$nextId.'" data-selector-id="'.self::$nextId.'" data-project-id="'.ProjectsController::$projectId.'" data-table-id="'.$this->column->targetTableId.'">';
         $modal .= '<div class="modal-container">';
         $modal .= '<div class="modal-dialog">';
         $modal .= '<header class="modal-header">';
@@ -90,6 +92,7 @@ class RelationalSelectField extends Field
         $modal .= '</div>';
         Application::$instance->modals[] = $modal;
 
+        self::$nextId += 1;
         return $html;
     }
 
