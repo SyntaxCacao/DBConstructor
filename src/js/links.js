@@ -1,17 +1,19 @@
-document.querySelectorAll(".js-confirm").forEach(function (element) {
-  element.addEventListener("click", function (event) {
-    if (! event.target.classList.contains("button-disabled") && ! event.target.disabled && "confirmMessage" in event.target.dataset) {
-      if (! confirm(event.target.dataset.confirmMessage)) {
-        event.preventDefault();
-      }
-    }
-  });
-});
-
 document.addEventListener("click", event => {
   const closest = event.target.closest("a");
 
-  if (closest !== null && "href" in closest.attributes && closest.attributes["href"].value === "#") {
+  if (closest === null) {
+    return;
+  }
+
+  // .js-confirm
+  if (closest.classList.contains("js-confirm") && ! closest.classList.contains("button-disabled") && ! closest.disabled && "confirmMessage" in closest.dataset) {
+    if (! confirm(closest.dataset.confirmMessage)) {
+      event.preventDefault();
+    }
+  }
+
+  // href="#"
+  if ("href" in closest.attributes && closest.attributes["href"].value === "#") {
     event.preventDefault();
   }
 });
