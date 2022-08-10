@@ -221,7 +221,7 @@ class ViewTab extends TabController
             $data["row"]->delete(Application::$instance->user->id);
         } else if (isset($_GET["restore"]) && $data["row"]->deleted) {
             $data["row"]->restore(Application::$instance->user->id);
-        } else if (isset($_GET["deletePerm"]) && $data["row"]->deleted && ($data["isManager"] || $data["row"]->creatorId === Application::$instance->user->id)) {
+        } else if (isset($_GET["deletePerm"]) && $data["row"]->deleted && $data["isManager"]) {
             $data["row"]->deletePermanently(Application::$instance->user->id);
             Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
         }

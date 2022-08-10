@@ -58,7 +58,7 @@ use DBConstructor\Util\MarkdownParser;
           "text" => "Wiederherstellen"
         ];
 
-        if ($data["isManager"] || $data["row"]->creatorId === $data["user"]->id) {
+        if ($data["isManager"]) {
           $header->dropdownActions[] = [
             "href" => "?deletePerm",
             "icon" => "trash",
