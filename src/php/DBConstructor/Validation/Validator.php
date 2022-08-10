@@ -31,6 +31,14 @@ class Validator
         $notDependable = [];
 
         foreach ($this->rules as $key => $rule) {
+            // Resetting result before validating
+            //
+            // When the same Validator object is used for validating multiple values after another
+            // and the result is NOT changed during $rule->validate(), which may happen if the rule
+            // is skipped, then the previous validation result would be retained! To fix this, the
+            // rule's result gets reset to SKIPPED before every validation
+            $rule->result = Rule::RESULT_SKIPPED;
+
             if (count(array_intersect($notDependable, $rule->depends)) > 0) {
                 $notDependable[] = $key;
                 continue;
