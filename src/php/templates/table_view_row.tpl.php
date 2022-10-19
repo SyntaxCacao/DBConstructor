@@ -151,6 +151,16 @@ use DBConstructor\Util\MarkdownParser;
           <div class="timeline-item-icon"><span class="bi bi-flag"></span></div>
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat den Datensatz zur Nachverfolgung gekennzeichnet&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
         </div>
+<?php   } else if ($action->action === RowAction::ACTION_REDIRECTION_DESTINATION) { ?>
+        <div class="timeline-item">
+          <div class="timeline-item-icon"><span class="bi bi-box-arrow-in-up-right"></span></div>
+          <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat <?= $action->data[RowAction::REDIRECTION_DATA_COUNT] === 1 ? 'eine Referenz' : '<span class="timeline-item-body-emphasis">'.$action->data[RowAction::REDIRECTION_DATA_COUNT].'</span> Referenzen' ?> auf Datensatz <a class="timeline-item-body-emphasis" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $action->data[RowAction::REDIRECTION_DATA_ORIGIN] ?>/"><?= $action->data[RowAction::REDIRECTION_DATA_ORIGIN] ?></a> umgeleitet auf diesen Datensatz&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
+        </div>
+<?php   } else if ($action->action === RowAction::ACTION_REDIRECTION_ORIGIN) { ?>
+        <div class="timeline-item">
+          <div class="timeline-item-icon"><span class="bi bi-box-arrow-in-up-right"></span></div>
+          <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat <?= $action->data[RowAction::REDIRECTION_DATA_COUNT] === 1 ? 'eine Referenz' : '<span class="timeline-item-body-emphasis">'.$action->data[RowAction::REDIRECTION_DATA_COUNT].'</span> Referenzen' ?> auf diesen Datensatz umgeleitet auf Datensatz <a class="timeline-item-body-emphasis" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $action->data[RowAction::REDIRECTION_DATA_DESTINATION] ?>/"><?= $action->data[RowAction::REDIRECTION_DATA_DESTINATION] ?></a>&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
+        </div>
 <?php   } else if ($action->action === RowAction::ACTION_RESTORATION) { ?>
         <div class="timeline-item">
           <div class="timeline-item-icon"><span class="bi bi-arrow-counterclockwise"></span></div>

@@ -21,6 +21,10 @@ class RowAction
 
     const ACTION_FLAG = "flag";
 
+    const ACTION_REDIRECTION_DESTINATION = "redirection_dest";
+
+    const ACTION_REDIRECTION_ORIGIN = "redirection_origin";
+
     const ACTION_RESTORATION = "restoration";
 
     const ACTION_UNFLAG = "unflag";
@@ -32,6 +36,12 @@ class RowAction
     const CHANGE_DATA_NEW_VALUE = "new";
 
     const CHANGE_DATA_PREVIOUS_VALUE = "prev";
+
+    const REDIRECTION_DATA_COUNT = "count";
+
+    const REDIRECTION_DATA_DESTINATION = "dest";
+
+    const REDIRECTION_DATA_ORIGIN = "origin";
 
     public static function deleteRow(string $rowId)
     {
@@ -127,6 +137,36 @@ class RowAction
         RowAction::log(RowAction::ACTION_FLAG, $rowId, $userId);
     }
 
+    /**
+     * @throws JsonException
+     */
+    public static function logRedirection(string $userId, string $originId, string $destinationId, int $count)
+    {
+        // origin
+        $data = json_encode([
+            RowAction::REDIRECTION_DATA_DESTINATION => intval($destinationId),
+            RowAction::REDIRECTION_DATA_COUNT => $count
+        ]);
+
+        if ($data === false) {
+            throw new JsonException();
+        }
+
+        RowAction::log(RowAction::ACTION_REDIRECTION_ORIGIN, $originId, $userId, $data);
+
+        // destination
+        $data = json_encode([
+            RowAction::REDIRECTION_DATA_ORIGIN => intval($originId),
+            RowAction::REDIRECTION_DATA_COUNT => $count
+        ]);
+
+        if ($data === false) {
+            throw new JsonException();
+        }
+
+        RowAction::log(RowAction::ACTION_REDIRECTION_DESTINATION, $destinationId, $userId, $data);
+    }
+
     public static function logRestoration(string $rowId, string $userId)
     {
         RowAction::log(RowAction::ACTION_RESTORATION, $rowId, $userId);
@@ -170,7 +210,7 @@ class RowAction
         $this->action = $data["action"];
         $this->created = $data["created"];
 
-        if ($this->action == RowAction::ACTION_CHANGE) {
+        if ($this->action == RowAction::ACTION_CHANGE || $this->action == RowAction::ACTION_REDIRECTION_DESTINATION || $this->action == RowAction::ACTION_REDIRECTION_ORIGIN) {
             $this->data = json_decode($data["data"], true);
         } else {
             $this->data = $data["data"];

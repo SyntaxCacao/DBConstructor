@@ -13,6 +13,11 @@ use DBConstructor\Util\HeaderGenerator;
 <?php $header = new HeaderGenerator("Referenzen zu Datensatz #".$data["row"]->id);
       $header->subtitle = $data["referencesCount"]." Referenz".($data["referencesCount"] === 1 ? "" : "en")." gefunden";
       $header->autoActions[] = [
+        "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/references/redirect/",
+        "icon" => "box-arrow-in-up-right",
+        "text" => "Referenzen umleiten"
+      ];
+      $header->autoActions[] = [
         "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/",
         "icon" => "arrow-left",
         "text" => "Zurück"

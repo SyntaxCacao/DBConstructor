@@ -6,31 +6,39 @@ namespace DBConstructor\Controllers\Projects\Tables;
 
 use DBConstructor\Application;
 use DBConstructor\Controllers\Projects\ProjectsController;
-use DBConstructor\Forms\Fields\Field;
-use DBConstructor\Models\RelationalColumn;
+use DBConstructor\Forms\Fields\GroupableField;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use Exception;
 
-class RelationalSelectField extends Field
+class RelationalSelectField extends GroupableField
 {
     public static $nextId = 1;
 
-    /** @var RelationalColumn */
-    public $column;
+    /**
+     * Used for recursion test during form validation.
+     *
+     * @var string|null
+     */
+    public $baseRowId;
 
-    /** @var string|null */
-    public $rowId;
+    /** @var bool */
+    public $nullable;
 
     /** @var Row|null */
     public $selection;
 
-    public function __construct(RelationalColumn $column, string $rowId = null)
+    /** @var string */
+    public $targetTableId;
+
+    public function __construct(string $name, string $label = null, bool $nullable, string $targetTableId, string $baseRowId = null)
     {
-        parent::__construct("relational-".$column->id);
-        $this->column = $column;
+        parent::__construct($name, $label);
         $this->required = false;
-        $this->rowId = $rowId;
+
+        $this->baseRowId = $baseRowId;
+        $this->nullable = $nullable;
+        $this->targetTableId = $targetTableId;
     }
 
     public function generateField(): string
@@ -41,7 +49,7 @@ class RelationalSelectField extends Field
             $html .= ' value="'.$this->value.'"';
         }
 
-        $html .= ' data-nullable="'.intval($this->column->nullable).'" data-value-exists="'.intval($this->selection !== null).'" data-value-valid="'.intval($this->selection !== null && $this->selection->valid).'" data-value-deleted="'.intval($this->selection !== null && $this->selection->deleted).'">';
+        $html .= ' data-nullable="'.intval($this->nullable).'" data-value-exists="'.intval($this->selection !== null).'" data-value-valid="'.intval($this->selection !== null && $this->selection->valid).'" data-value-deleted="'.intval($this->selection !== null && $this->selection->deleted).'">';
         $html .= '<div class="form-input page-table-selector">';
 
         if ($this->value === null || $this->selection === null) {
@@ -74,7 +82,7 @@ class RelationalSelectField extends Field
         $html .= '</div>';
 
         // selection modal
-        $modal = '<div class="modal page-table-selector-modal" id="modal-selector-'.self::$nextId.'" data-selector-id="'.self::$nextId.'" data-project-id="'.ProjectsController::$projectId.'" data-table-id="'.$this->column->targetTableId.'">';
+        $modal = '<div class="modal page-table-selector-modal" id="modal-selector-'.self::$nextId.'" data-selector-id="'.self::$nextId.'" data-project-id="'.ProjectsController::$projectId.'" data-table-id="'.$this->targetTableId.'">';
         $modal .= '<div class="modal-container">';
         $modal .= '<div class="modal-dialog">';
         $modal .= '<header class="modal-header">';
@@ -94,11 +102,6 @@ class RelationalSelectField extends Field
 
         self::$nextId += 1;
         return $html;
-    }
-
-    public function generateGroup(array $errorMessages): string
-    {
-        return $this->generateField();
     }
 
     public function hasValue(): bool
@@ -123,14 +126,24 @@ class RelationalSelectField extends Field
             $this->value = null;
         }
 
-        if ($this->value !== null && $this->rowId !== null) {
+        if ($this->required && $this->value === null) {
+            // Normally, this would not be necessary, as Form handles this automatically.
+            // But in this class, hasValue() returns always true (for some reason?), so that the default mechanism does not work.
+            // Also, this allows for a custom message.
+            return ["Bitte wählen Sie einen Datensatz."];
+        }
+
+        if ($this->value !== null && $this->baseRowId !== null) {
             try {
-                RelationalField::testRecursion($this->rowId, $this->value);
+                RelationalField::testRecursion($this->baseRowId, $this->value);
             } catch (Exception $exception) {
                 return ["Der gewählte Datensatz referenziert diesen Datensatz unmittelbar oder mittelbar, dies wird (zur Zeit) nicht unterstützt."];
             }
         }
 
-        return [];
+        $issues = [];
+        $this->callClosures($issues);
+
+        return $issues;
     }
 }

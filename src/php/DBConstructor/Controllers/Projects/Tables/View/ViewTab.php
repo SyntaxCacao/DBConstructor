@@ -139,7 +139,7 @@ class ViewTab extends TabController
             return true;
         }
 
-        if (count($path) === 7 && $path[6] === "references") {
+        if (count($path) >= 7 && $path[6] === "references") {
             // references view
 
             $fields = RelationalField::loadReferencingFields($data["row"]->id, true);
@@ -153,12 +153,23 @@ class ViewTab extends TabController
             }
 
             if ($data["referencesCount"] === 0) {
-                $data["tabpage"] = "row_references_blank";
+                if (count($path) === 7) {
+                    $data["tabpage"] = "row_references_blank";
+                    return true;
+                }
             } else {
-                $data["tabpage"] = "row_references";
-            }
+                if (count($path) === 7) {
+                    $data["tabpage"] = "row_references";
+                    return true;
+                } else if (count($path) === 8 && $path[7] === "redirect") {
+                    $data["form"] = new RedirectForm();
+                    $data["form"]->init($fields, $data["row"]->id, $data["table"]->id);
+                    $data["form"]->process();
 
-            return true;
+                    $data["tabpage"] = "row_references_redirect";
+                    return true;
+                }
+            }
         }
 
         if (count($path) === 7 && $path[6] === "revalidate") {

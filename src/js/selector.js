@@ -144,6 +144,11 @@ document.addEventListener("click", event => {
 });
 
 function updateRules(input) {
+  if (! "rulesElement" in input.parentElement.dataset) {
+    // When not using RelationalSelectField within an insertion form, in a place where there is no validation
+    return;
+  }
+
   const rules = document.querySelector(input.parentElement.dataset.rulesElement).querySelectorAll(".validation-step");
 
   let existsIndex = 0;
