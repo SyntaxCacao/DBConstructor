@@ -71,13 +71,14 @@ class ProjectsController extends Controller
         }
 
         $project = Project::load($path[1]);
-        $data["project"] = $project;
-        ProjectsController::$projectId = $project->id;
 
         if (is_null($project)) {
             (new NotFoundController())->request($path);
             return;
         }
+
+        $data["project"] = $project;
+        ProjectsController::$projectId = $project->id;
 
         // check if user is participant
         $participant = Participant::loadFromUser($project->id, Application::$instance->user->id);
