@@ -15,12 +15,12 @@
 .blankslate-heading {
   font-size: 20px; // TODO = .main-heading
   line-height: $line-height-paragraph;
+  margin-bottom: $spacer-3;
 }
 
 .blankslate-text {
   color: $color-text-secondary;
   margin-bottom: $spacer-5;
-  margin-top: $spacer-3;
 }
 
 .blankslate-buttons .button {

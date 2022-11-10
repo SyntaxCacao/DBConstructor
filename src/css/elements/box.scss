@@ -28,10 +28,15 @@
 
 .box-row-flex-extend {
   flex: auto;
+  overflow: hidden;
 }
 
 .box-row-flex-conserve {
   flex-shrink: 0;
+}
+
+.box-row-margin-left {
+  margin-left: $spacer-1;
 }
 
 .box-row-header {

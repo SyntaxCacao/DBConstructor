@@ -1,0 +1,32 @@
+.upload-zone {
+  max-width: unset;
+}
+
+.upload-list {
+  margin-top: $spacer-4;
+}
+
+.upload-list:empty {
+  display: none;
+}
+
+.upload-list-icon {
+  color: $color-text-secondary;
+  font-size: $font-size-larger;
+  margin-right: $spacer-2;
+}
+
+.upload-list-name {
+  font-weight: $font-weight-bold;
+
+  @include one-line-text;
+}
+
+.upload-list-error,
+.upload-list-progress .bi-x-lg {
+  color: $color-text-danger;
+}
+
+.upload-list-progress .bi-check-lg {
+  color: $color-text-success;
+}

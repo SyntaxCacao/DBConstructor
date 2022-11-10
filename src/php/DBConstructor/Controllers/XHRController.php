@@ -9,11 +9,15 @@ use DBConstructor\Controllers\Projects\Tables\TableGenerator;
 use DBConstructor\Models\Participant;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
+use DBConstructor\Models\Row;
+use DBConstructor\Models\RowAttachment;
 use DBConstructor\Models\RowLoader;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
+use Exception;
+use Throwable;
 
 class XHRController extends Controller
 {
@@ -47,6 +51,95 @@ class XHRController extends Controller
         if (count($path) === 2 && $path[1] === "markdown") {
             echo MarkdownParser::parse($_REQUEST["src"]);
             return;
+        }
+
+        // upload
+        if ($path[1] === "upload") {
+            // upload attachment
+            if ($path[2] === "attachment" && count($path) === 4) {
+                try {
+                    $projectId = "";
+
+                    if (intval($path[3]) === 0 || ($row = Row::loadWithProjectId($path[3], $projectId)) === null) {
+                        (new NotFoundController())->request($path);
+                        return;
+                    }
+
+                    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+                        http_response_code(405);
+                        return;
+                    }
+
+                    if (! isset($_FILES["file"]) || ! isset($_FILES["file"]["name"]) || ! is_string($_FILES["file"]["name"]) || ! isset($_FILES["file"]["error"]) || ! isset($_FILES["file"]["tmp_name"])) {
+                        // $_FILES["file"] won't be set if POST Content-Length is too large
+                        // $_FILES["file"]["name"] won't be string if multiple files are sent
+                        http_response_code(422);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo '{"message":"Die Datei konnte nicht hochgeladen werden. Möglicherweise ist sie zu groß."}';
+                        return;
+                    }
+
+                    $fileName = $_FILES["file"]["name"];
+                    $fileError = $_FILES["file"]["error"];
+
+                    if ($fileError !== 0) {
+                        $message = "Das Hochladen der Datei ist fehlgeschlagen.";
+
+                        if ($fileError === UPLOAD_ERR_INI_SIZE || $fileError === UPLOAD_ERR_FORM_SIZE) {
+                            $message = "Die Datei ist größer als die für den Webserver festgelegte Dateigrößengrenze.";
+                        } else {
+                            error_log("File upload inititiated by user with ID ".Application::$instance->user->id." failed with code ".$fileError);
+                        }
+
+                        http_response_code(422);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo '{"message":"'.$message.'"}';
+                        return;
+                    }
+
+                    if (strlen($fileName) > 70) {
+                        http_response_code(422);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo '{"message":"Der Dateiname ist zu lang (Erlaubt sind bis zu 70 Zeichen)."}';
+                        return;
+                    }
+
+                    if (! preg_match("/^[a-zA-Z0-9_\-. ]+$/", $fileName)) {
+                        http_response_code(422);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo '{"message":"Der Dateiname enthält ungültige Zeichen (Erlaubt: A-Z, a-z, 0-9, Bindestrich, Unterstrich, Leerzeichen, Punkt)."}';
+                        return;
+                    }
+
+                    if (! RowAttachment::isNameAvailable($row->id, $fileName)) {
+                        http_response_code(422);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo '{"message":"Eine Datei mit diesem Namen existiert bereits."}';
+                        return;
+                    }
+
+                    Application::$instance->checkDir("tmp/attachments/".$projectId);
+                    Application::$instance->checkDir("tmp/attachments/".$projectId."/tables/");
+                    Application::$instance->checkDir("tmp/attachments/".$projectId."/tables/".$row->tableId);
+                    Application::$instance->checkDir("tmp/attachments/".$projectId."/tables/".$row->tableId."/".$row->id);
+
+                    $attachmentId = RowAttachment::create($row->id, Application::$instance->user, $fileName, filesize($_FILES["file"]["tmp_name"]));
+
+                    if (! move_uploaded_file($_FILES["file"]["tmp_name"], RowAttachment::getPath($projectId, $row->tableId, $row->id, $attachmentId))) {
+                        RowAttachment::delete($attachmentId);
+                        throw new Exception("move_uploaded_file() returned false for upload of file named \"$fileName\" initiated by user with ID ".Application::$instance->user->id);
+                    }
+                } catch (Throwable $throwable) {
+                    error_log("File upload caused ".get_class($throwable)." in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage()." – while processing ".$_SERVER["REQUEST_METHOD"]." ".$_SERVER["REQUEST_URI"]);
+                    http_response_code(500);
+
+                    if (Application::$instance->config["development"]) {
+                        var_dump($throwable);
+                    }
+                }
+
+                return;
+            }
         }
 
         // selector

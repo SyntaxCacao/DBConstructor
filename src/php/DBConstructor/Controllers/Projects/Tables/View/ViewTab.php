@@ -14,10 +14,11 @@ use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\RowAction;
+use DBConstructor\Models\RowAttachment;
 use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
-use DBConstructor\Util\JsonException;
+use Exception;
 
 class ViewTab extends TabController
 {
@@ -27,7 +28,7 @@ class ViewTab extends TabController
     }
 
     /**
-     * @throws JsonException
+     * @throws Exception
      */
     public function request(array $path, array &$data): bool
     {
@@ -215,6 +216,97 @@ class ViewTab extends TabController
             return true;
         }
 
+        if (count($path) >= 7 && $path[6] === "attachments") {
+            // attachments
+
+            if (count($path) === 8 && $path[7] === "upload") {
+                // upload
+                $data["tabpage"] = "row_attachments_upload";
+                $data["title"] = "Dateien hochladen";
+                return true;
+            }
+
+            if (count($path) === 9 && $path[7] === "download" &&
+                ($attachment = RowAttachment::loadFromName($data["row"]->id, $path[8])) !== null &&
+                $attachment->rowId === $data["row"]->id) {
+                // download
+
+                $file = RowAttachment::getPath($data["project"]->id, $data["table"]->id, $data["row"]->id, $attachment->id);
+
+                if (! file_exists($file)) {
+                    throw new Exception("Download file for attachment with ID ".$attachment->id." not found (expected path: \"".$file."\")");
+                }
+
+                if (! is_readable($file)) {
+                    throw new Exception("Download file for attachment with ID ".$attachment->id." is not readable (expected path: \"".$file."\")");
+                }
+
+                header("Content-Description: File Transfer");
+                header("Content-Disposition: attachment; filename=\"$attachment->fileName\"");
+                header("Content-Length: ".filesize($file));
+
+                readfile($file);
+                return false;
+            }
+
+            if (count($path) === 9 && $path[7] === "view" &&
+                ($attachment = RowAttachment::loadFromName($data["row"]->id, $path[8])) !== null &&
+                $attachment->rowId === $data["row"]->id &&
+                $attachment->isViewable()) {
+                // view
+
+                $file = RowAttachment::getPath($data["project"]->id, $data["table"]->id, $data["row"]->id, $attachment->id);
+
+                if ($attachment->type === "pdf") {
+                    header("Content-Description: File Transfer");
+                    header("Content-Disposition: inline; filename=\"$attachment->fileName\"");
+                    header("Content-Length: ".filesize($file));
+                    header("Content-Type: application/pdf");
+
+                    readfile($file);
+                    return false;
+                }
+
+                if ($attachment->type === "bmp" || $attachment->type === "gif" || $attachment->type === "jpg" || $attachment->type === "jpeg" || $attachment->type === "png") {
+                    header("Content-Description: File Transfer");
+                    header("Content-Disposition: inline; filename=\"$attachment->fileName\"");
+                    header("Content-Length: ".filesize($file));
+
+                    if ($attachment->type === "jpg") {
+                        header("Content-Type: image/jpeg");
+                    } else {
+                        header("Content-Type: image/$attachment->type");
+                    }
+
+                    readfile($file);
+                    return false;
+                }
+
+                if ($attachment->type === "html") {
+                    readfile($file);
+                    return false;
+                }
+
+                $data["attachment"] = $attachment;
+                $data["file"] = $file;
+                $data["tabpage"] = "row_attachments_view";
+                $data["title"] = $attachment->fileName;
+
+                if ($attachment->size > pow(1024, 2)) {
+                    $data["viewType"] = "raw_toolarge";
+                    return true;
+                }
+
+                if ($attachment->type === "csv" || $attachment->type === "md") {
+                    $data["viewType"] = $attachment->type;
+                    return true;
+                }
+
+                $data["viewType"] = "raw";
+                return true;
+            }
+        }
+
         if (count($path) !== 6) {
             (new NotFoundController())->request($path);
             return false;
@@ -259,6 +351,19 @@ class ViewTab extends TabController
 
         $data["filtered"] = isset($_REQUEST["filtered"]);
 
+        if (isset($_GET["deleteAttachment"]) && intval($_GET["deleteAttachment"]) > 0 &&
+            ($attachment = RowAttachment::load($_GET["deleteAttachment"])) !== null &&
+            $attachment->rowId === $data["row"]->id &&
+            ($data["isManager"] || $attachment->uploaderId === Application::$instance->user->id)) {
+
+            if (! unlink(RowAttachment::getPath($data["project"]->id, $data["table"]->id, $data["row"]->id, $attachment->id))) {
+                throw new Exception("unlink() returned false when trying to delete attachment with ID".$attachment->id);
+            }
+
+            RowAttachment::delete($attachment->id);
+        }
+
+        $data["attachments"] = RowAttachment::loadAll($data["row"]->id);
         $data["actions"] = RowAction::loadAll($data["row"]->id, $data["filtered"]);
         $data["tabpage"] = "row";
 

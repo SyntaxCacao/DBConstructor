@@ -101,6 +101,7 @@ module.exports = function(grunt) {
             'src/js/rowfilter.js',
             'src/js/selector.js',
             'src/js/tabnav.js',
+            'src/js/upload.js',
             'src/js/validation.js'
           ]
         }

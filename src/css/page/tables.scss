@@ -134,6 +134,27 @@
 
 // //
 
+.page-table-view-attachments-name,
+.page-table-view-attachments-desc {
+  @include one-line-text;
+}
+
+.page-table-view-attachments-name a {
+  color: inherit;
+  font-weight: $font-weight-bold;
+}
+
+.page-table-view-attachments-desc {
+  color: $color-text-secondary;
+}
+
+.page-table-view-attachments-view-table .table-row {
+  line-height: 1.35;
+  vertical-align: top;
+}
+
+// //
+
 @media (max-width: $breakpoint-md) {
   .page-table-insert-row > .column {
     margin-bottom: 8px;

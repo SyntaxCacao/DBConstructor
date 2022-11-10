@@ -97,6 +97,24 @@ class Row
         return $list;
     }
 
+    /**
+     * Loads Row object and projectId but no names for lastEditor and assignee.
+     *
+     * @return Row|null
+     */
+    public static function loadWithProjectId(string $rowId, string &$projectId)
+    {
+        MySQLConnection::$instance->execute("SELECT r.*, t.`project_id` FROM `dbc_row` r LEFT JOIN `dbc_table` t ON r.`table_id` = t.`id` WHERE r.`id`=?", [$rowId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        if (count($result) != 1) {
+            return null;
+        }
+
+        $projectId = $result[0]["project_id"];
+        return new Row($result[0]);
+    }
+
     public static function revalidate(string $id)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `valid` = ((SELECT COUNT(*) FROM `dbc_field_relational` WHERE `row_id`=? AND `valid` = FALSE) = 0 AND (SELECT COUNT(*) FROM `dbc_field_textual` WHERE `row_id`=? AND `valid` != TRUE) = 0) WHERE `id`=?", [$id, $id, $id]);

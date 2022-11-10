@@ -2,11 +2,15 @@
 
 declare(strict_types=1);
 
+use DBConstructor\Models\Project;
+use DBConstructor\Models\Row;
 use DBConstructor\Models\RowAction;
+use DBConstructor\Models\RowAttachment;
+use DBConstructor\Models\Table;
 use DBConstructor\Util\HeaderGenerator;
 use DBConstructor\Util\MarkdownParser;
 
-/** @var array $data */
+/** @var array{project: Project, table: Table, row: Row, actions: array<RowAction>, attachments: array<RowAttachment>} $data */
 
 ?>
 <main class="container">
@@ -28,6 +32,12 @@ use DBConstructor\Util\MarkdownParser;
                                     '<li class="dropdown-item dropdown-item-form">'.$data["assigneeForm"]->generate().'</li>'.
                                   '</ul>'.
                                 '</details>';
+
+      $header->dropdownActions[] = [
+        "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/attachments/upload/",
+        "icon" => "paperclip",
+        "text" => "Dateien anhängen",
+      ];
 
       $header->dropdownActions[] = [
         "href" => $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/view/".$data["row"]->id."/references/",
@@ -81,6 +91,31 @@ use DBConstructor\Util\MarkdownParser;
       <?php $data["editForm"]->generate() ?>
     </div>
     <div class="column width-5 page-table-view-row-column-right">
+<?php if (count($data["attachments"]) > 0) { ?>
+      <header class="main-subheader">
+        <h2 class="main-subheading">Angehängte Dateien</h2>
+      </header>
+      <div class="box">
+<?php   foreach ($data["attachments"] as $attachment) { ?>
+        <div class="box-row box-row-flex">
+          <div class="box-row-flex-conserve upload-list-icon"><span class="bi bi-<?= $attachment->getTypeIcon() ?>"></span></div>
+          <div class="box-row-flex-extend">
+            <p class="page-table-view-attachments-name"><a <?php if ($attachment->isViewable() && $attachment->getViewWarning() !== null) echo ' class="js-confirm"' ?>href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/attachments/".($attachment->isViewable() ? "view" : "download")."/".htmlentities($attachment->fileName) ?>" title="<?= htmlentities($attachment->fileName) ?>"<?php if ($attachment->isViewable() && $attachment->getViewWarning() !== null) echo ' data-confirm-message="'.$attachment->getViewWarning().'"' ?>><?= htmlentities($attachment->fileName) ?></a></p>
+            <p class="page-table-view-attachments-desc"><?= $attachment->getHumanFileSize() ?> · von <?= htmlentities($attachment->uploaderFirstName." ".$attachment->uploaderLastName) ?> · <span title="Hochgeladen am <?= htmlentities(date("d.m.Y \u\m H:i", strtotime($attachment->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($attachment->created))) ?></span></p>
+          </div>
+          <div class="box-row-flex-conserve box-row-margin-left">
+<?php     if ($attachment->isViewable()) { ?>
+            <a class="button button-smallest<?php if ($attachment->getViewWarning() !== null) echo ' js-confirm' ?>" href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/attachments/view/".htmlentities($attachment->fileName) ?>" title="Datei ansehen"<?php if ($attachment->getViewWarning() !== null) echo ' data-confirm-message="'.$attachment->getViewWarning().'"' ?>><span class="bi bi-eye no-margin"></span></a>
+<?php     } ?>
+            <a class="button button-smallest" href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/attachments/download/".htmlentities($attachment->fileName) ?>" title="Datei herunterladen" download><span class="bi bi-download no-margin"></span></a>
+<?php     if ($data["isManager"] || $attachment->uploaderId === $data["user"]->id) { ?>
+            <a class="button button-smallest js-confirm" href="?deleteAttachment=<?= $attachment->id ?>" title="Datei löschen" data-confirm-message="Sind Sie sicher, dass Sie die Datei <?= htmlentities($attachment->fileName) ?> löschen wollen?"><span class="bi bi-trash no-margin"></span></a>
+<?php     } ?>
+          </div>
+        </div>
+<?php   } ?>
+      </div>
+<?php } ?>
       <header class="main-subheader">
         <h2 class="main-subheading">Historie</h2>
         <div class="main-header-actions">
@@ -89,7 +124,6 @@ use DBConstructor\Util\MarkdownParser;
       </header>
       <div class="timeline">
 <?php foreach ($data["actions"] as $action) {
-        /** @var RowAction $action */
         if ($action->action === RowAction::ACTION_ASSIGNMENT) { ?>
         <div class="timeline-item">
           <div class="timeline-item-icon"><span class="bi bi-person"></span></div>

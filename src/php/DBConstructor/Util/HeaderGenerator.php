@@ -164,6 +164,10 @@ class HeaderGenerator
             echo ' href="?"';
         }
 
+        if (isset($action["download"]) && $action["download"] === true) {
+            echo ' download';
+        }
+
         if (isset($action["confirm"])) {
             echo ' data-confirm-message="'.htmlentities($action["confirm"]).'"';
         }

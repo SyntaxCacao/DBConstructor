@@ -42,9 +42,14 @@ class Application
     public function run()
     {
         // Make sure all required directories exist
-        $this->checkDir("tmp");
-        $this->checkDir("tmp/exports");
-        $this->checkDir("tmp/sessions");
+        try {
+            $this->checkDir("tmp");
+            $this->checkDir("tmp/attachments");
+            $this->checkDir("tmp/exports");
+            $this->checkDir("tmp/sessions");
+        } catch (Exception $exception) {
+            die($exception->getMessage());
+        }
 
         // Load up version number
         if (! file_exists("../version.txt")) {
@@ -170,14 +175,17 @@ class Application
         require "templates/base.tpl.php";
     }
 
+    /**
+     * @throws Exception
+     */
     public function checkDir(string $path)
     {
         if ((! file_exists("../$path") || ! is_dir("../$path")) && ! mkdir("../$path")) {
-            die("<code>$path</code> directory not found and could not be created.");
+            throw new Exception("<code>$path</code> directory not found and could not be created.");
         }
 
         if (! is_writable("../$path")) {
-            die("<code>$path</code> is not writable.");
+            throw new Exception("<code>$path</code> is not writable.");
         }
     }
 
