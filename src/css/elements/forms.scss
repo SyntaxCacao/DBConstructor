@@ -177,7 +177,7 @@ textarea {
 
 // form-label //
 
-.form-label {
+.form-label:not(.form-label-weight-normal) {
   font-weight: 600; // TODO not 700
 }
 
@@ -192,7 +192,7 @@ textarea {
   display: none;
 }
 
-.form-group-depend {
+.form-group-depend:not(.form-group-depend-no-padding) {
   padding-left: $spacer-5;
 }
 

@@ -27,12 +27,12 @@ class SelectField extends GroupableField
     }
 
     /**
-     * @param array<string, string> $options
+     * @param array<mixed, string> $options
      */
     public function addOptions(array $options)
     {
         foreach ($options as $value => $label) {
-            $this->addOption($value, $label);
+            $this->addOption((string) $value, $label);
         }
     }
 

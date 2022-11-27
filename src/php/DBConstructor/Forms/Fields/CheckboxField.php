@@ -8,6 +8,10 @@ class CheckboxField extends Field
 {
     const VALUE = "checked";
 
+    public $dependsPadding = true;
+
+    public $labelBold = true;
+
     public function __construct(string $name, string $label = null)
     {
         parent::__construct($name, $label);
@@ -49,10 +53,21 @@ class CheckboxField extends Field
 
         if (isset($this->dependsOn)) {
             $html .= ' form-group-depend';
+
+            if (! $this->dependsPadding) {
+                $html .= ' form-group-depend-no-padding';
+            }
         }
 
-        $html .= '">'.$this->generateField().'<div class="form-checkbox-label"><p class="form-label">'.htmlentities($this->label).'</p>';
+        $html .= '">'.$this->generateField().'<div class="form-checkbox-label"><p class="form-label';
 
+        if (! $this->labelBold) {
+            $html .= ' form-label-weight-normal';
+        }
+
+        $html .= '">'.htmlentities($this->label).'</p>';
+
+        // TODO: malformated atm
         if ($this->required) {
             $html .= '<span class="form-label-addition"> (erforderlich)</span>';
         }

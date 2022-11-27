@@ -6,6 +6,7 @@
         "erusev/parsedown": "1.7.4",
         "ext-ctype": "*",
         "ext-json": "*",
+        "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-zip": "*"
     }

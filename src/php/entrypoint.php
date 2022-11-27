@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// Remove X-Powered-By HTTP header
+header_remove("X-Powered-By");
+
 // Fix default_charset for FU userpage (htmlentities())
 // https://stackoverflow.com/questions/8229696/do-i-need-to-set-ini-set-default-charset-utf-8
 if (! ini_set('default_charset', 'utf-8')) {

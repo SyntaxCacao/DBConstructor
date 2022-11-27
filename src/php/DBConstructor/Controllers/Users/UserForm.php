@@ -105,6 +105,19 @@ class UserForm extends Form
 
         $this->addField($field);
 
+        // apiaccess
+        $field = new CheckboxField("apiaccess", "API-Zugriff gestatten");
+        $field->dependsOn = "admin";
+        $field->dependsOnValue = "";
+        $field->dependsPadding = false;
+        $field->description = "Kann auf die API zugreifen, ohne Administrator zu sein";
+
+        if (! is_null($user)) {
+            $field->defaultValue = $user->hasApiAccess;
+        }
+
+        $this->addField($field);
+
         // locked
         if (! is_null($user)) {
             $field = new CheckboxField("locked", "Gesperrt");
@@ -118,11 +131,11 @@ class UserForm extends Form
     {
         if (is_null($this->user)) {
             // create
-            User::create(Application::$instance->user->id, $data["username"], $data["firstname"], $data["lastname"], $data["password"], $data["admin"]);
+            User::create(Application::$instance->user->id, $data["username"], $data["firstname"], $data["lastname"], $data["password"], $data["admin"], $data["apiaccess"]);
             Application::$instance->redirect("users", "created");
         } else {
             // edit
-            $this->user->edit($data["username"], $data["firstname"], $data["lastname"], $data["admin"], $data["locked"]);
+            $this->user->edit($data["username"], $data["firstname"], $data["lastname"], $data["admin"], $data["apiaccess"], $data["locked"]);
 
             if (! is_null($data["password"])) {
                 $this->user->setPassword($data["password"]);

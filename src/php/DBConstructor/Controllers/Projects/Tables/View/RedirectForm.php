@@ -72,10 +72,10 @@ class RedirectForm extends Form
         $row = Row::loadReferencing($this->originRowId);
 
         foreach ($this->references as $field) {
-            $field->edit(Application::$instance->user->id, $row[$field->rowId], $data["target"], $field->columnNullable);
+            $field->edit(Application::$instance->user->id, false, $row[$field->rowId], $data["target"], $field->columnNullable);
         }
 
-        RowAction::logRedirection(Application::$instance->user->id, $this->originRowId, $data["target"], count($this->references));
+        RowAction::logRedirection(Application::$instance->user->id, false, $this->originRowId, $data["target"], count($this->references));
 
         Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/".$this->tableId."/view/".$this->originRowId);
     }

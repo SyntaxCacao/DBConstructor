@@ -41,11 +41,7 @@ abstract class Type
         }
     }
 
-    /**
-     * @return string|null null if object is empty
-     * @throws JsonException
-     */
-    public function toJson()
+    public function toArray(): array
     {
         $array = [];
 
@@ -58,6 +54,17 @@ abstract class Type
                 $array[$property->getName()] = $property->getValue($this);
             }
         }
+
+        return $array;
+    }
+
+    /**
+     * @return string|null null if object is empty
+     * @throws JsonException
+     */
+    public function toJson()
+    {
+        $array = $this->toArray();
 
         if (count($array) == 0) {
             return null;

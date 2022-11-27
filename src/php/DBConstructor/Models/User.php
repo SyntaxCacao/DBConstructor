@@ -30,9 +30,9 @@ class User
         return intval(MySQLConnection::$instance->getSelectedRows()[0]["count"]);
     }
 
-    public static function create(string $creatorId = null, string $username, string $firstname, string $lastname, string $password, bool $admin): string
+    public static function create(string $creatorId = null, string $username, string $firstname, string $lastname, string $password, bool $admin, bool $apiAccess): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_user` (`creator_id`, `username`, `firstname`, `lastname`, `password`, `admin`) VALUES (?, ?, ?, ?, ?, ?)", [$creatorId, $username, $firstname, $lastname, password_hash($password, User::HASH_ALGO), intval($admin)]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_user` (`creator_id`, `username`, `firstname`, `lastname`, `password`, `admin`, `apiaccess`) VALUES (?, ?, ?, ?, ?, ?, ?)", [$creatorId, $username, $firstname, $lastname, password_hash($password, User::HASH_ALGO), intval($admin), intval($apiAccess)]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -147,6 +147,9 @@ class User
     public $isAdmin;
 
     /** @var bool */
+    public $hasApiAccess;
+
+    /** @var bool */
     public $locked;
 
     /** @var string|null */
@@ -169,6 +172,7 @@ class User
         $this->lastname = $data["lastname"];
         $this->password = $data["password"];
         $this->isAdmin = $data["admin"] == "1";
+        $this->hasApiAccess = $data["apiaccess"] == "1";
         $this->locked = $data["locked"] == "1";
         $this->firstLogin = $data["firstlogin"];
         $this->lastLogin = $data["lastlogin"];
@@ -183,9 +187,9 @@ class User
         }
     }
 
-    public function edit(string $username, string $firstname, string $lastname, bool $admin, bool $locked)
+    public function edit(string $username, string $firstname, string $lastname, bool $admin, bool $apiAccess, bool $locked)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_user` SET `username`=?, `firstname`=?, `lastname`=?, `admin`=?, `locked`=? WHERE `id`=?", [$username, $firstname, $lastname, intval($admin), intval($locked), $this->id]);
+        MySQLConnection::$instance->execute("UPDATE `dbc_user` SET `username`=?, `firstname`=?, `lastname`=?, `admin`=?, `apiaccess`=?, `locked`=? WHERE `id`=?", [$username, $firstname, $lastname, intval($admin), intval($apiAccess), intval($locked), $this->id]);
     }
 
     /**

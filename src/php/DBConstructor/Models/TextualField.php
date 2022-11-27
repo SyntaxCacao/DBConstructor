@@ -167,14 +167,14 @@ class TextualField
     /**
      * @throws JsonException
      */
-    public function edit(string $userId, Row $row, string $value = null, bool $valid)
+    public function edit(string $userId, bool $api, Row $row, string $value = null, bool $valid)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=?, `valid`=? WHERE `id`=?", [$value, intval($valid), $this->id]);
         Row::revalidate($row->id);
         $row->updateValidity();
 
         $row->setUpdated($userId);
-        RowAction::logChange($row->id, $userId, false, $this->columnId, $this->value, $value);
+        RowAction::logChange($row->id, $userId, $api, false, $this->columnId, $this->value, $value);
 
         // $this->value must not be updated earlier as old value is needed for logChange()
         $this->value = $value;

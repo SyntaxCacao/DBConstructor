@@ -27,13 +27,13 @@ class CommentForm extends Form
 
         $field = new MarkdownField("comment");
         $field->larger = false;
-        $field->maxLength = 2000;
+        $field->maxLength = Row::MAX_COMMENT_LENGTH;
 
         $this->addField($field);
     }
 
     public function perform(array $data)
     {
-        $this->row->comment(Application::$instance->user->id, $data["comment"]);
+        $this->row->comment(Application::$instance->user->id, false, $data["comment"]);
     }
 }

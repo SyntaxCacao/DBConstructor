@@ -67,6 +67,7 @@ class RowAction
                                                          "a.`user_id`, ".
                                                          "a.`action`, ".
                                                          "CONCAT_WS(' ', assignee.`firstname`, assignee.`lastname`), ".
+                                                         "a.`api`, ".
                                                          "a.`created`, ".
                                                          "u.`firstname` AS `user_firstname`, ".
                                                          "u.`lastname` AS `user_lastname` ".
@@ -86,20 +87,38 @@ class RowAction
         return $list;
     }
 
-    protected static function log(string $action, string $rowId, string $userId, string $data = null)
+    /**
+     * Raw = assigneeIds won't be resolved into names
+     *
+     * @return array<RowAction>
+     */
+    public static function loadAllRaw(string $rowId): array
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`) VALUES (?, ?, ?, ?)", [$rowId, $userId, $action, $data]);
+        MySQLConnection::$instance->execute("SELECT a.*, u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname` FROM `dbc_row_action` a LEFT JOIN `dbc_user` u ON a.`user_id` = u.`id` WHERE a.`row_id`=?", [$rowId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $list = [];
+
+        foreach ($result as $row) {
+            $list[] = new RowAction($row);
+        }
+
+        return $list;
     }
 
-    public static function logAssignment(string $rowId, string $userId, string $assigneeId = null)
+    protected static function log(string $action, string $rowId, string $userId, bool $api, string $data = null)
     {
-        RowAction::log(RowAction::ACTION_ASSIGNMENT, $rowId, $userId, $assigneeId);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_row_action` (`row_id`, `user_id`, `action`, `data`, `api`) VALUES (?, ?, ?, ?, ?)", [$rowId, $userId, $action, $data, intval($api)]);
+    }
+
+    public static function logAssignment(string $rowId, string $userId, bool $api, string $assigneeId = null)
+    {
+        RowAction::log(RowAction::ACTION_ASSIGNMENT, $rowId, $userId, $api, $assigneeId);
     }
 
     /**
      * @throws JsonException
      */
-    public static function logChange(string $rowId, string $userId, bool $isRelational, string $columnId, string $prevValue = null, string $newValue = null)
+    public static function logChange(string $rowId, string $userId, bool $api, bool $isRelational, string $columnId, string $prevValue = null, string $newValue = null)
     {
         $array = [
             RowAction::CHANGE_DATA_COLUMN_ID => $columnId,
@@ -114,33 +133,33 @@ class RowAction
             throw new JsonException();
         }
 
-        RowAction::log(RowAction::ACTION_CHANGE, $rowId, $userId, json_encode($array));
+        RowAction::log(RowAction::ACTION_CHANGE, $rowId, $userId, $api, json_encode($array));
     }
 
-    public static function logComment(string $rowId, string $userId, string $comment)
+    public static function logComment(string $rowId, string $userId, bool $api, string $comment)
     {
-        RowAction::log(RowAction::ACTION_COMMENT, $rowId, $userId, $comment);
+        RowAction::log(RowAction::ACTION_COMMENT, $rowId, $userId, $api, $comment);
     }
 
-    public static function logCreation(string $rowId, string $userId)
+    public static function logCreation(string $rowId, string $userId, bool $api)
     {
-        RowAction::log(RowAction::ACTION_CREATION, $rowId, $userId);
+        RowAction::log(RowAction::ACTION_CREATION, $rowId, $userId, $api);
     }
 
-    public static function logDeletion(string $rowId, string $userId)
+    public static function logDeletion(string $rowId, string $userId, bool $api)
     {
-        RowAction::log(RowAction::ACTION_DELETION, $rowId, $userId);
+        RowAction::log(RowAction::ACTION_DELETION, $rowId, $userId, $api);
     }
 
-    public static function logFlag(string $rowId, string $userId)
+    public static function logFlag(string $rowId, string $userId, bool $api)
     {
-        RowAction::log(RowAction::ACTION_FLAG, $rowId, $userId);
+        RowAction::log(RowAction::ACTION_FLAG, $rowId, $userId, $api);
     }
 
     /**
      * @throws JsonException
      */
-    public static function logRedirection(string $userId, string $originId, string $destinationId, int $count)
+    public static function logRedirection(string $userId, bool $api, string $originId, string $destinationId, int $count)
     {
         // origin
         $data = json_encode([
@@ -152,7 +171,7 @@ class RowAction
             throw new JsonException();
         }
 
-        RowAction::log(RowAction::ACTION_REDIRECTION_ORIGIN, $originId, $userId, $data);
+        RowAction::log(RowAction::ACTION_REDIRECTION_ORIGIN, $originId, $userId, $api, $data);
 
         // destination
         $data = json_encode([
@@ -164,17 +183,17 @@ class RowAction
             throw new JsonException();
         }
 
-        RowAction::log(RowAction::ACTION_REDIRECTION_DESTINATION, $destinationId, $userId, $data);
+        RowAction::log(RowAction::ACTION_REDIRECTION_DESTINATION, $destinationId, $userId, $api, $data);
     }
 
-    public static function logRestoration(string $rowId, string $userId)
+    public static function logRestoration(string $rowId, string $userId, bool $api)
     {
-        RowAction::log(RowAction::ACTION_RESTORATION, $rowId, $userId);
+        RowAction::log(RowAction::ACTION_RESTORATION, $rowId, $userId, $api);
     }
 
-    public static function logUnflag(string $rowId, string $userId)
+    public static function logUnflag(string $rowId, string $userId, bool $api)
     {
-        RowAction::log(RowAction::ACTION_UNFLAG, $rowId, $userId);
+        RowAction::log(RowAction::ACTION_UNFLAG, $rowId, $userId, $api);
     }
 
     /** @var string */
@@ -195,6 +214,9 @@ class RowAction
     /** @var string|null */
     public $data;
 
+    /** @var bool */
+    public $api;
+
     /** @var string */
     public $created;
 
@@ -208,6 +230,7 @@ class RowAction
         $this->userFirstName = $data["user_firstname"];
         $this->userLastName = $data["user_lastname"];
         $this->action = $data["action"];
+        $this->api = $data["api"] === "1";
         $this->created = $data["created"];
 
         if ($this->action == RowAction::ACTION_CHANGE || $this->action == RowAction::ACTION_REDIRECTION_DESTINATION || $this->action == RowAction::ACTION_REDIRECTION_ORIGIN) {

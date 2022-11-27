@@ -254,7 +254,7 @@ class ExecutionForm extends RowForm
 
             // Database insertion
 
-            $id = Row::create($step->tableId, Application::$instance->user->id, $data["step-$step->id-comment"], $data["step-$step->id-flag"], $data["step-$step->id-assignee"]);
+            $id = Row::create($step->tableId, Application::$instance->user->id, false, $data["step-$step->id-comment"], $data["step-$step->id-flag"], $data["step-$step->id-assignee"]);
             $ids[$step->id] = $id;
 
             if (count($relationalFields) > 0) {

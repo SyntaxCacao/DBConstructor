@@ -23,6 +23,12 @@ use Exception;
 
 class InsertForm extends RowForm
 {
+    /** @var bool */
+    public $api = false;
+
+    /** @var string|null */
+    public $insertedId;
+
     /** @var string|null */
     public $next;
 
@@ -58,7 +64,7 @@ class InsertForm extends RowForm
         $field = new MarkdownField("comment", "Kommentar");
         $field->description = "Halten Sie hier etwa Unklarheiten bei der Datenerfassung fest";
         $field->larger = false;
-        $field->maxLength = 1000;
+        $field->maxLength = Row::MAX_COMMENT_LENGTH;
         $field->required = false;
 
         $this->addField($field);
@@ -133,24 +139,24 @@ class InsertForm extends RowForm
 
         // Database insertion
 
-        $id = Row::create($this->table->id, Application::$instance->user->id, $data["comment"], $data["flag"], $data["assignee"]);
+        $this->insertedId = Row::create($this->table->id, Application::$instance->user->id, $this->api, $data["comment"], $data["flag"], $data["assignee"]);
 
         if (count($relationalFields) > 0) {
             // Validity may be set incorrectly when referencing same row
             // Referencing same row may not be possible on insertion, but maybe when editing?
-            RelationalField::createAll($id, $relationalFields);
+            RelationalField::createAll($this->insertedId, $relationalFields);
         }
 
         if (count($textualFields) > 0) {
-            TextualField::createAll($id, $textualFields);
+            TextualField::createAll($this->insertedId, $textualFields);
         }
 
-        Row::revalidate($id);
+        Row::revalidate($this->insertedId);
 
         // Next
 
         if ($data["next"] == "show") {
-            Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/{$this->table->id}/view/$id");
+            Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/{$this->table->id}/view/$this->insertedId");
         } else {
             $this->next = $data["next"];
         }

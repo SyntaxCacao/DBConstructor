@@ -8,8 +8,6 @@ use DBConstructor\SQL\MySQLConnection;
 
 class RowLoader
 {
-    const DEFAULT_ROWS_PER_PAGE = 20;
-
     const FILTER_ASSIGNEE_ANYONE = "anyone";
 
     const FILTER_DELETED_EXCLUDE = "0";
@@ -62,8 +60,8 @@ class RowLoader
     /** @var string */
     public $orderDirection = self::ORDER_DIRECTION_DESCENDING;
 
-    /** @var string */
-    public $rowsPerPage;
+    /** @var int */
+    public $rowsPerPage = 20;
 
     /** @var string|null */
     protected $searchColumn;
@@ -83,10 +81,9 @@ class RowLoader
     /** @var string|null */
     public $validity;
 
-    public function __construct(string $tableId, int $rowsPerPage = self::DEFAULT_ROWS_PER_PAGE)
+    public function __construct(string $tableId)
     {
         $this->tableId = $tableId;
-        $this->rowsPerPage = $rowsPerPage;
     }
 
     public function addSearch(string $column, string $value = null)
@@ -285,6 +282,14 @@ class RowLoader
         if (! $count) {
             if ($this->order === self::ORDER_BY_LAST_ACTIVITY) {
                 $sql .= " ORDER BY r.`lastupdated`";
+
+                if ($this->orderDirection === self::ORDER_DIRECTION_DESCENDING) {
+                    $sql .= " DESC";
+                }
+
+                // for when lastupdated is exactly the same, e.g. when multiple rows
+                // are created with one API call
+                $sql .= ", r.`id`";
 
                 if ($this->orderDirection === self::ORDER_DIRECTION_DESCENDING) {
                     $sql .= " DESC";

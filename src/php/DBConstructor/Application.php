@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DBConstructor;
 
+use DBConstructor\Controllers\API\APIController;
 use DBConstructor\Controllers\Exports\ExportsController;
 use DBConstructor\Controllers\LoginController;
 use DBConstructor\Controllers\NotFoundController;
@@ -90,13 +91,6 @@ class Application
         $path = explode("/", $path);
         $this->path = $path;
 
-        // Initalize session
-        session_cache_limiter("nocache");
-        session_name($cfg["cookies"]["prefix"]."session");
-        session_set_cookie_params(30 * 24 * 60 * 60, $cfg["cookies"]["path"]);
-        session_save_path("../tmp/sessions");
-        session_start();
-
         // Establish MySQL connection
         MySQLConnection::$instance = new MySQLConnection($cfg["mysql"]["hostname"], $cfg["mysql"]["database"], $cfg["mysql"]["username"], $cfg["mysql"]["password"]);
 
@@ -110,6 +104,19 @@ class Application
 
             exit;
         }
+
+        // API access?
+        if ($path[0] == "api") {
+            (new APIController())->request($path);
+            return;
+        }
+
+        // Initalize session
+        session_cache_limiter("nocache");
+        session_name($cfg["cookies"]["prefix"]."session");
+        session_set_cookie_params(30 * 24 * 60 * 60, $cfg["cookies"]["path"]);
+        session_save_path("../tmp/sessions");
+        session_start();
 
         // Load User
         if (isset($_SESSION[User::SESSION_USERID])) {
@@ -129,7 +136,7 @@ class Application
         if ($path[0] == "login") {
             // TODO: Remove after implementation of installer
             if (User::countAll() === 0) {
-                User::create(null, "admin", "Vorname", "Nachname", "admin", true);
+                User::create(null, "admin", "Vorname", "Nachname", "admin", true, false);
             }
 
             $controller = new LoginController();

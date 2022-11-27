@@ -79,7 +79,7 @@ class EditForm extends RowForm
             $field = $this->relationalFields[$column->id];
 
             if ($data["relational-".$column->id] !== $field->targetRowId) {
-                $field->edit(Application::$instance->user->id, $this->row, $data["relational-".$column->id], $column->nullable);
+                $field->edit(Application::$instance->user->id, false, $this->row, $data["relational-".$column->id], $column->nullable);
             }
         }
 
@@ -93,7 +93,7 @@ class EditForm extends RowForm
             if ($data["textual-".$column->id] !== $field->value) {
                 $validator = $column->getValidationType()->buildValidator();
                 $valid = $validator->validate($data["textual-".$column->id]);
-                $field->edit(Application::$instance->user->id, $this->row, $data["textual-".$column->id], $valid);
+                $field->edit(Application::$instance->user->id, false, $this->row, $data["textual-".$column->id], $valid);
             }
         }
     }

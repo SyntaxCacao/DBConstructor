@@ -5,27 +5,29 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
-use DBConstructor\Util\JsonException;
+use Exception;
 
 class Row
 {
-    public static function create(string $tableId, string $creatorId, string $comment = null, bool $flagged, string $assigneeId = null): string
+    const MAX_COMMENT_LENGTH = 2000;
+
+    public static function create(string $tableId, string $creatorId, bool $api, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged)]);
         $id = MySQLConnection::$instance->getLastInsertId();
 
-        RowAction::logCreation($id, $creatorId);
+        RowAction::logCreation($id, $creatorId, $api);
 
         if ($comment !== null) {
-            RowAction::logComment($id, $creatorId, $comment);
+            RowAction::logComment($id, $creatorId, $api, $comment);
         }
 
         if ($flagged) {
-            RowAction::logFlag($id, $creatorId);
+            RowAction::logFlag($id, $creatorId, $api);
         }
 
         if ($assigneeId !== null) {
-            RowAction::logAssignment($id, $creatorId, $assigneeId);
+            RowAction::logAssignment($id, $creatorId, $api, $assigneeId);
         }
 
         return $id;
@@ -242,37 +244,38 @@ class Row
         }
     }
 
-    public function assign(string $userId, string $assigneeId = null, string $assigneeFirstName = null, string $assigneeLastName = null)
+    public function assign(string $userId, bool $api, string $assigneeId = null, string $assigneeFirstName = null, string $assigneeLastName = null)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `assignee_id`=?, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$assigneeId, $userId, $this->id]);
         $this->assigneeId = $assigneeId;
         $this->assigneeFirstName = $assigneeFirstName;
         $this->assigneeLastName = $assigneeLastName;
         $this->updateLastUpdated();
-        RowAction::logAssignment($this->id, $userId, $assigneeId);
+        RowAction::logAssignment($this->id, $userId, $api, $assigneeId);
     }
 
-    public function comment(string $userId, string $comment)
+    public function comment(string $userId, bool $api, string $comment)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->updateLastUpdated();
-        RowAction::logComment($this->id, $userId, $comment);
+        RowAction::logComment($this->id, $userId, $api, $comment);
     }
 
-    public function delete(string $userId)
+    public function delete(string $userId, bool $api)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `deleted`=TRUE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->deleted = true;
         $this->updateLastUpdated();
         RelationalField::revalidateReferencing($this->id);
-        RowAction::logDeletion($this->id, $userId);
+        RowAction::logDeletion($this->id, $userId, $api);
     }
 
     /**
-     * @throws JsonException
+     * @throws Exception
      */
-    public function deletePermanently(string $userId)
+    public function deletePermanently(string $userId, string $projectId)
     {
+        RowAttachment::deleteRow($projectId, $this->tableId, $this->id);
         RowAction::deleteRow($this->id);
         RelationalField::deleteRow($this->id);
         TextualField::deleteRow($this->id);
@@ -280,21 +283,21 @@ class Row
         MySQLConnection::$instance->execute("DELETE FROM `dbc_row` WHERE `id`=?", [$this->id]);
     }
 
-    public function flag(string $userId)
+    public function flag(string $userId, bool $api)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `flagged`=TRUE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->flagged = true;
         $this->updateLastUpdated();
-        RowAction::logFlag($this->id, $userId);
+        RowAction::logFlag($this->id, $userId, $api);
     }
 
-    public function restore(string $userId)
+    public function restore(string $userId, bool $api)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `deleted`=FALSE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->deleted = false;
         $this->updateLastUpdated();
         RelationalField::revalidateReferencing($this->id);
-        RowAction::logRestoration($this->id, $userId);
+        RowAction::logRestoration($this->id, $userId, $api);
     }
 
     public function setUpdated(string $userId)
@@ -303,12 +306,12 @@ class Row
         $this->updateLastUpdated();
     }
 
-    public function unflag(string $userId)
+    public function unflag(string $userId, bool $api)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `flagged`=FALSE, `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->flagged = false;
         $this->updateLastUpdated();
-        RowAction::logUnflag($this->id, $userId);
+        RowAction::logUnflag($this->id, $userId, $api);
     }
 
     public function updateLastUpdated()

@@ -177,7 +177,7 @@ class TableGenerator
                         echo '<td class="table-cell'.($field->valid ? '' : ' table-cell-invalid').' table-cell-numeric"><a class="main-link" href="'.Application::$instance->config["baseurl"].'/projects/'.$this->projectId.'/tables/'.$column->targetTableId.'/view/'.$field->targetRowId.'/"'.($newTab ? ' target="_blank"' : '').'>'.$field->targetRowId.'</a></td>';
                     }
                 } else {
-                    echo '<td class="table-cell table-cell-invalid table-cell-null">missing</td>';
+                    echo '<td class="table-cell table-cell-invalid table-cell-null">Zelle fehlt</td>';
                 }
             }
 
@@ -194,7 +194,7 @@ class TableGenerator
                         echo $column->generateCellValue();
                     }
                 } catch (JsonException $e) {
-                    echo '<td class="table-cell table-cell-invalid table-cell-null">display error</td>';
+                    echo '<td class="table-cell table-cell-invalid table-cell-null">Anzeigefehler</td>';
                 }
             }
 

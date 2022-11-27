@@ -227,19 +227,11 @@ class ViewTab extends TabController
             }
 
             if (count($path) === 9 && $path[7] === "download" &&
-                ($attachment = RowAttachment::loadFromName($data["row"]->id, $path[8])) !== null &&
-                $attachment->rowId === $data["row"]->id) {
+                ($attachment = RowAttachment::loadFromName($data["row"]->id, $path[8])) !== null) {
                 // download
 
                 $file = RowAttachment::getPath($data["project"]->id, $data["table"]->id, $data["row"]->id, $attachment->id);
-
-                if (! file_exists($file)) {
-                    throw new Exception("Download file for attachment with ID ".$attachment->id." not found (expected path: \"".$file."\")");
-                }
-
-                if (! is_readable($file)) {
-                    throw new Exception("Download file for attachment with ID ".$attachment->id." is not readable (expected path: \"".$file."\")");
-                }
+                $attachment->checkPath($file);
 
                 header("Content-Description: File Transfer");
                 header("Content-Disposition: attachment; filename=\"$attachment->fileName\"");
@@ -251,28 +243,20 @@ class ViewTab extends TabController
 
             if (count($path) === 9 && $path[7] === "view" &&
                 ($attachment = RowAttachment::loadFromName($data["row"]->id, $path[8])) !== null &&
-                $attachment->rowId === $data["row"]->id &&
                 $attachment->isViewable()) {
                 // view
 
                 $file = RowAttachment::getPath($data["project"]->id, $data["table"]->id, $data["row"]->id, $attachment->id);
+                $attachment->checkPath($file);
 
-                if ($attachment->type === "pdf") {
-                    header("Content-Description: File Transfer");
-                    header("Content-Disposition: inline; filename=\"$attachment->fileName\"");
-                    header("Content-Length: ".filesize($file));
-                    header("Content-Type: application/pdf");
-
-                    readfile($file);
-                    return false;
-                }
-
-                if ($attachment->type === "bmp" || $attachment->type === "gif" || $attachment->type === "jpg" || $attachment->type === "jpeg" || $attachment->type === "png") {
+                if ($attachment->type === "pdf" || $attachment->type === "bmp" || $attachment->type === "gif" || $attachment->type === "jpg" || $attachment->type === "jpeg" || $attachment->type === "png") {
                     header("Content-Description: File Transfer");
                     header("Content-Disposition: inline; filename=\"$attachment->fileName\"");
                     header("Content-Length: ".filesize($file));
 
-                    if ($attachment->type === "jpg") {
+                    if ($attachment->type === "pdf") {
+                        header("Content-Type: application/pdf");
+                    } else if ($attachment->type === "jpg") {
                         header("Content-Type: image/jpeg");
                     } else {
                         header("Content-Type: image/$attachment->type");
@@ -315,17 +299,17 @@ class ViewTab extends TabController
         // dataset view
 
         if (isset($_GET["flag"]) && ! $data["row"]->flagged) {
-            $data["row"]->flag(Application::$instance->user->id);
+            $data["row"]->flag(Application::$instance->user->id, false);
         } else if (isset($_GET["unflag"]) && $data["row"]->flagged) {
-            $data["row"]->unflag(Application::$instance->user->id);
+            $data["row"]->unflag(Application::$instance->user->id, false);
         }
 
         if (isset($_GET["delete"]) && ! $data["row"]->deleted) {
-            $data["row"]->delete(Application::$instance->user->id);
+            $data["row"]->delete(Application::$instance->user->id, false);
         } else if (isset($_GET["restore"]) && $data["row"]->deleted) {
-            $data["row"]->restore(Application::$instance->user->id);
+            $data["row"]->restore(Application::$instance->user->id, false);
         } else if (isset($_GET["deletePerm"]) && $data["row"]->deleted && $data["isManager"]) {
-            $data["row"]->deletePermanently(Application::$instance->user->id);
+            $data["row"]->deletePermanently(Application::$instance->user->id, $data["project"]->id);
             Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
         }
 

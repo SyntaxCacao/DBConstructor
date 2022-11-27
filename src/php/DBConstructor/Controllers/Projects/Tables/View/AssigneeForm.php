@@ -55,9 +55,9 @@ class AssigneeForm extends Form
     {
         if ($data["assignee"] !== $this->row->assigneeId) {
             if ($data["assignee"] === null) {
-                $this->row->assign(Application::$instance->user->id, $data["assignee"]);
+                $this->row->assign(Application::$instance->user->id, false);
             } else {
-                $this->row->assign(Application::$instance->user->id, $data["assignee"], $this->participants[$data["assignee"]]->firstName, $this->participants[$data["assignee"]]->lastName);
+                $this->row->assign(Application::$instance->user->id, false, $data["assignee"], $this->participants[$data["assignee"]]->firstName, $this->participants[$data["assignee"]]->lastName);
             }
         }
     }

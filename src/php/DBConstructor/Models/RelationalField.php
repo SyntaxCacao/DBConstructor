@@ -167,7 +167,7 @@ class RelationalField
         $rows = Row::loadReferencing($row->id);
 
         foreach ($fields as $field) {
-            $field->edit($userId, $rows[$field->rowId], null, $field->columnNullable);
+            $field->edit($userId, false, $rows[$field->rowId], null, $field->columnNullable);
         }
     }
 
@@ -312,7 +312,7 @@ class RelationalField
     /**
      * @throws JsonException
      */
-    public function edit(string $userId, Row $row, string $targetRowId = null, bool $nullable)
+    public function edit(string $userId, bool $api, Row $row, string $targetRowId = null, bool $nullable)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_relational` SET `target_row_id`=? WHERE `id`=?", [$targetRowId, $this->id]);
         $prevValue = $this->targetRowId;
@@ -322,7 +322,7 @@ class RelationalField
         $row->updateValidity();
 
         $row->setUpdated($userId);
-        RowAction::logChange($row->id, $userId, true, $this->columnId, $prevValue, $targetRowId);
+        RowAction::logChange($row->id, $userId, $api, true, $this->columnId, $prevValue, $targetRowId);
     }
 
     /**
