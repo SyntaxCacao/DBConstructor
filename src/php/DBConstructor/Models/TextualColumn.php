@@ -188,7 +188,7 @@ class TextualColumn extends Column
             }
         }
 
-        return $html.'">'.htmlentities($value).'</td>';
+        return $html.'">'.htmlentities($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5).'</td>';
     }
 
     public function generateIndicator(Validator $validator, bool $success): string
