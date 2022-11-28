@@ -16,7 +16,6 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
-use Exception;
 use Throwable;
 
 class XHRController extends Controller
@@ -58,10 +57,13 @@ class XHRController extends Controller
             // upload attachment
             if ($path[2] === "attachment" && count($path) === 4) {
                 try {
-                    $projectId = "";
-
-                    if (intval($path[3]) === 0 || ($row = Row::loadWithProjectId($path[3], $projectId)) === null) {
+                    if (intval($path[3]) === 0 || ($row = Row::loadWithProjectId(Application::$instance->user->id, $path[3], $projectId, $isParticipant)) === null) {
                         (new NotFoundController())->request($path);
+                        return;
+                    }
+
+                    if (! $isParticipant) {
+                        (new ForbiddenController())->request($path);
                         return;
                     }
 

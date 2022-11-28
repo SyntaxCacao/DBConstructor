@@ -100,13 +100,18 @@ class Row
     }
 
     /**
-     * Loads Row object and projectId but no names for lastEditor and assignee.
+     * Loads Row object and projectId, checks if user participates in project,
+     * but does not load names for lastEditor and assignee.
      *
      * @return Row|null
      */
-    public static function loadWithProjectId(string $rowId, string &$projectId)
+    public static function loadWithProjectId(string $userId, string $rowId, &$projectId, &$isParticipant)
     {
-        MySQLConnection::$instance->execute("SELECT r.*, t.`project_id` FROM `dbc_row` r LEFT JOIN `dbc_table` t ON r.`table_id` = t.`id` WHERE r.`id`=?", [$rowId]);
+        MySQLConnection::$instance->execute("SELECT r.*, t.`project_id`, ".
+            "EXISTS(SELECT * FROM `dbc_participant` p WHERE p.`user_id`=? AND p.`project_id` = t.`project_id` AND p.`removed` IS NULL) AS `isParticipant` ".
+            "FROM `dbc_row` r ".
+            "LEFT JOIN `dbc_table` t ON r.`table_id` = t.`id` ".
+            "WHERE r.`id`=?", [$userId, $rowId]);
         $result = MySQLConnection::$instance->getSelectedRows();
 
         if (count($result) != 1) {
@@ -114,6 +119,7 @@ class Row
         }
 
         $projectId = $result[0]["project_id"];
+        $isParticipant = $result[0]["isParticipant"] === "1";
         return new Row($result[0]);
     }
 

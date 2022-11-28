@@ -6,6 +6,7 @@ namespace DBConstructor;
 
 use DBConstructor\Controllers\API\APIController;
 use DBConstructor\Controllers\Exports\ExportsController;
+use DBConstructor\Controllers\FindController;
 use DBConstructor\Controllers\LoginController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\ProjectsController;
@@ -148,6 +149,8 @@ class Application
             $controller = new ExportsController();
         } else if ($path[0] == "settings") {
             $controller = new UserSettingsController();
+        } else if ($path[0] == "find") {
+            $controller = new FindController();
         } else if ($path[0] == "xhr") {
             $controller = new XHRController();
         }

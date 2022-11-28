@@ -24,6 +24,9 @@
             <li class="navbar-item">
               <a class="navbar-link" href="<?php echo $data["baseurl"] ?>/users/">Benutzer</a>
             </li>
+            <li class="navbar-item">
+              <a class="navbar-link" href="<?php echo $data["baseurl"] ?>/find/" title="Datensatz finden"><span class="bi bi-search" style="vertical-align: 0"></span></a>
+            </li>
           </ul>
           <details class="navbar-right dropdown">
             <summary><span class="navbar-icon bi bi-person-circle"></span></summary>
