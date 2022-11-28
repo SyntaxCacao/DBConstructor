@@ -58,7 +58,10 @@ document.addEventListener("change", event => {
           const rulesElement = document.querySelector(closest.dataset.rulesElement);
           rulesElement.innerHTML = text;
 
-          if (rulesElement.querySelector(".js-result").dataset.result === "0") {
+          if (rulesElement.querySelector(".js-result").dataset.result === "0" && event.target.value !== "") {
+            // last check is to make sure that class won't be set if there is no value;
+            // with no value the text decoration would only be visible once user starts inserting;
+            // inserting something means there probably is now a valid value
             closest.classList.add("page-table-insert-invalid");
           } else {
             closest.classList.remove("page-table-insert-invalid");

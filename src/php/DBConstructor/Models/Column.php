@@ -121,7 +121,10 @@ abstract class Column
         // field
         echo '<label class="column width-'.($edit ? '7' : '4').($isTextual ? ' js-validate-within' : '');
 
-        if ($edit && $isTextual && ! $valid) {
+        if ($edit && $isTextual && ! $valid && $field->value !== null) {
+            // last check is to make sure that class won't be set if there is no value;
+            // with no value the text decoration would only be visible once user starts inserting;
+            // inserting something means there probably is now a valid value
             echo ' page-table-insert-invalid';
         }
 
