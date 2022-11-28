@@ -125,7 +125,16 @@ abstract class Column
             echo ' page-table-insert-invalid';
         }
 
-        echo ' form-block" data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'"'.($labelData === null ? '' : ' '.$labelData).'>';
+        echo ' form-block"';
+
+        if ($isTextual) {
+            // used for normalization in validation.js
+            /** @var TextualColumn $this */
+            echo ' data-type="'.$this->type.'"';
+            /** @var Column $this */
+        }
+
+        echo ' data-rules-element="#validation-steps-'.($isTextual ? 'textual' : 'relational').'-'.htmlentities($this->id).'"'.($labelData === null ? '' : ' '.$labelData).'>';
         echo '<p class="page-table-insert-label">'.$insertLabel.'</p>';
         echo $field->generateField();
 

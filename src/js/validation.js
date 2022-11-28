@@ -4,6 +4,47 @@ document.addEventListener("change", event => {
   if (closest !== null && "rulesElement" in closest.dataset && "columnId" in closest.dataset) {
     let value = event.target.value;
 
+    if ("type" in closest.dataset && closest.dataset.type === "date") {
+      // normalize date values
+
+      // 20221128 => 2022-11-28
+      let match = value.match(/^(\d{4})(\d{1,2})(\d{1,2})$/);
+
+      if (match !== null) {
+        value = match[1] + "-" + match[2] + "-" + match[3];
+        event.target.value = value;
+      }
+
+      // 28.11.2022 => 2022-11-28
+      match = value.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+
+      if (match !== null) {
+        value = match[3] + "-" + match[2] + "-" + match[1];
+        event.target.value = value;
+      }
+
+      // 2022-11-1 => 2022-11-01
+      if (value.length !== 10) {
+        match = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+
+        if (match !== null) {
+          let month = match[2];
+          let day = match[3];
+
+          if (month.length === 1) {
+            month = "0" + month;
+          }
+
+          if (day.length === 1) {
+            day = "0" + day;
+          }
+
+          value = match[1] + "-" + month + "-" + day;
+          event.target.value = value;
+        }
+      }
+    }
+
     fetch(document.body.dataset.baseurl + "/xhr/validation/", {
       body: "id=" + encodeURIComponent(closest.dataset.columnId) + "&value=" + encodeURIComponent(value),
       headers: new Headers({
