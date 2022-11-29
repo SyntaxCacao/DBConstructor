@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 /** @var array $data */
 
-// Specificly setting "action" attribute because form might be accessed e.g. from /find/1212/, this would otherwise result in /find/1212/?id=56
-
 ?>
 <main>
-  <form action="<?= $data["baseurl"] ?>/find/" class="blankslate" method="get">
+  <form class="blankslate" method="get">
     <span class="blankslate-icon bi bi-search"></span>
     <h1 class="blankslate-heading">Datensatz anhand einer ID finden</h1>
     <p class="blankslate-text">Geben Sie die ID eines Datensatzes ein, um direkt auf seine Seite zu gelangen. So müssen Sie ihn nicht erst in den Tabellen suchen.</p>
