@@ -237,6 +237,19 @@ class ViewTab extends TabController
                 header("Content-Disposition: attachment; filename=\"$attachment->fileName\"");
                 header("Content-Length: ".filesize($file));
 
+                if ($attachment->type !== "pdf" || ! isset($_SERVER["HTTP_USER_AGENT"]) || strlen(strstr($_SERVER["HTTP_USER_AGENT"], "Firefox")) === 0) {
+                    // Not sending Content-Type to Firefox for PDFs because Firefox would simply download the file
+                    // to the "Downloads" directory and show it in a new tab. If Firefox were to be configured to
+                    // ask where to save the file then it would also download the file to the "Downloads" directory
+                    // when it instead should simply show the file (in the "view" case below) without permanently
+                    // saving it at all.
+                    //
+                    // Content-Type needs to be properly set for Safari to not add ".html" to the end of the file
+                    // name when downloading. Firefox apparently determines the file type filter in the "Save file"
+                    // window on macOS according to this but doesn't change the file name if it's not set.
+                    header("Content-Type: ".mime_content_type($file));
+                }
+
                 readfile($file);
                 return false;
             }
