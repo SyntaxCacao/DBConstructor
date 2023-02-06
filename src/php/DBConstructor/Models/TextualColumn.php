@@ -54,6 +54,62 @@ class TextualColumn extends Column
     }
 
     /**
+     * For {@code SelectionType} with {@code allowMultiple === true}.
+     *
+     * @return array|null
+     * @throws JsonException
+     */
+    public static function decodeOptions(string $json = null)
+    {
+        if ($json === null) {
+            return null;
+        }
+
+        $array = json_decode($json);
+
+        if ($array === null) {
+            throw new JsonException();
+        }
+
+        if (empty($array)) {
+            return null;
+        }
+
+        return $array;
+    }
+
+    /**
+     * For {@code SelectionType} with {@code allowMultiple === true}.
+     *
+     * @return string|null
+     * @throws JsonException
+     */
+    public static function encodeOptions(array $array = null)
+    {
+        if (empty($array)) {
+            return null;
+        }
+
+        $string = json_encode($array);
+
+        if ($string === false) {
+            throw new JsonException();
+        }
+
+        return $string;
+    }
+
+    /**
+     * Returns {@code true} if the two given sets of options are equivalent, {@code false} otherwise.
+     */
+    public static function isEquivalent(array $options = null, array $moreOptions = null): bool
+    {
+        return ! (($options === null xor $moreOptions === null) || ($options !== null &&
+                (count(array_diff($options, $moreOptions)) > 0 ||
+                    count(array_diff($moreOptions, $options))) > 0));
+    }
+
+    /**
      * @return TextualColumn|null
      */
     public static function load(string $id)
@@ -213,10 +269,18 @@ class TextualColumn extends Column
      */
     public function generateInput(Field $field, array $errorMessages, bool $edit = false)
     {
-        $validator = $this->getValidationType()->buildValidator();
+        $type = $this->getValidationType();
+
+        if ($type instanceof SelectionType && $type->allowMultiple) {
+            $insertLabel = "Eingabe · Mehrfachauswahl";
+        } else {
+            $insertLabel = "Eingabe · ".$this->getTypeLabel();
+        }
+
+        $validator = $type->buildValidator();
         $valid = $validator->validate($field->value);
 
-        parent::generateInput_internal($field, $errorMessages, $edit, $valid, $this->generateIndicator($validator, $valid), true, "Eingabe · ".$this->getTypeLabel(), 'data-column-id="'.htmlentities($this->id).'"');
+        parent::generateInput_internal($field, $errorMessages, $edit, $valid, $this->generateIndicator($validator, $valid), true, $insertLabel, 'data-column-id="'.htmlentities($this->id).'"');
     }
 
     /**
@@ -253,8 +317,30 @@ class TextualColumn extends Column
             /** @var SelectionType $type */
             $type = $this->getValidationType();
 
-            if (in_array($value, array_keys($type->options))) {
-                return $type->options[$value];
+            if ($type->allowMultiple) {
+                try {
+                    $options = self::decodeOptions($value);
+                } catch (JsonException $exception) {
+                    $options = null;
+                }
+
+                if ($options !== null) {
+                    $labels = [];
+
+                    foreach ($options as $option) {
+                        if (array_key_exists($option, $type->options)) {
+                            $labels[] = $type->options[$option];
+                        } else {
+                            $labels[] = $option;
+                        }
+                    }
+
+                    $value = implode(", ", $labels);
+                }
+            } else {
+                if (array_key_exists($value, $type->options)) {
+                    $value = $type->options[$value];
+                }
             }
         }
 

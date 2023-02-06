@@ -16,6 +16,7 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
+use DBConstructor\Validation\Types\SelectionType;
 use Throwable;
 
 class XHRController extends Controller
@@ -40,7 +41,13 @@ class XHRController extends Controller
                 $value = null;
             }
 
-            $validator = $column->getValidationType()->buildValidator();
+            $type = $column->getValidationType();
+
+            if ($type instanceof SelectionType && $type->allowMultiple) {
+                $value = TextualColumn::decodeOptions($value);
+            }
+
+            $validator = $type->buildValidator();
             $success = $validator->validate($value);
             echo $column->generateIndicator($validator, $success);
             return;

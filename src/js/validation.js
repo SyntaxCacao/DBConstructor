@@ -4,6 +4,11 @@ document.addEventListener("change", event => {
   if (closest !== null && "rulesElement" in closest.dataset && "columnId" in closest.dataset) {
     let value = event.target.value;
 
+    if ("name" in event.target.attributes && event.target.attributes.name.value.endsWith("[]")) {
+      // https://stackoverflow.com/a/31544256/5489107
+      value = JSON.stringify(Array.from(event.target.selectedOptions).map(option => option.value));
+    }
+
     if ("type" in closest.dataset && closest.dataset.type === "date") {
       // normalize date values
 

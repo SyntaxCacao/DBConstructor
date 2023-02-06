@@ -83,6 +83,25 @@ textarea {
   text-overflow: ellipsis; // Doesn't work with Safari
 }
 
+.form-select[multiple] {
+  background: none;
+  padding-left: $spacer-2;
+  padding-right: $spacer-2;
+
+  option {
+    overflow: hidden; // to make text-overflow work
+    padding: $spacer-1 $spacer-2;
+    text-overflow: ellipsis;
+  }
+}
+
+.form-select-multiple-noscroll {
+  // Meant to remove scroll bar if size of select[multiple] equals number of options
+  // https://stackoverflow.com/q/4531269
+  overflow-y: auto; // Chrome
+  scrollbar-width: none; // Firefox
+}
+
 // input[type=number] - remove spin button //
 // https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
 

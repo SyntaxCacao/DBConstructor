@@ -13,7 +13,7 @@ class DecimalRule extends Rule
         $this->description = "Ist eine Dezimalzahl<br>(Dezimaltrennzeichen: Punkt)";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $this->setResult(preg_match("/^(?:0|-0(?=\.)|-?[1-9]+[0-9]*)(?:\.[0-9]*[1-9]+)?$/D", $value) === 1);

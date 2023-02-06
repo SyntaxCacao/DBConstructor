@@ -23,7 +23,7 @@ class MinDigitsRule extends Rule
         }
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $result = preg_match("/^(?:0|-?[1-9]+[0-9]*)$/D", $value, $matches);

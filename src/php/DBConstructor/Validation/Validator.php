@@ -22,10 +22,10 @@ class Validator
     }
 
     /**
-     * @param string $value string to be validated
+     * @param string|array $value value to be validated (TODO: set type to string|array when upgrading to PHP 8.0)
      * @return bool true if no rules return invalid
      */
-    public function validate(string $value = null): bool
+    public function validate($value = null): bool
     {
         $success = true;
         $notDependable = [];

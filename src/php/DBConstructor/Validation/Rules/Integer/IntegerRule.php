@@ -13,7 +13,7 @@ class IntegerRule extends Rule
         $this->description = "Ist eine ganze Zahl";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             // regEx: value may have a sign, value may not have leading zeros

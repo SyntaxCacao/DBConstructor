@@ -57,10 +57,11 @@ abstract class RowForm extends Form
     }
 
     /**
+     * @param string|array $storedValue
      * @throws Exception
      * @throws JsonException
      */
-    public function addTextualField(TextualColumn $column, string $storedValue = null, string $stepId = null): string
+    public function addTextualField(TextualColumn $column, $storedValue = null, string $stepId = null): string
     {
         $fieldName = "textual-".$column->id;
 
@@ -90,11 +91,24 @@ abstract class RowForm extends Form
             /** @var SelectionType $type */
             $type = $column->getValidationType();
             $field = new SelectField($fieldName);
+            $field->allowMultiple = $type->allowMultiple;
 
             foreach ($type->options as $name => $label) {
                 // $name needs to be cast to string as PHP stores
                 // numeric keys as ints even if they were put in the array as strings
                 $field->addOption((string) $name, $label);
+            }
+
+            if (is_string($storedValue)) {
+                if (! array_key_exists($storedValue, $type->options)) {
+                    $field->addOption($storedValue, "Ungültig: $storedValue");
+                }
+            } else if (is_array($storedValue)) {
+                foreach ($storedValue as $option) {
+                    if (! array_key_exists($option, $type->options)) {
+                        $field->addOption((string) $option, "Ungültig: ".((string) $option));
+                    }
+                }
             }
         } else if ($column->type == TextualColumn::TYPE_DATE) {
             $field = new TextField($fieldName);

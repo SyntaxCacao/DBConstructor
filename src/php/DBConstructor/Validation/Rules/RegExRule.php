@@ -15,7 +15,7 @@ class RegExRule extends Rule
         $this->regEx = $regEx;
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $this->setResult(preg_match($this->regEx, $value) === 1);

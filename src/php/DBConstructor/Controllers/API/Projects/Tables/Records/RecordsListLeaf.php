@@ -139,7 +139,7 @@ class RecordsListLeaf extends LeafNode
         $result["records"] = [];
 
         foreach ($rows as $row) {
-            $result["records"][] = RecordsElementLeaf::buildRecordArray($row, $relationalFields[$row->id] ?? [], $textualFields[$row->id] ?? []);
+            $result["records"][] = RecordsElementLeaf::buildRecordArray($row, TextualColumn::loadList(TablesNode::$table->id), $relationalFields[$row->id] ?? [], $textualFields[$row->id] ?? []);
         }
 
         return $result;

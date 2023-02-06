@@ -183,8 +183,7 @@ class TextualColumnForm extends Form
         $field = new CheckboxField("rule-select-allowmultiple", "Mehrfachauswahl erlauben");
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_SELECTION;
-        $field->description = "Noch nicht verfügbar";
-        $field->disabled = true;
+        $field->description = "Mit dieser Option können mehrere Möglichkeiten gleichzeitig ausgewählt werden";
 
         if (isset($selectType)) {
             $field->defaultValue = $selectType->allowMultiple;
@@ -196,18 +195,13 @@ class TextualColumnForm extends Form
         $field = new SelectField("rule-select-separator", "Trennzeichen");
         $field->dependsOn = $typeFieldName;
         $field->dependsOnValue = TextualColumn::TYPE_SELECTION;
-        $field->description = "Im Falle der Mehrfachauswahl werden die gewählten Optionen beim Export durch dieses Zeichen getrennt";
-        $field->disabled = true;
-        $field->addOption(SelectionType::SEPARATOR_SPACE, "Leerzeichen");
-        $field->addOption(SelectionType::SEPARATOR_COMMA, "Komma");
+        $field->description = "Im Falle der Mehrfachauswahl werden die gewählten Optionen werden beim (CSV-)Export durch dieses Zeichen getrennt";
         $field->addOption(SelectionType::SEPARATOR_SEMICOLON, "Semikolon");
+        $field->addOption(SelectionType::SEPARATOR_COMMA, "Komma");
+        $field->addOption(SelectionType::SEPARATOR_SPACE, "Leerzeichen");
 
         if (isset($selectType)) {
             $field->defaultValue = $selectType->separator;
-        } else {
-            // Disabled selection fields always need a defaultValue
-            // TODO Remove when enabling field
-            $field->defaultValue = SelectionType::SEPARATOR_SPACE;
         }
 
         $this->addField($field);
@@ -479,6 +473,8 @@ class TextualColumnForm extends Form
             }
         } else {
             // edit
+            $oldType = $this->column->getValidationType();
+            $oldTypeName = $this->column->type;
             $oldRules = $this->column->rules;
             $this->column->edit($data["name"], $data["label"], $data["instructions"], $data["type"], $type, $data["hide"]);
 
@@ -486,7 +482,25 @@ class TextualColumnForm extends Form
                 $this->column->move(intval($data["position"]));
             }
 
-            if ($this->column->rules !== $oldRules && ! $this->tableEmpty) {
+            // migration of selection options
+            if ($type instanceof SelectionType && $type->allowMultiple &&
+                ! ($oldType instanceof SelectionType && $oldType->allowMultiple)) {
+                // column is now multiple selection column but wasn't before
+                // => change 'value' to '["value"]'
+                error_log("Change to column #{$this->column->id} ({$this->column->name}) in table #$this->tableId, performed by user #".Application::$instance->user->id.", triggers migration of values to json format");
+                TextualField::migrateSelectOptions($this->column->id, true);
+            }
+
+            if ($oldType instanceof SelectionType && $oldType->allowMultiple &&
+                ! ($type instanceof SelectionType && $type->allowMultiple)) {
+                // column was mutliple selection column but is no longer
+                // => change '["value"]' to 'value'
+                error_log("Change to column #{$this->column->id} ({$this->column->name}) in table #$this->tableId, performed by user #".Application::$instance->user->id.", triggers migration of values from json format");
+                TextualField::migrateSelectOptions($this->column->id, false);
+            }
+
+            // revalidation
+            if (! $this->tableEmpty && ($this->column->rules !== $oldRules || $this->column->type !== $oldTypeName)) {
                 $this->column->revalidate();
             }
         }

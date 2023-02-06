@@ -42,5 +42,8 @@ abstract class Rule
         }
     }
 
-    abstract function validate(string $value);
+    /**
+     * @param string|array $value TODO: set type to string|array when upgrading to PHP 8.0
+     */
+    abstract function validate($value);
 }

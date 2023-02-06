@@ -13,7 +13,7 @@ class DateRule extends Rule
         $this->description = "Ist eine Datumsangabe im Format YYYY-MM-DD (Jahr 1000–9999)";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $this->setResult(preg_match("/^[1-9][0-9]{3}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2][0-9]|3[0-1])$/D", $value) === 1);

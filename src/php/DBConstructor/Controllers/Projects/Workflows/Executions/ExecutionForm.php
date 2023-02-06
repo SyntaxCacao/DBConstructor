@@ -20,6 +20,7 @@ use DBConstructor\Models\WorkflowExecution;
 use DBConstructor\Models\WorkflowStep;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
+use DBConstructor\Validation\Types\SelectionType;
 
 class ExecutionForm extends RowForm
 {
@@ -246,8 +247,13 @@ class ExecutionForm extends RowForm
                     $field["value"] = null;
                 }
 
+                $validationType = $column->getValidationType();
                 $validator = $column->getValidationType()->buildValidator();
                 $field["valid"] = $validator->validate($field["value"]);
+
+                if ($validationType instanceof SelectionType && $validationType->allowMultiple) {
+                    $field["value"] = TextualColumn::encodeOptions($field["value"]);
+                }
 
                 $textualFields[] = $field;
             }

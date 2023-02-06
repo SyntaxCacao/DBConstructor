@@ -7,6 +7,7 @@ namespace DBConstructor\Models;
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\Type;
+use Throwable;
 
 class TextualField
 {
@@ -121,6 +122,69 @@ class TextualField
         }
 
         return $table;
+    }
+
+    public static function migrateSelectOptions(string $columnId, bool $toJson)
+    {
+        MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_textual` WHERE `column_id`=? AND `value` IS NOT NULL", [$columnId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        foreach ($result as $row) {
+            $field = new TextualField($row);
+
+            try {
+                $options = json_decode($field->value);
+
+                if ($toJson) {
+                    if ($options !== null) {
+                        if (count($options) === 0) {
+                            MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=NULL WHERE `id`=?", [$field->id]);
+                            continue;
+                        }
+
+                        $valid = true;
+
+                        foreach ($options as $value) {
+                            if (! is_string($value)) {
+                                $valid = false;
+                                break;
+                            }
+                        }
+
+                        if ($valid) {
+                            $json = json_encode(array_values($options));
+
+                            if ($json === false) {
+                                throw new JsonException();
+                            }
+
+                            MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=? WHERE `id`=?", [$json, $field->id]);
+                            continue;
+                        }
+                    }
+
+                    $json = json_encode([$field->value]);
+
+                    if ($json === false) {
+                        throw new JsonException();
+                    }
+
+                    MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=? WHERE `id`=?", [$json, $field->id]);
+                } else {
+                    if ($options === null) {
+                        throw new JsonException();
+                    }
+
+                    if (count($options) === 0) {
+                        MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=NULL WHERE `id`=?", [$field->id]);
+                    } else if (count($options) === 1) {
+                        MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=? WHERE `id`=?", [$options[0], $field->id]);
+                    } // doing nothing if there are multiple options selected
+                }
+            } catch (Throwable $throwable) {
+                error_log("Error while migrating field #$field->id (record #$field->rowId): ".get_class($throwable)." in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage());
+            }
+        }
     }
 
     /** @var string */

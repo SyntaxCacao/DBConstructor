@@ -12,6 +12,7 @@ use DBConstructor\Models\Row;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
+use DBConstructor\Validation\Types\SelectionType;
 
 class EditForm extends RowForm
 {
@@ -59,7 +60,14 @@ class EditForm extends RowForm
 
         foreach ($textualColumns as $column) {
             if (isset($textualFields[$column->id])) {
-                $this->addTextualField($column, $textualFields[$column->id]->value);
+                $value = $textualFields[$column->id]->value;
+                $type = $column->getValidationType();
+
+                if ($type instanceof SelectionType && $type->allowMultiple) {
+                    $value = TextualColumn::decodeOptions($value);
+                }
+
+                $this->addTextualField($column, $value);
             } else {
                 $this->addTextualField($column);
             }
@@ -88,12 +96,21 @@ class EditForm extends RowForm
                 continue;
             }
 
+            $type = $column->getValidationType();
             $field = $this->textualFields[$column->id];
+            $value = $data["textual-".$column->id];
 
-            if ($data["textual-".$column->id] !== $field->value) {
-                $validator = $column->getValidationType()->buildValidator();
-                $valid = $validator->validate($data["textual-".$column->id]);
-                $field->edit(Application::$instance->user->id, false, $this->row, $data["textual-".$column->id], $valid);
+            if ($type instanceof SelectionType && $type->allowMultiple) {
+                $changed = ! TextualColumn::isEquivalent($value, TextualColumn::decodeOptions($field->value));
+                $value = TextualColumn::encodeOptions($value);
+            } else {
+                $changed = $value !== $field->value;
+            }
+
+            if ($changed) {
+                $validator = $type->buildValidator();
+                $valid = $validator->validate($data["textual-".$column->id]); // not using $value here, because array must be used for multiple selection
+                $field->edit(Application::$instance->user->id, false, $this->row, $value, $valid);
             }
         }
     }

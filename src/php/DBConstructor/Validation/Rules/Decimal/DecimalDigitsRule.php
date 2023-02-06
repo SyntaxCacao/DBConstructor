@@ -18,7 +18,7 @@ class DecimalDigitsRule extends Rule
         $this->description = "Höchstens $decimalDigits Nachkommastellen";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $result = preg_match("/^(0|-0(?=\.)|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/D", $value, $matches);

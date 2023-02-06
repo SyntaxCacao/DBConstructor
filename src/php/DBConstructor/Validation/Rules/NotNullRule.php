@@ -11,7 +11,7 @@ class NotNullRule extends Rule
         $this->description = "Enthält einen Wert";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         $this->setResult($value !== null);
     }

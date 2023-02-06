@@ -15,7 +15,7 @@ class ForceTrueRule extends Rule
         $this->description = "Ist wahr";
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $this->setResult($value === BooleanType::VALUE_TRUE);

@@ -17,6 +17,7 @@ use DBConstructor\Models\Row;
 use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
+use DBConstructor\Validation\Types\SelectionType;
 use Exception;
 use ZipArchive;
 
@@ -129,7 +130,14 @@ class ExportForm extends Form
 
                     foreach ($textualColumns as $column) {
                         if (isset($textualFields[$row->id]) && isset($textualFields[$row->id][$column->id]) && ! is_null($textualFields[$row->id][$column->id])) {
-                            $rowCsv[] = $textualFields[$row->id][$column->id]->value;
+                            $type = $column->getValidationType();
+                            $value = $textualFields[$row->id][$column->id]->value;
+
+                            if ($type instanceof SelectionType && $type->allowMultiple) {
+                                $value = implode($type->separator, TextualColumn::decodeOptions($value) ?? []);
+                            }
+
+                            $rowCsv[] = $value;
                         } else {
                             $rowCsv[] = "";
                         }

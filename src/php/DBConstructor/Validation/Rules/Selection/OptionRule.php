@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DBConstructor\Validation\Rules\Selection;
 
 use DBConstructor\Validation\Rules\Rule;
-use DBConstructor\Validation\Types\SelectionType;
 
 class OptionRule extends Rule
 {
@@ -30,14 +29,18 @@ class OptionRule extends Rule
         }
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             if ($this->allowMultiple) {
-                $selected = explode(SelectionType::INTERNAL_SEPARATOR, $value);
+                if (! is_array($value)) {
+                    $this->result = Rule::RESULT_INVALID;
+                    return;
+                }
+
                 $this->result = Rule::RESULT_VALID;
 
-                foreach ($selected as $item) {
+                foreach ($value as $item) {
                     if (! in_array($item, $this->options)) {
                         $this->result = Rule::RESULT_INVALID;
                     }

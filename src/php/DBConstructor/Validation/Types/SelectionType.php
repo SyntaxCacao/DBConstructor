@@ -10,8 +10,6 @@ use DBConstructor\Validation\Validator;
 
 class SelectionType extends Type
 {
-    const INTERNAL_SEPARATOR = SelectionType::SEPARATOR_SPACE;
-
     const SEPARATOR_COMMA = ",";
 
     const SEPARATOR_SEMICOLON = ";";
@@ -29,7 +27,7 @@ class SelectionType extends Type
     public $options;
 
     /** @var string */
-    public $separator = SelectionType::SEPARATOR_SPACE;
+    public $separator = SelectionType::SEPARATOR_SEMICOLON;
 
     public function buildValidator(): Validator
     {

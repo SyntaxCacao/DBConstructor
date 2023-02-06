@@ -19,16 +19,19 @@ use DBConstructor\Models\RowAttachment;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\MarkdownParser;
+use DBConstructor\Validation\Types\SelectionType;
+use Exception;
 
 class RecordsElementLeaf extends LeafNode
 {
     /**
+     * @param array<TextualColumn> $textualColumns
      * @param array<RelationalField> $relationalFields
      * @param array<TextualField> $textualFields
      * @param array<RowAttachment>|null $attachments
      * @param array<RowAction>|null $actions
      */
-    public static function buildRecordArray(Row $row, array $relationalFields, array $textualFields, array $attachments = null, array $actions = null): array
+    public static function buildRecordArray(Row $row, array $textualColumns, array $relationalFields, array $textualFields, array $attachments = null, array $actions = null): array
     {
         $array = [
             "id" => intval($row->id),
@@ -66,8 +69,22 @@ class RecordsElementLeaf extends LeafNode
 
         // textualValues
         foreach ($textualFields as $field) {
+            $value = $field->value;
+
+            if ($textualColumns[$field->columnId]->type === TextualColumn::TYPE_SELECTION) {
+                try {
+                    /** @var SelectionType $type */
+                    $type = $textualColumns[$field->columnId]->getValidationType();
+
+                    if ($type->allowMultiple) {
+                        $value = TextualColumn::decodeOptions($value);
+                    }
+                } catch (Exception $exception) {
+                }
+            }
+
             $array["textualValues"][$field->columnId] = [
-                "value" => $field->value,
+                "value" => $value,
                 "valid" => $field->valid
             ];
         }
@@ -155,6 +172,7 @@ class RecordsElementLeaf extends LeafNode
     public function get(array $path): array
     {
         return self::buildRecordArray(RecordsNode::$record,
+            TextualColumn::loadList(TablesNode::$table->id),
             RelationalField::loadRow(RecordsNode::$record->id),
             TextualField::loadRow(RecordsNode::$record->id),
             RowAttachment::loadAll(RecordsNode::$record->id),
@@ -240,17 +258,29 @@ class RecordsElementLeaf extends LeafNode
                     continue;
                 }
 
-                if ($textualFields[$columnId]->value === $value) {
-                    // value unchanged
-                    continue;
+                $type = $textualColumns[$columnId]->getValidationType();
+
+                if ($type instanceof SelectionType && $type->allowMultiple) {
+                    if (TextualColumn::isEquivalent($value, TextualColumn::decodeOptions($textualFields[$columnId]->value))) {
+                        // value unchanged
+                        continue;
+                    }
+                } else {
+                    if ($textualFields[$columnId]->value === $value) {
+                        // value unchanged
+                        continue;
+                    }
+
+                    if ($value === "") {
+                        $value = null;
+                    }
                 }
 
-                if ($value === "") {
-                    $value = null;
-                }
+                $valid = $type->buildValidator()->validate($value);
 
-                $validator = $textualColumns[$columnId]->getValidationType()->buildValidator();
-                $valid = $validator->validate($value);
+                if ($type instanceof SelectionType && $type->allowMultiple) {
+                    $value = TextualColumn::encodeOptions($value);
+                }
 
                 $changes["textualValues"][] = [
                     "field" => $textualFields[$columnId],

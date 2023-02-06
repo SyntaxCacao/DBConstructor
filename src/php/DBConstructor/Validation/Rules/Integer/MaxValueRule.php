@@ -18,7 +18,7 @@ class MaxValueRule extends Rule
         $this->maxValue = $maxValue;
     }
 
-    public function validate(string $value = null)
+    public function validate($value = null)
     {
         if ($value !== null) {
             $this->setResult(intval($value) <= $this->maxValue);

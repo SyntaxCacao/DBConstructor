@@ -19,6 +19,7 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
+use DBConstructor\Validation\Types\SelectionType;
 use Exception;
 
 class InsertForm extends RowForm
@@ -131,8 +132,13 @@ class InsertForm extends RowForm
             $field["column_id"] = $column->id;
             $field["value"] = $data["textual-".$column->id];
 
-            $validator = $column->getValidationType()->buildValidator();
+            $type = $column->getValidationType();
+            $validator = $type->buildValidator();
             $field["valid"] = $validator->validate($field["value"]);
+
+            if ($type instanceof SelectionType && $type->allowMultiple) {
+                $field["value"] = TextualColumn::encodeOptions($field["value"]);
+            }
 
             $textualFields[] = $field;
         }
