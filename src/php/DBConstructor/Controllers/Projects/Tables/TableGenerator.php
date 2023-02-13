@@ -205,11 +205,11 @@ class TableGenerator
             }
 
             if (in_array(self::META_COLUMN_LAST_EDITED, $metaColumns)) {
-                echo '<td class="table-cell" title="Zuletzt bearbeitet von '.htmlentities($row->lastEditorFirstName.' '.$row->lastEditorLastName).'">'.htmlentities(date('d.m.Y H:i', strtotime($row->lastUpdated))).'</td>';
+                echo '<td class="table-cell table-cell-tabular" title="Zuletzt bearbeitet von '.htmlentities($row->lastEditorFirstName.' '.$row->lastEditorLastName).'">'.htmlentities(date('d.m.Y H:i', strtotime($row->lastUpdated))).'</td>';
             }
 
             if (in_array(self::META_COLUMN_CREATED, $metaColumns)) {
-                echo '<td class="table-cell" title="Angelegt von '.htmlentities($row->creatorFirstName.' '.$row->creatorLastName).'">'.htmlentities(date('d.m.Y H:i', strtotime($row->created))).'</td>';
+                echo '<td class="table-cell table-cell-tabular" title="Angelegt von '.htmlentities($row->creatorFirstName.' '.$row->creatorLastName).'">'.htmlentities(date('d.m.Y H:i', strtotime($row->created))).'</td>';
             }
 
             echo '</tr>';

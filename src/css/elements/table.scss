@@ -58,7 +58,7 @@
 }
 
 .table-cell-numeric {
-  font-family: $font-family-monospace;
+  font-feature-settings: "tnum";
   text-align: right;
 }
 
@@ -66,9 +66,18 @@
   color: $color-text-danger;
 }
 
+.table-cell-numeric-thsp {
+  // thousand separator
+  @include user-select(none);
+}
+
 .table-cell-null {
   color: $color-text-secondary;
   font-style: italic;
+}
+
+.table-cell-tabular {
+  font-feature-settings: "tnum";
 }
 
 .table-cell-invalid {

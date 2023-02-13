@@ -201,6 +201,7 @@ class TextualColumn extends Column
         }
 
         $html = '<td class="table-cell';
+        $valueEscaped = false;
 
         if ($field === null) {
             $html .= ' table-cell-invalid table-cell-null';
@@ -211,12 +212,19 @@ class TextualColumn extends Column
 
             if ($field->value === null) {
                 $html .= ' table-cell-null';
+            } else if ($this->type === TextualColumn::TYPE_DATE) {
+                $html .= ' table-cell-tabular';
             } else if ($this->type === TextualColumn::TYPE_DECIMAL) {
                 if (preg_match("/^(0|-?[1-9]+[0-9]*)(?:\.([0-9]*[1-9]+))?$/", $value, $matches)) {
                     $html .= ' table-cell-numeric';
+                    $valueEscaped = true;
+
+                    $value = number_format((int) $matches[1], 0, ".", '<span class="table-cell-numeric-thsp">&thinsp;</span>');
 
                     if (substr($value, 0, 1) === "-") {
                         $html .= ' table-cell-numeric-negative';
+                        // replacing hyphen character with actual minus sign (U+2212) for presentation
+                        $value = "−".ltrim($value, "-");
                     }
 
                     /** @var DecimalType $validationType */
@@ -225,6 +233,7 @@ class TextualColumn extends Column
 
                     if (isset($matches[2])) {
                         $valueDecimals = strlen($matches[2]);
+                        $value .= ".".$valueDecimals;
                     }
 
                     if ($valueDecimals < $validationType->decimalDigits) {
@@ -235,16 +244,23 @@ class TextualColumn extends Column
                         $value .= str_repeat("0", ($validationType->decimalDigits - $valueDecimals));
                     }
                 }
-            } else if (ctype_digit(ltrim($value, "-"))) {
-                $html .= ' table-cell-numeric';
+            } else if ($this->type === TextualColumn::TYPE_INTEGER) {
+                if (ctype_digit(ltrim($value, "-"))) {
+                    $html .= ' table-cell-numeric';
+                    $valueEscaped = true;
 
-                if (intval($value) < 0) {
-                    $html .= ' table-cell-numeric-negative';
+                    if ((int) $value < 0) {
+                        $html .= ' table-cell-numeric-negative';
+                        // replacing simple hyphen character with actual minus sign (U+2212) for presentation
+                        $value = "−".number_format((int) ltrim($value, "-"), 0, ".", '<span class="table-cell-numeric-thsp">&thinsp;</span>');
+                    } else {
+                        $value = number_format((int) $value, 0, ".", '<span class="table-cell-numeric-thsp">&thinsp;</span>');
+                    }
                 }
             }
         }
 
-        return $html.'">'.htmlentities($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5).'</td>';
+        return $html.'">'.($valueEscaped ? $value : htmlentities($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5)).'</td>';
     }
 
     public function generateIndicator(Validator $validator, bool $success): string

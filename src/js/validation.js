@@ -48,6 +48,10 @@ document.addEventListener("change", event => {
           event.target.value = value;
         }
       }
+    } else if ("type" in closest.dataset && (closest.dataset.type === "int" || closest.dataset.type === "dec")) {
+      // Replace minus sign (U+2212) with simple hyphen character
+      value = value.replace("−", "-");
+      event.target.value = value;
     }
 
     fetch(document.body.dataset.baseurl + "/xhr/validation/", {
