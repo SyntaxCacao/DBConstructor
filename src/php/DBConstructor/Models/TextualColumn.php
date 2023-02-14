@@ -424,10 +424,17 @@ class TextualColumn extends Column
     {
         // TODO Don't load everything at once
         $fields = TextualField::loadColumn($this->id);
-        $validator = $this->getValidationType()->buildValidator();
+        $type = $this->getValidationType();
+        $validator = $type->buildValidator();
 
         foreach ($fields as $field) {
-            $valid = $validator->validate($field->value);
+            $value = $field->value;
+
+            if ($type instanceof SelectionType && $type->allowMultiple) {
+                $value = TextualColumn::decodeOptions($value);
+            }
+
+            $valid = $validator->validate($value);
 
             if ($field->valid !== $valid) {
                 $field->setValid($valid);
