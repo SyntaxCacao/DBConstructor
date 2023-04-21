@@ -139,14 +139,6 @@ use DBConstructor\Util\MarkdownParser;
             $column = $data["relationalColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]]->label ?? "(gelöschtes Feld)";
             $previous = $action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE];
             $new = $action->data[RowAction::CHANGE_DATA_NEW_VALUE];
-
-            if ($previous === null) {
-              $previous = "NULL";
-            }
-
-            if ($new === null) {
-              $new = "NULL";
-            }
           } else {
             if (isset($data["textualColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]])) {
               $column = $data["textualColumns"][$action->data[RowAction::CHANGE_DATA_COLUMN_ID]];
@@ -158,6 +150,14 @@ use DBConstructor\Util\MarkdownParser;
               $previous = $action->data[RowAction::CHANGE_DATA_PREVIOUS_VALUE];
               $new = $action->data[RowAction::CHANGE_DATA_NEW_VALUE];
             }
+          }
+
+          if ($previous === null) {
+            $previous = "NULL";
+          }
+
+          if ($new === null) {
+            $new = "NULL";
           } ?>
         <div class="timeline-item">
           <div class="timeline-item-icon"><span class="bi bi-pencil"></span></div>
