@@ -129,6 +129,11 @@ class UserForm extends Form
 
     public function perform(array $data)
     {
+        if (! isset($data["apiaccess"])) {
+            // Wouldn't be set if admin = true
+            $data["apiaccess"] = false;
+        }
+
         if (is_null($this->user)) {
             // create
             User::create(Application::$instance->user->id, $data["username"], $data["firstname"], $data["lastname"], $data["password"], $data["admin"], $data["apiaccess"]);
