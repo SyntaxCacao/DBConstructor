@@ -126,11 +126,41 @@
             if ($type->allowMultiple) {
               $elements[] = "Mehrfachauswahl";
             }
-            if (count($type->options) == 1) {
-              $elements[] = "1 Option";
-            } else {
-              $elements[] = count($type->options)." Optionen";
+
+            $optionsText = count($type->options) == 1 ? "1 Option" : count($type->options)." Optionen";
+
+            $modal = '<div class="modal" id="modal-options-'.$column->id.'">';
+            $modal .= '<div class="modal-container">';
+            $modal .= '<div class="modal-dialog modal-dialog-lg">';
+            $modal .= '<header class="modal-header">';
+            $modal .= '<h3>'.$optionsText.'</h3>';
+            $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+            $modal .= '</header>';
+            $modal .= '<div class="modal-content">';
+            $modal .= '<div class="table-wrapper" style="margin-right: 0">';
+            $modal .= '<table class="table">';
+            $modal .= '<tr class="table-heading">';
+            $modal .= '<th class="table-cell">Bezeichnung</th>';
+            $modal .= '<th class="table-cell">Technischer Name</th>';
+            $modal .= '</tr>';
+            foreach ($type->options as $name => $label) {
+              $modal .= '<tr>';
+              $modal .= '<td class="table-cell">'.htmlentities($label).'</td>';
+              $modal .= '<td class="table-cell table-cell-code">'.htmlentities($name).'</td>';
+              $modal .= '</tr>';
             }
+            $modal .= '</table>';
+            $modal .= '</div>';
+            $modal .= '</div>';
+            $modal .= '<div class="modal-actions">';
+            $modal .= '<a class="button modal-action js-close-modal" href="#">Schließen</a>';
+            $modal .= '</div>';
+            $modal .= '</div>';
+            $modal .= '</div>';
+            $modal .= '</div>';
+            \DBConstructor\Application::$instance->modals[] = $modal;
+
+            $elements[] = '<a class="main-link js-open-modal" href="#" data-modal="modal-options-'.$column->id.'">'.$optionsText.'</a>';
           } else if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_INTEGER) {
             /** @var \DBConstructor\Validation\Types\IntegerType $type */
             if ($type->minDigits !== null && $type->maxDigits !== null) {
