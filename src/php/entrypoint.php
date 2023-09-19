@@ -24,9 +24,10 @@ spl_autoload_register(function ($typeName) {
 $developmentMode = false;
 
 set_exception_handler(function ($throwable) {
-    // Parse error in Application.php would cause $developmentMode to not be properly set
     error_log("Unhandled ".get_class($throwable)." in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage()." – while processing ".$_SERVER["REQUEST_METHOD"]." ".$_SERVER["REQUEST_URI"]);
+    http_response_code(500);
 
+    // Parse error in Application.php would cause $developmentMode to not be properly set
     if ($GLOBALS["developmentMode"]) {
         echo "<b>Unhandled ".get_class($throwable).": </b>".$throwable->getMessage()."<br><br>Stack trace:<br><pre>".$throwable->getTraceAsString()."</pre>thrown in <b>".$throwable->getFile()."</b> on line <b>".$throwable->getLine()."</b>.";
 
