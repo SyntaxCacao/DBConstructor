@@ -8,6 +8,15 @@ document.querySelectorAll(".tabnav-tabs").forEach(tabnav => {
 });
 
 document.addEventListener("click", event => {
+  // prepare markdown preview
+  if (event.target.matches(".js-markdown-tab")) {
+    if (document.querySelector(event.target.dataset.markdownSource).offsetHeight > 0) {
+      // make preview element at least as high as input
+      // offsetHeight returns 0 if element is not visible
+      document.querySelector(event.target.dataset.tabBody).style.minHeight = document.querySelector(event.target.dataset.markdownSource).offsetHeight + "px";
+    }
+  }
+
   // show clicked tab body
   if (event.target.matches(".tabnav-tab") && (event.target.attributes["href"] === null || event.target.attributes["href"].value === "#")) {
     if (! event.target.classList.contains("selected")) {
@@ -15,13 +24,13 @@ document.addEventListener("click", event => {
       prev.classList.remove("selected");
 
       if ("tabBody" in prev.dataset) {
-        document.querySelector(prev.dataset.tabBody).style["display"] = "none";
+        document.querySelector(prev.dataset.tabBody).style.display = "none";
       }
 
       event.target.classList.add("selected");
 
       if ("tabBody" in event.target.dataset) {
-        document.querySelector(event.target.dataset.tabBody).style["display"] = "initial";
+        document.querySelector(event.target.dataset.tabBody).style.display = null;
       }
     }
   }

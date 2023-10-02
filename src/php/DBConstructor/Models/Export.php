@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
+use DBConstructor\Util\StringSanitizer;
 
 class Export
 {
@@ -50,27 +51,6 @@ class Export
         }
 
         return $list;
-    }
-
-    public static function sanitizeProjectLabel(string $projectLabel): string
-    {
-        // Lowercase
-        $projectLabel = strtolower($projectLabel);
-
-        // Simplify special letters
-        $projectLabel = preg_replace("/ä/", "ae", $projectLabel);
-        $projectLabel = preg_replace("/ö/", "oe", $projectLabel);
-        $projectLabel = preg_replace("/ü/", "ue", $projectLabel);
-        $projectLabel = preg_replace("/ß/", "ss", $projectLabel);
-
-        // Remove special characters
-        $projectLabel = preg_replace("/[^a-z0-9]+/", "-", $projectLabel);
-
-        // Remove trailing dashes
-        $projectLabel = preg_replace("/^-+/", "", $projectLabel);
-        $projectLabel = preg_replace("/-+$/", "", $projectLabel);
-
-        return $projectLabel;
     }
 
     /** @var string */
@@ -122,7 +102,7 @@ class Export
 
     public function getFileName(): string
     {
-        return Export::sanitizeProjectLabel($this->projectLabel)."-export-".$this->id;
+        return StringSanitizer::toFileName($this->projectLabel)."-export-".$this->id;
     }
 
     public function getFormatLabel(): string
