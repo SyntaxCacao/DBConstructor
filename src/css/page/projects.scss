@@ -37,3 +37,14 @@ a.page-project-list-box:hover .page-project-list-label {
   color: $color-text-secondary;
   font-style: italic;
 }
+
+#form-export.submitted + .page-project-export-processing {
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: progress;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}

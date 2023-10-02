@@ -1,16 +1,19 @@
-<?php if (isset($data["forbidden"])) { ?>
-<main class="blankslate">
-  <span class="blankslate-icon bi bi-x-lg"></span>
-  <h1 class="blankslate-heading">Zugriff nicht gestattet</h1>
-  <p class="blankslate-text">Der Zugriff auf die angeforderte Seite ist Ihnen nicht gestattet.</p>
-</main>
-<?php } else { ?>
+<?php
+
+declare(strict_types=1);
+
+use DBConstructor\Forms\Form;
+use DBConstructor\Models\Project;
+
+/** @var array{form: Form, project: Project} $data */
+
+?>
 <main class="container container-small">
-<?php   if ($data["saved"]) { ?>
+<?php if ($data["saved"]) { ?>
   <div class="alerts">
     <div class="alert"><p>Die Änderungen wurden gespeichert.</p></div>
   </div>
-<?php   } ?>
+<?php } ?>
   <header class="main-header">
     <div class="main-header-header">
       <h1 class="main-heading">Einstellungen</h1>
@@ -19,4 +22,3 @@
   </header>
   <?php echo $data["form"]->generate(); ?>
 </main>
-<?php } ?>

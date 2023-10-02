@@ -16,24 +16,44 @@ class ExportsTab extends TabController
 
     public function request(array $path, array &$data): bool
     {
-        if (count($path) != 3) {
-            (new NotFoundController())->request($path);
-            return false;
+        if (! $data["isManager"]) {
+            $data["forbidden"] = true;
+            return true;
         }
 
-        $form = new ExportForm();
-        $form->init($data["project"]);
-        $success = $form->process();
+        if (count($path) === 3) {
+            // List exports
+            $data["exports"] = Export::loadList($data["project"]->id);
 
-        if ($success) {
+            if (count($data["exports"]) > 0) {
+                $data["tabpage"] = "list";
+            } else {
+                $data["tabpage"] = "blank";
+            }
+
+            return true;
+        }
+
+        if (count($path) === 4 && $path[3] === "run") {
+            // Run export
             $form = new ExportForm();
             $form->init($data["project"]);
+            $success = $form->process();
+
+            if ($success) {
+                $data["export"] = Export::load($form->exportId);
+                $data["tabpage"] = "success";
+                $data["title"] = "Export erfolgreich";
+            } else {
+                $data["form"] = $form;
+                $data["tabpage"] = "form";
+                $data["title"] = "Export durchführen";
+            }
+
+            return true;
         }
 
-        $data["exports"] = Export::loadList($data["project"]->id);
-        $data["form"] = $form;
-        $data["success"] = $success;
-
-        return true;
+        (new NotFoundController())->request($path);
+        return false;
     }
 }

@@ -117,6 +117,10 @@ class ProjectsController extends Controller
                 $data["title"] = $tabRouter->current->label." · ".$project->label;
             }
 
+            if (isset($data["forbidden"]) && $data["forbidden"] === true) {
+                http_response_code(403);
+            }
+
             Application::$instance->callTemplate($data);
         }
     }

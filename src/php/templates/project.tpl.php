@@ -17,7 +17,9 @@
 </div>
 
 <?php
-if (isset($data["tabpage"])) {
+if (isset($data["forbidden"]) && $data["forbidden"] === true) {
+  require "project_forbidden.tpl.php";
+} else if (isset($data["tabpage"])) {
   require "project_".$data["project-tabs"]->current->link."_".$data["tabpage"].".tpl.php";
 } else {
   require "project_".$data["project-tabs"]->current->link.".tpl.php";

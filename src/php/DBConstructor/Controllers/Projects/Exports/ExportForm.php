@@ -23,6 +23,9 @@ use ZipArchive;
 
 class ExportForm extends Form
 {
+    /** @var string|null */
+    public $exportId;
+
     /** @var Project */
     public $project;
 
@@ -215,10 +218,10 @@ class ExportForm extends Form
                 $textualFieldsStatement = null;
             }
 
-            $id = Export::create($this->project->id, Application::$instance->user->id, $data["format"], $data["note"]);
+            $this->exportId = Export::create($this->project->id, Application::$instance->user->id, $data["format"], $data["note"]);
 
             $zip = new ZipArchive();
-            $zipName = "../tmp/exports/export-$id.zip";
+            $zipName = "../tmp/exports/export-$this->exportId.zip";
 
             if (! $zip->open($zipName, ZipArchive::CREATE)) {
                 throw new Exception("Failed to open $zipName");

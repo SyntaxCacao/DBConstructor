@@ -35,3 +35,13 @@ document.querySelectorAll("[data-depends-on]").forEach(function(element) {
     });
   });
 });
+
+// // //
+
+let form = document.querySelector("#form-export");
+
+if (form !== null) {
+  form.onsubmit = (event) => {
+    event.target.classList.add("submitted");
+  };
+}

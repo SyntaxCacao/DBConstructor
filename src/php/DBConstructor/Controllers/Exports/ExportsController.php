@@ -8,6 +8,7 @@ use DBConstructor\Application;
 use DBConstructor\Controllers\Controller;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Models\Export;
+use DBConstructor\Models\Participant;
 
 class ExportsController extends Controller
 {
@@ -33,6 +34,16 @@ class ExportsController extends Controller
             return;
         }
 
+        if (($participant = Participant::loadFromUser($export->projectId, Application::$instance->user->id)) === null ||
+            ! $participant->isManager) {
+            http_response_code(403);
+            $data["page"] = "export_error";
+            $data["title"] = "Zugriff verwehrt";
+            $data["error"] = "Der Zugriff auf diese Exportdatei ist Ihnen nicht gestattet.";
+            Application::$instance->callTemplate($data);
+            return;
+        }
+
         $fileName = $export->getFileName().".zip";
 
         if (! $path[2] == $fileName) {
@@ -43,8 +54,8 @@ class ExportsController extends Controller
         if ($export->deleted) {
             http_response_code(404);
             $data["page"] = "export_error";
-            $data["title"] = "Exports gelöscht";
-            $data["error"] = "Dieser Exports wurde gelöscht.";
+            $data["title"] = "Exportdatei gelöscht";
+            $data["error"] = "Diese Exportdatei wurde gelöscht.";
             Application::$instance->callTemplate($data);
             return;
         }
@@ -65,12 +76,12 @@ class ExportsController extends Controller
             http_response_code(404);
             $data["page"] = "export_error";
             $data["title"] = "Fehler";
-            $data["error"] = "Diese Exportdatei konnte nicht gelesen werden.";
+            $data["error"] = "Die Exportdatei kann nicht gelesen werden.";
             Application::$instance->callTemplate($data);
             return;
         }
 
-        header('Content-Description: File Transfer');
+        header("Content-Description: File Transfer");
         header("Content-Type: application/zip");
         header("Content-Disposition: attachment; filename=\"$fileName\"");
         header("Content-Length: ".filesize($filePath));
