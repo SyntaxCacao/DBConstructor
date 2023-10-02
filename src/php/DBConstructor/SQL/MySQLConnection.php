@@ -93,6 +93,31 @@ class MySQLConnection
         $this->statement->execute($parameters);
     }
 
+    /**
+     * Prepares, executes and returns {@link PDOStatement}, statement won't be saved into {@link MySQLConnection::$statement}.
+     * Used for simultaneously fetching from multiple queries, without closing the previous statement when executing the next.
+     *
+     * @param array<string, mixed> $parameters
+     */
+    public function executeSeparately(string $sql, array $parameters = []): PDOStatement
+    {
+        // Establishes connection, if not yet connected
+        if ($this->connection == null) {
+            $this->connect();
+        }
+
+        // Closes opened statement, if one exists
+        $this->statement = null;
+
+        // Prepares a new statement
+        $statement = $this->connection->prepare($sql);
+
+        // Executes statement after binding parameters
+        $statement->execute($parameters);
+
+        return $statement;
+    }
+
     public function getLastInsertId(): string
     {
         return $this->connection->lastInsertId();
@@ -107,6 +132,8 @@ class MySQLConnection
         $statement = $this->statement;
         $statement->setFetchMode(PDO::FETCH_ASSOC);
 
+        // PDOStatement::fetchAll() might be used instead
+        // https://www.php.net/manual/en/pdostatement.fetchall.php
         foreach ($statement as $row) {
             $result[] = $row;
         }

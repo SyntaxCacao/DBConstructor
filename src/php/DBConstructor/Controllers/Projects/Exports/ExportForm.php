@@ -56,9 +56,6 @@ class ExportForm extends Form
      */
     public function perform(array $data)
     {
-        // TODO: Refactor as generator
-        // https://www.php.net/manual/en/language.generators.overview.php
-
         if ($data["format"] == Export::FORMAT_CSV) {
             $tmpDir = "../tmp/exports/export-tmp-".uniqid("", true);
 
@@ -103,51 +100,119 @@ class ExportForm extends Form
 
                 fputcsv($tableFile, $columnsArray);
 
-                $rows = Row::loadListExport($table->id);
-                $relationalFields = RelationalField::loadTable($table->id);
-                $textualFields = TextualField::loadTable($table->id);
+                $rowsStatement = Row::selectListExport($table->id);
+                $relationalFieldsStatement = RelationalField::selectTableExport($table->id);
+                $textualFieldsStatement = TextualField::selectTableExport($table->id);
 
-                foreach ($rows as $row) {
-                    $rowCsv = [$row->exportId];
+                $nextRelationalField = null;
+                $nextTextualField = null;
+
+                while ($rowData = $rowsStatement->fetch()) {
+                    $row = new Row($rowData);
+                    $rowExport = [$row->exportId];
 
                     if ($data["internalid"]) {
-                        $rowCsv[] = $row->id;
+                        $rowExport[] = $row->id;
                     }
 
-                    /*
-                    if (! isset($fields[$row->id])) {
-                        continue;
-                    }
-                    */
+                    if (count($relationalColumns) > 0) {
+                        // Fetch relational fields
+                        $relationalFields = [];
 
-                    foreach ($relationalColumns as $column) {
-                        if (isset($relationalFields[$row->id]) && isset($relationalFields[$row->id][$column->id]) && ! is_null($relationalFields[$row->id][$column->id]->targetRowExportId)) {
-                            $rowCsv[] = $relationalFields[$row->id][$column->id]->targetRowExportId;
-                        } else {
-                            $rowCsv[] = "";
-                        }
-                    }
+                        while($nextRelationalField !== false) {
+                            if ($nextRelationalField === null) {
+                                $nextRelationalField = $relationalFieldsStatement->fetch();
 
-                    foreach ($textualColumns as $column) {
-                        if (isset($textualFields[$row->id]) && isset($textualFields[$row->id][$column->id]) && ! is_null($textualFields[$row->id][$column->id])) {
-                            $type = $column->getValidationType();
-                            $value = $textualFields[$row->id][$column->id]->value;
+                                if ($nextRelationalField === false) {
+                                    break;
+                                }
 
-                            if ($type instanceof SelectionType && $type->allowMultiple) {
-                                $value = implode($type->separator, TextualColumn::decodeOptions($value) ?? []);
+                                $nextRelationalField = new RelationalField($nextRelationalField);
                             }
 
-                            $rowCsv[] = $value;
-                        } else {
-                            $rowCsv[] = "";
+                            if ($nextRelationalField->rowId === $row->id) {
+                                $relationalFields[$nextRelationalField->columnId] = $nextRelationalField;
+                                $nextRelationalField = null;
+                            } else {
+                                break;
+                            }
+                        }
+
+                        // Add relational fields to export array
+                        foreach ($relationalColumns as $column) {
+                            if (isset($relationalFields[$column->id])) {
+                                $rowExport[] = $relationalFields[$column->id]->targetRowExportId;
+                            } else {
+                                //echo "Table $table->id: Row $row->id: Missing value for relational column $column->id<br>";
+                                $rowExport[] = "";
+                            }
                         }
                     }
 
-                    fputcsv($tableFile, $rowCsv);
+                    if (count($textualColumns) > 0) {
+                        // Fetch textual fields
+                        $textualFields = [];
+
+                        while($nextTextualField !== false) {
+                            if ($nextTextualField === null) {
+                                $nextTextualField = $textualFieldsStatement->fetch();
+
+                                if ($nextTextualField === false) {
+                                    break;
+                                }
+
+                                $nextTextualField = new TextualField($nextTextualField);
+                            }
+
+                            if ($nextTextualField->rowId === $row->id) {
+                                $textualFields[$nextTextualField->columnId] = $nextTextualField;
+                                $nextTextualField = null;
+                            } else {
+                                break;
+                            }
+                        }
+
+                        // Add textual fields to export array
+                        foreach ($textualColumns as $column) {
+                            if (isset($textualFields[$column->id])) {
+                                $type = $column->getValidationType();
+                                $value = $textualFields[$column->id]->value;
+
+                                if ($type instanceof SelectionType && $type->allowMultiple) {
+                                    $value = implode($type->separator, TextualColumn::decodeOptions($value) ?? []);
+                                }
+
+                                $rowExport[] = $value;
+                            } else {
+                                //echo "Table $table->id: Row $row->id: Missing value for textual column $column->id<br>";
+                                $rowExport[] = "";
+                            }
+                        }
+                    }
+
+                    // Write row to file
+                    fputcsv($tableFile, $rowExport);
                 }
 
                 fclose($tableFile);
                 $files[] = "$table->name.csv";
+
+                /*
+                while ($nextRelationalField !== false) {
+                    echo "Table $table->id: Remaining rel field {$nextRelationalField['id']}<br>";
+                    $nextRelationalField = $relationalFieldsStatement->fetch();
+                }
+
+                while ($nextTextualField !== false) {
+                    echo "Table $table->id: Remaining text field {$nextTextualField['id']}<br>";
+                    $nextTextualField = $textualFieldsStatement->fetch();
+                }
+                */
+
+                // Close statements
+                $rowsStatement = null;
+                $relationalFieldsStatement = null;
+                $textualFieldsStatement = null;
             }
 
             $id = Export::create($this->project->id, Application::$instance->user->id, $data["format"], $data["note"]);

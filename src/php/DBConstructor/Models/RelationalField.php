@@ -7,6 +7,7 @@ namespace DBConstructor\Models;
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
 use Exception;
+use PDOStatement;
 
 class RelationalField
 {
@@ -142,23 +143,6 @@ class RelationalField
     }
 
     /**
-     * @return array<string, array<string, RelationalField>>
-     */
-    public static function loadTable(string $tableId): array
-    {
-        MySQLConnection::$instance->execute("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE r.`table_id`=?", [$tableId]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $table = [];
-
-        foreach ($result as $row) {
-            $field = new RelationalField($row);
-            $table[$field->rowId][$field->columnId] = $field;
-        }
-
-        return $table;
-    }
-
-    /**
      * @throws JsonException
      */
     public static function nullifyReferencing(string $userId, Row $row)
@@ -188,6 +172,11 @@ class RelationalField
         foreach ($fields as $field) {
             $field->revalidate($field->columnNullable);
         }
+    }
+
+    public static function selectTableExport(string $tableId): PDOStatement
+    {
+        return MySQLConnection::$instance->executeSeparately("SELECT f.*, (tr.`id` IS NOT NULL) AS `target_row_exists`, tr.`valid` AS `target_row_valid`, tr.`exportid` AS `target_row_exportid` FROM `dbc_field_relational` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` LEFT JOIN `dbc_row` tr ON f.`target_row_id` = tr.`id` WHERE r.`table_id`=? AND r.`exportid` IS NOT NULL ORDER BY r.`exportid`", [$tableId]);
     }
 
     /**

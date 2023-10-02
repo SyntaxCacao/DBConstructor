@@ -6,6 +6,7 @@ namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
 use Exception;
+use PDOStatement;
 
 class Row
 {
@@ -62,24 +63,6 @@ class Row
         }
 
         return new Row($result[0]);
-    }
-
-    /**
-     * @return array<string, Row>
-     */
-    public static function loadListExport(string $tableId): array
-    {
-        MySQLConnection::$instance->execute("SELECT * FROM `dbc_row` WHERE `table_id`=? AND `exportid` IS NOT NULL ORDER BY `exportid`", [$tableId]);
-
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $list = [];
-
-        foreach ($result as $row) {
-            $obj = new Row($row);
-            $list[$obj->id] = $obj;
-        }
-
-        return $list;
     }
 
     /**
@@ -149,6 +132,11 @@ class Row
         foreach ($result as $row) {
             Row::revalidate($row["id"]);
         }
+    }
+
+    public static function selectListExport(string $tableId): PDOStatement
+    {
+        return MySQLConnection::$instance->executeSeparately("SELECT * FROM `dbc_row` WHERE `table_id`=? AND `exportid` IS NOT NULL ORDER BY `exportid`", [$tableId]);
     }
 
     public static function setExportId(string $tableId)

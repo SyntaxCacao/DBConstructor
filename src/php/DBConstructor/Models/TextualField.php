@@ -7,6 +7,7 @@ namespace DBConstructor\Models;
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\Type;
+use PDOStatement;
 use Throwable;
 
 class TextualField
@@ -107,23 +108,6 @@ class TextualField
         return $table;
     }
 
-    /**
-     * @return array<string, array<string, TextualField>>
-     */
-    public static function loadTable(string $tableId): array
-    {
-        MySQLConnection::$instance->execute("SELECT f.* FROM `dbc_field_textual` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` WHERE r.`table_id`=?", [$tableId]);
-        $result = MySQLConnection::$instance->getSelectedRows();
-        $table = [];
-
-        foreach ($result as $row) {
-            $field = new TextualField($row);
-            $table[$field->rowId][$field->columnId] = $field;
-        }
-
-        return $table;
-    }
-
     public static function migrateSelectOptions(string $columnId, bool $toJson)
     {
         MySQLConnection::$instance->execute("SELECT * FROM `dbc_field_textual` WHERE `column_id`=? AND `value` IS NOT NULL", [$columnId]);
@@ -185,6 +169,11 @@ class TextualField
                 error_log("Error while migrating field #$field->id (record #$field->rowId): ".get_class($throwable)." in ".$throwable->getFile()." on line ".$throwable->getLine().": ".$throwable->getMessage());
             }
         }
+    }
+
+    public static function selectTableExport(string $tableId): PDOStatement
+    {
+        return MySQLConnection::$instance->executeSeparately("SELECT f.* FROM `dbc_field_textual` f LEFT JOIN `dbc_row` r ON f.`row_id` = r.`id` WHERE r.`table_id`=? AND r.`exportid` IS NOT NULL ORDER BY r.`exportid`", [$tableId]);
     }
 
     /** @var string */
