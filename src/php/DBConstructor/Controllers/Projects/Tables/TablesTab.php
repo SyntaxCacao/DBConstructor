@@ -75,7 +75,7 @@ class TablesTab extends TabController
         $tabRouter->register(new StructureTab(), true);
         $tabRouter->register(new ViewTab());
         $tabRouter->register(new InsertTab());
-        $tabRouter->register(new IssuesTab());
+        //$tabRouter->register(new IssuesTab());
         $tabRouter->register(new SettingsTab());
 
         if ($tabRouter->route($path, 4, $data)) {
