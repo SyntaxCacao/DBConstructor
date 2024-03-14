@@ -40,6 +40,7 @@ class WorkflowForm extends Form
 
         // description
         $field = new TextField("description", "Beschreibung");
+        $field->description = "Markdown-Formatierung auf Absatzebene möglich";
         $field->expand = true;
         $field->maxLength = 150;
         $field->required = false;

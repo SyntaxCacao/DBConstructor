@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use DBConstructor\Models\Workflow;
 use DBConstructor\Util\HeaderGenerator;
+use DBConstructor\Util\MarkdownParser;
 
 /** @var array $data */ ?>
 <main class="container">
@@ -32,7 +33,7 @@ use DBConstructor\Util\HeaderGenerator;
       <div class="box-row-flex-extend">
         <h3 class="page-project-list-label"><?= htmlentities($workflow->label) ?><?= $workflow->active ? "" : " (deaktiviert)" ?></h3>
 <?php   if ($workflow->description !== null) { ?>
-        <p class="page-project-list-description"><?= htmlentities($workflow->description) ?></p>
+        <p class="page-project-list-description"><?= MarkdownParser::parseLine($workflow->description) ?></p>
 <?php   } ?>
       </div>
       <div class="box-row-flex-conserve">
