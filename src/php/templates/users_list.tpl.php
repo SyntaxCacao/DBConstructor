@@ -37,7 +37,7 @@
         <td class="table-cell"><?php echo $user["obj"]->id; ?></td>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php echo htmlentities($user["obj"]->username); ?></td><?php } ?>
         <td class="table-cell"><?php echo htmlentities($user["obj"]->lastname).", ".htmlentities($user["obj"]->firstname); ?></td>
-        <td class="table-cell"><?php if ($user["obj"]->isAdmin) { ?>Administrator<?php } else { ?>Benutzer<?php } if ($user["obj"]->locked) { ?> <i>(gesperrt)</i><?php } ?></td>
+        <td class="table-cell"><?php if ($user["obj"]->isAdmin) { ?>Administrator<?php } else { ?>Benutzer<?php } if ($user["obj"]->locked) { ?> <span class="bi bi-lock-fill page-project-participants-locked" title="Dieser Benutzer ist gesperrt."></span><?php } ?></td>
         <td class="table-cell"><?php echo $user["projects"]; ?></td>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php if (isset($user["obj"]->firstLogin)) { echo htmlentities(date("d.m.Y H:i", strtotime($user["obj"]->firstLogin))); } else { ?>&ndash;<?php } ?></td><?php } ?>
 <?php if ($data["isAdmin"]) { ?><td class="table-cell"><?php if (isset($user["obj"]->lastLogin)) { echo htmlentities(date("d.m.Y H:i", strtotime($user["obj"]->lastLogin))); } else { ?>&ndash;<?php } ?></td><?php } ?>
