@@ -128,9 +128,6 @@ class RecordsListLeaf extends LeafNode
 
         // load
         $count = $loader->getRowCount();
-        $rows = $loader->getRows($params["page"]);
-        $relationalFields = RelationalField::loadRows($rows);
-        $textualFields = TextualField::loadRows($rows);
 
         $result = [];
         $result["count"] = $count;
@@ -138,8 +135,14 @@ class RecordsListLeaf extends LeafNode
         $result["pages"] = $loader->calcPages($count);
         $result["records"] = [];
 
-        foreach ($rows as $row) {
-            $result["records"][] = RecordsElementLeaf::buildRecordArray($row, TextualColumn::loadList(TablesNode::$table->id), $relationalFields[$row->id] ?? [], $textualFields[$row->id] ?? []);
+        if ($count > 0) {
+            $rows = $loader->getRows($params["page"]);
+            $relationalFields = RelationalField::loadRows($rows);
+            $textualFields = TextualField::loadRows($rows);
+
+            foreach ($rows as $row) {
+                $result["records"][] = RecordsElementLeaf::buildRecordArray($row, TextualColumn::loadList(TablesNode::$table->id), $relationalFields[$row->id] ?? [], $textualFields[$row->id] ?? []);
+            }
         }
 
         return $result;
