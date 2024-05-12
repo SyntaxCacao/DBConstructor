@@ -51,13 +51,43 @@ class RelationalColumn extends Column
         return $list;
     }
 
+    public static function loadReferencingColumns(string $tableId, bool $manualOrder): array
+    {
+        $sql = "SELECT c.*, t.`name` AS `table_name`, t.`label` AS `table_label` FROM `dbc_column_relational` c LEFT JOIN `dbc_table` t ON c.`table_id` = t.`id` WHERE c.`target_table_id`=? ";
+
+        if ($manualOrder) {
+            $sql .= "ORDER BY t.`position`";
+        } else {
+            $sql .= "ORDER BY t.`label`";
+        }
+
+        $sql .= ", c.`position`";
+
+        MySQLConnection::$instance->execute($sql, [$tableId]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        $list = [];
+
+        foreach ($result as $row) {
+            $obj = new RelationalColumn($row);
+            $list[$obj->id] = $obj;
+        }
+
+        return $list;
+    }
+
+    /** @var string|null */
+    public $tableName;
+
+    /** @var string|null */
+    public $tableLabel;
+
     /** @var string */
     public $targetTableId;
 
-    /** @var string */
+    /** @var string|null */
     public $targetTableName;
 
-    /** @var string */
+    /** @var string|null */
     public $targetTableLabel;
 
     /** @var string */
@@ -72,9 +102,11 @@ class RelationalColumn extends Column
     public function __construct(array $data)
     {
         parent::__construct($data);
+        $this->tableName = $data["table_name"] ?? null;
+        $this->tableLabel = $data["table_label"] ?? null;
         $this->targetTableId = $data["target_table_id"];
-        $this->targetTableName = $data["target_table_name"];
-        $this->targetTableLabel = $data["target_table_label"];
+        $this->targetTableName = $data["target_table_name"] ?? null;
+        $this->targetTableLabel = $data["target_table_label"] ?? null;
         $this->labelColumnId = $data["label_column_id"];
         $this->nullable = $data["nullable"] == "1";
     }

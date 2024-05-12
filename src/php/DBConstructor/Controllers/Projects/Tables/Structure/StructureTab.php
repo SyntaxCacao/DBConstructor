@@ -8,8 +8,10 @@ use DBConstructor\Application;
 use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
+use DBConstructor\Models\Project;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\Row;
+use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Util\JsonException;
 
@@ -21,6 +23,7 @@ class StructureTab extends TabController
     }
 
     /**
+     * @param array{project: Project, table: Table} $data
      * @throws JsonException
      */
     public function request(array $path, array &$data): bool
@@ -28,6 +31,7 @@ class StructureTab extends TabController
         if (count($path) <= 5) { // '<=' because this can be access with /projects/x/tables/x/ and /projects/x/tables/x/structure/
             $data["relationalColumns"] = RelationalColumn::loadList($data["table"]->id);
             $data["textualColumns"] = TextualColumn::loadList($data["table"]->id);
+            $data["referencingColumns"] = RelationalColumn::loadReferencingColumns($data["table"]->id, $data["project"]->manualOrder);
 
             if (count($data["relationalColumns"]) == 0 && count($data["textualColumns"]) == 0) {
                 $data["tabpage"] = "blank";

@@ -16,6 +16,7 @@ use DBConstructor\Validation\Types\TextType;
 /** @var array{baseurl: string,
  *   isManager: bool,
  *   project: Project,
+ *   referencingColumns: array<RelationalColumn>,
  *   relationalColumns: array<RelationalColumn>,
  *   table: Table,
  *   textualColumns: array<TextualColumn>} $data */
@@ -242,5 +243,27 @@ use DBConstructor\Validation\Types\TextType;
   </div>
 <?php } else { ?>
   <p>Bislang sind keine Wertfelder angelegt.</p>
+<?php } ?>
+
+<?php if (count($data["referencingColumns"]) > 0) { ?>
+  <h2 class="main-subheading">Referenzen auf diese Tabelle</h2>
+  <div class="table-wrapper">
+    <table class="table">
+      <tr class="table-heading">
+        <th class="table-cell">Verweisende Tabelle</th>
+        <th class="table-cell">Verweisendes Feld</th>
+      </tr>
+<?php   foreach ($data["referencingColumns"] as $column) { ?>
+      <tr class="table-row">
+<?php     if ($column->tableId === $data["table"]->id) { ?>
+        <td class="table-cell">Diese Tabelle</td>
+<?php     } else { ?>
+        <td class="table-cell"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $column->tableId ?>/"><?= htmlentities($column->tableLabel) ?></a> <span class="table-cell-code-addition"><?= htmlentities($column->tableName) ?></span></td>
+<?php     } ?>
+        <td class="table-cell"><?= htmlentities($column->label) ?> <span class="table-cell-code-addition"><?= htmlentities($column->name) ?></span></td>
+      </tr>
+<?php   } ?>
+    </table>
+  </div>
 <?php } ?>
 </main>
