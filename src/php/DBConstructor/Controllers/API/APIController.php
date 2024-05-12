@@ -128,8 +128,13 @@ class APIController extends Controller
             http_response_code(500);
 
             if (Application::$instance->config["development"]) {
-                header("Content-Type: text/html; charset=utf-8");
-                var_dump($throwable);
+                header("Content-Type: text/plain; charset=utf-8");
+
+                echo "Unhandled ".get_class($throwable).": ".$throwable->getMessage()."\n\nStack trace:\n".$throwable->getTraceAsString()."\n\nthrown in ".$throwable->getFile()." on line ".$throwable->getLine().".\n";
+
+                while ($throwable = $throwable->getPrevious()) {
+                    echo "\nCaused by ".get_class($throwable).": ".$throwable->getMessage()."\n\nStack trace:\n".$throwable->getTraceAsString()."\n\nthrown in ".$throwable->getFile()." on line ".$throwable->getLine().".\n";
+                }
             }
         }
     }
