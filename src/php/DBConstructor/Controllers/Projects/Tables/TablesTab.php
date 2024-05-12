@@ -8,7 +8,6 @@ use DBConstructor\Application;
 use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\Tables\Insert\InsertTab;
-use DBConstructor\Controllers\Projects\Tables\Issues\IssuesTab;
 use DBConstructor\Controllers\Projects\Tables\Settings\SettingsTab;
 use DBConstructor\Controllers\Projects\Tables\Structure\StructureTab;
 use DBConstructor\Controllers\Projects\Tables\View\ViewTab;
@@ -83,7 +82,6 @@ class TablesTab extends TabController
         $tabRouter->register(new StructureTab(), true);
         $tabRouter->register(new ViewTab());
         $tabRouter->register(new InsertTab());
-        //$tabRouter->register(new IssuesTab());
         $tabRouter->register(new SettingsTab());
 
         if ($tabRouter->route($path, 4, $data)) {
