@@ -160,16 +160,17 @@ module.exports = function(grunt) {
   grunt.registerTask('php-vendor', ['clean:php-vendor', 'copy:php-vendor']);
   grunt.registerTask('sql', ['clean:sql', 'copy:sql']);
 
-  grunt.registerTask('version', 'Writes version number to version.txt and versionizes files', function(task) {
+  grunt.registerTask('version', 'Writes version number to version.txt and versionizes assets', function(task) {
     const version = grunt.config.get('pkg.version');
 
-    function versionize(file, versionized) {
+    function versionize(file, version) {
+      const versionized = file.replace(/^([^.]*)(.*)$/, '$1-' + version + '$2');
       if (grunt.file.exists(file)) {
         grunt.file.copy(file, versionized);
         grunt.file.delete(file);
         grunt.log.ok('Moved ' + file + ' to ' + versionized);
       } else {
-        grunt.log.warn(versionized + ' does not exist');
+        grunt.log.warn(file + ' does not exist');
       }
     }
 
@@ -177,10 +178,10 @@ module.exports = function(grunt) {
       grunt.file.write('dist/version.txt', version);
       grunt.log.ok('Wrote ' + 'version.txt');
     } else if (task === 'css') {
-      versionize('dist/assets/build.min.css', 'dist/assets/build-' + version + '.min.css');
+      versionize('dist/assets/build.min.css', version);
     } else if (task === 'js') {
-      versionize('dist/assets/build-charts.min.js', 'dist/assets/build-charts-' + version + '.min.js');
-      versionize('dist/assets/build-main.min.js', 'dist/assets/build-main-' + version + '.min.js');
+      versionize('dist/assets/build-charts.min.js', version);
+      versionize('dist/assets/build-main.min.js', version);
     } else {
       grunt.fail.warn('Unknown task "' + task + '".');
     }
