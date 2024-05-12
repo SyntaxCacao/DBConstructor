@@ -63,9 +63,31 @@ class Participant
     /**
      * @return array<string, Participant>
      */
-    public static function loadList(string $projectId): array
+    public static function loadList(string $projectId, $includeRemoved = false, $creatorsOnly = false): array
     {
-        MySQLConnection::$instance->execute("SELECT p.*, u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname`, u.`locked` AS `user_locked` FROM `dbc_participant` p LEFT JOIN `dbc_user` u ON p.`user_id`=u.`id` WHERE p.`project_id`=? AND p.`removed` IS NULL ORDER BY p.`manager` DESC, u.`lastname`, u.`firstname`", [$projectId]);
+        // @formatter:off
+        $sql = "SELECT p.*, ".
+                      "u.`firstname` AS `user_firstname`, ".
+                      "u.`lastname` AS `user_lastname`, ".
+                      "u.`locked` AS `user_locked` ".
+               "FROM `dbc_participant` p ".
+               "LEFT JOIN `dbc_user` u ON p.`user_id`=u.`id` ".
+               "WHERE p.`project_id`=? ";
+        // @formatter:on
+        $params = [$projectId];
+
+        if ($includeRemoved) {
+            $sql .= "AND p.`removed` IS NULL ";
+        }
+
+        if ($creatorsOnly) {
+            $sql .= "AND (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` IN (SELECT t.`id` FROM `dbc_table` t WHERE t.`project_id`=?) AND r.`creator_id`=p.`user_id`) > 0 ";
+            $params[] = $projectId;
+        }
+
+        $sql .= "ORDER BY p.`manager` DESC, u.`lastname`, u.`firstname`";
+
+        MySQLConnection::$instance->execute($sql, $params);
         $result = MySQLConnection::$instance->getSelectedRows();
         $list = [];
 

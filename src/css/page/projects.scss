@@ -33,10 +33,22 @@ a.page-project-list-box:hover .page-project-list-label {
   margin-left: 32px;
 }
 
-.page-project-created {
+// //
+
+.page-project-tables-created {
   color: $color-text-secondary;
   font-style: italic;
 }
+
+.page-project-tables-progress-more {
+  color: #30a147; // Primer --data-green-color
+}
+
+.page-project-tables-progress-less {
+  color: #cf222e; // Primer --color-danger-fg
+}
+
+// //
 
 #form-export.submitted + .page-project-export-processing {
   background-color: rgba(0, 0, 0, 0.6);

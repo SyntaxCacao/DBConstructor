@@ -23,6 +23,17 @@ module.exports = function(grunt) {
       }
     },
 
+    concat: {
+      'js-charts': {
+        src: [
+          'src/js/charts/plotly-basic-2.31.1.min.js',
+          'src/js/charts/plotly-locale-de-2.31.1.js',
+          'dist/assets/build-charts.min.js'
+        ],
+        dest: 'dist/assets/build-charts.min.js'
+      }
+    },
+
     copy: {
       config: {
         src: 'src/misc/config.default.php',
@@ -91,9 +102,9 @@ module.exports = function(grunt) {
       options: {
         toplevel: true
       },
-      build: {
+      main: {
         files: {
-          'dist/assets/build.min.js': [
+          'dist/assets/build-main.min.js': [
             'src/js/dropdowns.js',
             'src/js/forms.js',
             'src/js/links.js',
@@ -105,6 +116,11 @@ module.exports = function(grunt) {
             'src/js/upload.js',
             'src/js/validation.js'
           ]
+        }
+      },
+      charts: {
+        files: {
+          'dist/assets/build-charts.min.js': 'src/js/charts/progress.js'
         }
       }
     },
@@ -130,6 +146,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -137,7 +154,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('css', ['clean:css', 'dart-sass', 'version:css']);
   grunt.registerTask('fonts', ['clean:fonts', 'copy:fonts-inter', 'copy:fonts-icons']);
-  grunt.registerTask('js', ['clean:js', 'uglify', 'version:js']);
+  grunt.registerTask('js', ['clean:js', 'uglify:main', 'uglify:charts', 'concat:js-charts', 'version:js']);
   grunt.registerTask('misc', ['copy:config', 'copy:favicon', 'copy:htaccess', 'copy:license', 'copy:readme', 'version:txt']);
   grunt.registerTask('php', ['clean:php', 'copy:php']);
   grunt.registerTask('php-vendor', ['clean:php-vendor', 'copy:php-vendor']);
@@ -162,7 +179,8 @@ module.exports = function(grunt) {
     } else if (task === 'css') {
       versionize('dist/assets/build.min.css', 'dist/assets/build-' + version + '.min.css');
     } else if (task === 'js') {
-      versionize('dist/assets/build.min.js', 'dist/assets/build-' + version + '.min.js');
+      versionize('dist/assets/build-charts.min.js', 'dist/assets/build-charts-' + version + '.min.js');
+      versionize('dist/assets/build-main.min.js', 'dist/assets/build-main-' + version + '.min.js');
     } else {
       grunt.fail.warn('Unknown task "' + task + '".');
     }

@@ -83,8 +83,44 @@ use DBConstructor\Util\MarkdownParser;
       } else {
         echo MarkdownParser::parse($data["project"]->notes);
       } ?>
-        <p class="page-project-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
+        <p class="page-project-tables-created">Projekt angelegt am <?php echo htmlentities(date("d.m.Y", strtotime($data["project"]->created))); ?></p>
       </div>
+<?php if ($data["rowsCreatedAllTime"] > 0) { ?>
+      <header class="main-header">
+        <h1 class="main-heading">Erfassungsfortschritt</h1>
+      </header>
+      <div class="markdown">
+        <h2>Erfasste Datensätze</h2>
+        <p>Insgesamt: <strong><?= number_format($data["rowsCreatedAllTime"], 0, ",", ".") ?></strong><br>
+           Letzte Woche: <strong><?= number_format($data["rowsCreatedLastWeek"], 0, ",", ".") ?></strong><br>
+           Laufende Woche: <strong><?= number_format($data["rowsCreatedThisWeek"], 0, ",", ".") ?></strong><?php
+        $diff = $data["rowsCreatedThisWeek"] - $data["rowsCreatedLastWeek"];
+        if ($diff === 0) {
+          echo ' (±0)';
+        } else if ($diff > 0) {
+          echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
+        } else {
+          echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
+        }
+        ?></p>
+<?php   if ($data["rowsCreatedUserAllTime"] > 0) { ?>
+        <h2>Von Ihnen angelegte Datensätze</h2>
+        <p>Insgesamt: <strong><?= number_format($data["rowsCreatedUserAllTime"], 0, ",", ".") ?></strong><br>
+           Letzte Woche: <strong><?= number_format($data["rowsCreatedUserLastWeek"], 0, ",", ".") ?></strong><br>
+           Laufende Woche: <strong><?= number_format($data["rowsCreatedUserThisWeek"], 0, ",", ".") ?></strong><?php
+        $diff = $data["rowsCreatedUserThisWeek"] - $data["rowsCreatedUserLastWeek"];
+        if ($diff === 0) {
+          echo ' (±0)';
+        } else if ($diff > 0) {
+          echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
+        } else {
+          echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
+        }
+        ?></p>
+<?php   } ?>
+        <p><a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/progress/">Mehr...</a></p>
+      </div>
+<?php } ?>
     </div>
   </div>
 </main>

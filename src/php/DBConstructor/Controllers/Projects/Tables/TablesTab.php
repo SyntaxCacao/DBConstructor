@@ -14,6 +14,7 @@ use DBConstructor\Controllers\Projects\Tables\Structure\StructureTab;
 use DBConstructor\Controllers\Projects\Tables\View\ViewTab;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Controllers\TabRouter;
+use DBConstructor\Models\RowProgressLoader;
 use DBConstructor\Models\Table;
 
 class TablesTab extends TabController
@@ -35,6 +36,13 @@ class TablesTab extends TabController
                 $data["tables"][$_REQUEST["move"]]->move(intval($_REQUEST["position"]));
                 $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true, true, Application::$instance->user->id);
             }
+
+            $data["rowsCreatedAllTime"] = RowProgressLoader::loadTotal($data["project"]->id);
+            $data["rowsCreatedThisWeek"] = RowProgressLoader::loadTotal($data["project"]->id, null, RowProgressLoader::TOTAL_THIS_WEEK);
+            $data["rowsCreatedLastWeek"] = RowProgressLoader::loadTotal($data["project"]->id, null, RowProgressLoader::TOTAL_LAST_WEEK);
+            $data["rowsCreatedUserAllTime"] = RowProgressLoader::loadTotal($data["project"]->id, Application::$instance->user->id);
+            $data["rowsCreatedUserThisWeek"] = RowProgressLoader::loadTotal($data["project"]->id, Application::$instance->user->id, RowProgressLoader::TOTAL_THIS_WEEK);
+            $data["rowsCreatedUserLastWeek"] = RowProgressLoader::loadTotal($data["project"]->id, Application::$instance->user->id, RowProgressLoader::TOTAL_LAST_WEEK);
 
             return true;
         }

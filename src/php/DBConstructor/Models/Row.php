@@ -14,7 +14,7 @@ class Row
 
     public static function create(string $tableId, string $creatorId, bool $api, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`) VALUES (?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged)]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`, `api`) VALUES (?, ?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged), intval($api)]);
         $id = MySQLConnection::$instance->getLastInsertId();
 
         RowAction::logCreation($id, $creatorId, $api);

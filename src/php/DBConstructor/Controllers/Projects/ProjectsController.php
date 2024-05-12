@@ -10,6 +10,7 @@ use DBConstructor\Controllers\ForbiddenController;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\Projects\Exports\ExportsTab;
 use DBConstructor\Controllers\Projects\Participants\ParticipantsTab;
+use DBConstructor\Controllers\Projects\Progress\ProgressTab;
 use DBConstructor\Controllers\Projects\Settings\SettingsTab;
 use DBConstructor\Controllers\Projects\Tables\TablesTab;
 use DBConstructor\Controllers\Projects\Wiki\WikiTab;
@@ -104,6 +105,7 @@ class ProjectsController extends Controller
         $tabRouter->register(new WorkflowTab());
         $tabRouter->register(new ExportsTab());
         $tabRouter->register(new ParticipantsTab());
+        $tabRouter->register(new ProgressTab());
         $tabRouter->register(new SettingsTab());
 
         if ($tabRouter->route($path, 2, $data)) {
