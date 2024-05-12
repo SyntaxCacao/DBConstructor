@@ -11,16 +11,11 @@ use DBConstructor\Models\Export;
 class ExportsTab extends TabController
 {
     public function __construct() {
-        parent::__construct("Export", "exports", "box-seam");
+        parent::__construct("Export", "exports", "box-seam", true);
     }
 
     public function request(array $path, array &$data): bool
     {
-        if (! $data["isManager"]) {
-            $data["forbidden"] = true;
-            return true;
-        }
-
         if (count($path) === 3) {
             // List exports
             $data["exports"] = Export::loadList($data["project"]->id);

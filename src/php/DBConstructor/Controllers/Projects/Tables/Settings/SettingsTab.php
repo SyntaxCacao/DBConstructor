@@ -12,7 +12,7 @@ class SettingsTab extends TabController
 {
     public function __construct()
     {
-        parent::__construct("Einstellungen", "settings", "gear");
+        parent::__construct("Einstellungen", "settings", "gear", true);
     }
 
     public function request(array $path, array &$data): bool
@@ -20,11 +20,6 @@ class SettingsTab extends TabController
         if (count($path) != 5) {
             (new NotFoundController())->request($path);
             return false;
-        }
-
-        if (! $data["isManager"]) {
-            $data["forbidden"] = true;
-            return true;
         }
 
         $form = new TableForm();

@@ -108,7 +108,7 @@ class ProjectsController extends Controller
         $tabRouter->register(new ProgressTab());
         $tabRouter->register(new SettingsTab());
 
-        if ($tabRouter->route($path, 2, $data)) {
+        if ($tabRouter->route($path, 2, $data, $data["isManager"])) {
             $data["project-tabs"] = $tabRouter;
 
             $data["page"] = "project";
@@ -117,10 +117,6 @@ class ProjectsController extends Controller
                 $data["title"] .= " · ".$project->label;
             } else {
                 $data["title"] = $tabRouter->current->label." · ".$project->label;
-            }
-
-            if (isset($data["forbidden"]) && $data["forbidden"] === true) {
-                http_response_code(403);
             }
 
             Application::$instance->callTemplate($data);

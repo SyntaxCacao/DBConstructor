@@ -84,7 +84,7 @@ class TablesTab extends TabController
         $tabRouter->register(new InsertTab());
         $tabRouter->register(new SettingsTab());
 
-        if ($tabRouter->route($path, 4, $data)) {
+        if ($tabRouter->route($path, 4, $data, $data["isManager"])) {
             $data["table-tabs"] = $tabRouter;
 
             $data["page"] = "table";

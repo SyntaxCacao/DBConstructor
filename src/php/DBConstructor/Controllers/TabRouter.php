@@ -28,17 +28,22 @@ class TabRouter
      * @param array<string> $path
      * @param array<string, mixed> $data
      */
-    public function route(array $path, int $tabIndex, array &$data): bool
+    public function route(array $path, int $tabIndex, array &$data, bool $isManager): bool
     {
         if (isset($this->default) && ! isset($path[$tabIndex])) {
             $this->current = $this->tabs[$this->default];
-            return $this->tabs[$this->default]->request($path, $data);
         } else if (array_key_exists($path[$tabIndex], $this->tabs)) {
             $this->current = $this->tabs[$path[$tabIndex]];
-            return $this->tabs[$path[$tabIndex]]->request($path, $data);
         } else {
             (new NotFoundController())->request($path);
             return false;
         }
+
+        if ($this->current->requireManager && ! $isManager) {
+            (new ForbiddenController())->request($path);
+            return false;
+        }
+
+        return $this->current->request($path, $data);
     }
 }

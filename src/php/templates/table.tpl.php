@@ -1,3 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+use DBConstructor\Controllers\TabRouter;
+use DBConstructor\Models\Project;
+use DBConstructor\Models\Table;
+
+/** @var array{baseurl: string, isManager: bool, project: Project, table: Table, table-tabs: TabRouter, tabpage: string} $data */
+
+?>
 <div class="header">
   <div class="container">
     <header class="header-header">
@@ -8,7 +19,10 @@
   <div class="tabnav">
     <div class="container">
       <nav class="tabnav-tabs">
-<?php foreach ($data["table-tabs"]->tabs as $tab) { ?>
+<?php foreach ($data["table-tabs"]->tabs as $tab) {
+        if ($tab->requireManager && ! $data["isManager"]) {
+          continue;
+        } ?>
         <a class="tabnav-tab<?php if ($tab->link == $data["table-tabs"]->current->link) echo " selected"; ?>" href="<?php echo $data["baseurl"]."/projects/".$data["project"]->id."/tables/".$data["table"]->id."/"; if ($data["table-tabs"]->default != $tab->link) echo $tab->link."/"; ?>"><?php if (! is_null($tab->icon)) echo '<span class="bi bi-'.$tab->icon.'"></span>'; echo $tab->label; ?></a>
 <?php } ?>
       </nav>

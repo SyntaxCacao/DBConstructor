@@ -15,11 +15,15 @@ abstract class TabController
     /** @var string */
     public $link;
 
-    public function __construct(string $label, string $link, string $icon)
+    /** @var bool */
+    public $requireManager;
+
+    public function __construct(string $label, string $link, string $icon, bool $requireManager = false)
     {
         $this->label = $label;
         $this->link = $link;
         $this->icon = $icon;
+        $this->requireManager = $requireManager;
     }
 
     /**
