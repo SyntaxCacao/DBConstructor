@@ -1,3 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+use DBConstructor\Application;
+use DBConstructor\Models\Project;
+use DBConstructor\Models\RelationalColumn;
+use DBConstructor\Models\Table;
+use DBConstructor\Models\TextualColumn;
+use DBConstructor\Util\HeaderGenerator;
+use DBConstructor\Validation\Types\BooleanType;
+use DBConstructor\Validation\Types\IntegerType;
+use DBConstructor\Validation\Types\SelectionType;
+use DBConstructor\Validation\Types\TextType;
+
+/** @var array{baseurl: string,
+ *   isManager: bool,
+ *   project: Project,
+ *   relationalColumns: array<RelationalColumn>,
+ *   table: Table,
+ *   textualColumns: array<TextualColumn>} $data */
+
+?>
 <main class="container">
 <?php if (isset($data["request"]["saved"])) { ?>
   <div class="alerts">
@@ -8,7 +31,7 @@
     <div class="alert"><p>Das Feld wurde gelöscht.</p></div>
   </div>
 <?php }
-      $header = new \DBConstructor\Util\HeaderGenerator("Struktur");
+      $header = new HeaderGenerator("Struktur");
 
       $header->subtitle = "";
 
@@ -54,15 +77,14 @@
 <?php   } ?>
       </tr>
 <?php   $count = 0;
-        /** @var \DBConstructor\Models\RelationalColumn $column */
         foreach ($data["relationalColumns"] as $column) {
           $count += 1;?>
       <tr class="table-row">
-        <td class="table-cell"><?php echo htmlentities($column->position) ?></td>
-        <td class="table-cell"><?php echo htmlentities($column->label) ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name) ?></span></td>
-        <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $column->targetTableId ?>/"><?php echo htmlentities($column->targetTableLabel) ?></a> <span class="table-cell-code-addition"><?php echo htmlentities($column->targetTableName) ?></span></td>
+        <td class="table-cell"><?= htmlentities($column->position) ?></td>
+        <td class="table-cell"><?= htmlentities($column->label) ?> <span class="table-cell-code-addition"><?= htmlentities($column->name) ?></span></td>
+        <td class="table-cell"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $column->targetTableId ?>/"><?= htmlentities($column->targetTableLabel) ?></a> <span class="table-cell-code-addition"><?= htmlentities($column->targetTableName) ?></span></td>
 <?php     if ($data["isManager"]) { ?>
-        <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/relational/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+        <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/structure/relational/<?= $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
       </tr>
 <?php   } ?>
@@ -87,23 +109,23 @@
 <?php   } ?>
     </tr>
 <?php   $count = 0;
-        /** @var \DBConstructor\Models\TextualColumn $column */
         foreach ($data["textualColumns"] as $column) {
           $count += 1;?>
     <tr class="table-row">
-      <td class="table-cell"><?php echo htmlentities($column->position) ?></td>
-      <td class="table-cell"><?php echo htmlentities($column->label) ?> <span class="table-cell-code-addition"><?php echo htmlentities($column->name) ?></span></td>
-      <td class="table-cell"><?php echo htmlentities($column->getTypeLabel()) ?></td>
+      <td class="table-cell"><?= htmlentities($column->position) ?></td>
+      <td class="table-cell"><?= htmlentities($column->label) ?> <span class="table-cell-code-addition"><?= htmlentities($column->name) ?></span></td>
+      <td class="table-cell"><?= htmlentities($column->getTypeLabel()) ?></td>
       <td class="table-cell"><?php
           $elements = [];
+          /** @noinspection PhpUnhandledExceptionInspection */
           $type = $column->getValidationType();
 
           if ($type->nullable) {
             $elements[] = "optional";
           }
 
-          if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_TEXT) {
-            /** @var \DBConstructor\Validation\Types\TextType $type */
+          if ($column->type == TextualColumn::TYPE_TEXT) {
+            /** @var TextType $type */
             if ($type->minLength !== null && $type->maxLength !== null) {
               if ($type->minLength === $type->maxLength) {
                 $elements[] = htmlentities($type->minLength." Zeichen");
@@ -121,8 +143,8 @@
             if ($type->regEx !== null) {
               $elements[] = "RegEx";
             }
-          } else if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_SELECTION) {
-            /** @var \DBConstructor\Validation\Types\SelectionType $type */
+          } else if ($column->type == TextualColumn::TYPE_SELECTION) {
+            /** @var SelectionType $type */
             if ($type->allowMultiple) {
               $elements[] = "Mehrfachauswahl";
             }
@@ -158,11 +180,11 @@
             $modal .= '</div>';
             $modal .= '</div>';
             $modal .= '</div>';
-            \DBConstructor\Application::$instance->modals[] = $modal;
+            Application::$instance->modals[] = $modal;
 
             $elements[] = '<a class="main-link js-open-modal" href="#" data-modal="modal-options-'.$column->id.'">'.$optionsText.'</a>';
-          } else if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_INTEGER) {
-            /** @var \DBConstructor\Validation\Types\IntegerType $type */
+          } else if ($column->type == TextualColumn::TYPE_INTEGER) {
+            /** @var IntegerType $type */
             if ($type->minDigits !== null && $type->maxDigits !== null) {
               if ($type->minDigits === $type->maxDigits) {
                 $elements[] = htmlentities($type->minDigits." Stellen");
@@ -179,23 +201,23 @@
             }
             if ($type->minValue !== null && $type->maxValue !== null) {
               if ($type->minValue === $type->maxValue) {
-                $elements[] = htmlentities($type->minValue);
+                $elements[] = htmlentities("Wert = ".$type->minValue);
               } else {
-                $elements[] = htmlentities($type->minValue."–".$type->maxValue);
+                $elements[] = htmlentities($type->minValue." ≤ Wert ≤ ".$type->maxValue);
               }
             } else {
               if ($type->minValue !== null) {
-                $elements[] = htmlentities("≥ ".$type->minValue);
+                $elements[] = htmlentities("Wert ≥ ".$type->minValue);
               }
               if ($type->maxValue !== null) {
-                $elements[] = htmlentities("≤ ".$type->maxValue);
+                $elements[] = htmlentities("Wert ≤ ".$type->maxValue);
               }
             }
             if ($type->regEx !== null) {
               $elements[] = "RegEx";
             }
-          } else if ($column->type == \DBConstructor\Models\TextualColumn::TYPE_BOOLEAN) {
-            /** @var \DBConstructor\Validation\Types\BooleanType $type */
+          } else if ($column->type == TextualColumn::TYPE_BOOLEAN) {
+            /** @var BooleanType $type */
             if ($type->forceTrue) {
               $elements[] = "nur true ist gültig";
             }
@@ -212,7 +234,7 @@
             echo "–";
           } ?></td>
 <?php     if ($data["isManager"]) { ?>
-      <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?php echo $data["baseurl"] ?>/projects/<?php echo $data["project"]->id ?>/tables/<?php echo $data["table"]->id ?>/structure/textual/<?php echo $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
+      <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/structure/textual/<?= $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
     </tr>
 <?php   } ?>
