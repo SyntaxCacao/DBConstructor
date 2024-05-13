@@ -47,6 +47,10 @@
   margin-left: - math.div($timeline-item-margin-left, 2); // TODO
   justify-content: center;
   width: $timeline-icon-size;
+
+  .bi-plus {
+    font-size: 32px;
+  }
 }
 
 .timeline-item-body {

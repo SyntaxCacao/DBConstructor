@@ -62,17 +62,17 @@ class RelationalSelectField extends GroupableField
             }
 
             $html .= '</span>';
-            $html .= '<span class="validation-step-icon page-table-selector-indicator hide"><span class="bi bi-check-lg"></span></span>';
+            $html .= '<span class="validation-step-icon page-table-selector-indicator hide"><span class="bi bi-check"></span></span>';
         } else {
             $html .= '<span class="page-table-selector-value"><a class="main-link" href="'.Application::$instance->config["baseurl"].'/projects/'.ProjectsController::$projectId.'/tables/'.$this->selection->tableId.'/view/'.$this->selection->id.'/" target="_blank">#'.$this->selection->id.'</a></span>';
             $html .= '<span class="validation-step-icon page-table-selector-indicator">';
 
             if ($this->selection->deleted) {
-                $html .= '<span class="bi bi-trash"></span>';
+                $html .= '<span class="bi bi-trash3"></span>';
             } else if ($this->selection->valid) {
-                $html .= '<span class="bi bi-check-lg"></span>';
+                $html .= '<span class="bi bi-check"></span>';
             } else {
-                $html .= '<span class="bi bi-x-lg"></span>';
+                $html .= '<span class="bi bi-x"></span>';
             }
 
             $html .= '</span>';
@@ -87,7 +87,7 @@ class RelationalSelectField extends GroupableField
         $modal .= '<div class="modal-dialog">';
         $modal .= '<header class="modal-header">';
         $modal .= '<h3>Datensatz auswählen</h3>';
-        $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+        $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x"></span></a>';
         $modal .= '</header>';
         $modal .= '<div class="modal-content"></div>';
         $modal .= '<div class="modal-actions">';

@@ -64,7 +64,7 @@ use DBConstructor\Util\HeaderGenerator;
             <a class="button button-smallest" href="<?= $data["baseurl"] ?>/settings/tokens/<?= $token->id ?>/renew/"><span class="bi bi-arrow-clockwise"></span>Erneuern</a><!--
          --><a class="button button-smallest" href="<?= $data["baseurl"] ?>/settings/tokens/<?= $token->id ?>/<?= $token->disabled ? "enable" : "disable" ?>/"><span class="bi bi-<?= $token->disabled ? "play" : "pause" ?>-fill"></span><?= $token->disabled ? "Reaktivieren" : "Deaktivieren" ?></a><!--
          --><a class="button button-smallest" href="<?= $data["baseurl"] ?>/settings/tokens/<?= $token->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a><!--
-         --><a class="button button-smallest button-danger js-confirm" href="<?= $data["baseurl"] ?>/settings/tokens/<?= $token->id ?>/delete/" data-confirm-message="Sind Sie sicher?"><span class="bi bi-trash"></span>Löschen</a>
+         --><a class="button button-smallest button-danger js-confirm" href="<?= $data["baseurl"] ?>/settings/tokens/<?= $token->id ?>/delete/" data-confirm-message="Sind Sie sicher?"><span class="bi bi-trash3"></span>Löschen</a>
           </td>
         </tr>
 <?php   } ?>

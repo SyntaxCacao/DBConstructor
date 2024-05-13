@@ -110,11 +110,11 @@ document.addEventListener("click", event => {
     let icon;
 
     if (button.dataset.deleted === "1") {
-      icon = "trash";
+      icon = "trash3";
     } else if (button.dataset.valid === "1") {
-      icon = "check-lg";
+      icon = "check";
     } else {
-      icon = "x-lg";
+      icon = "x";
     }
 
     input.parentNode.querySelector(".page-table-selector-indicator").classList.remove("hide");

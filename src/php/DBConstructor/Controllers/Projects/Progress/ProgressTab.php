@@ -18,7 +18,6 @@ class ProgressTab extends TabController
 {
     public function __construct()
     {
-        // TODO: Icon seems to be called graph-up-arrow in more recent bootstrap-icons versions
         parent::__construct("Fortschritt", "progress", "graph-up");
     }
 

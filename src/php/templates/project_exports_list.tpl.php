@@ -36,7 +36,7 @@ use DBConstructor\Util\HeaderGenerator;
       <td class="table-cell"><?= htmlentities(date("d.m.Y H:i", strtotime($export->created))) ?></td>
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?></td>
       <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
-      <td class="table-cell table-cell-actions"><a class="button <?= $export->deleted ? "button-disabled " : "" ?>button-smallest"<?php if (! $export->deleted) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><?php if (! $export->deleted) { ?><a class="button button-smallest button-disabled"><span class="bi bi-x-lg"></span>Löschen</span></a><?php } ?></td>
+      <td class="table-cell table-cell-actions"><a class="button <?= $export->deleted ? "button-disabled " : "" ?>button-smallest"<?php if (! $export->deleted) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><?php if (! $export->deleted) { ?><a class="button button-smallest button-disabled"><span class="bi bi-trash3"></span>Löschen</span></a><?php } ?></td>
     </tr>
 <?php } ?>
   </table>

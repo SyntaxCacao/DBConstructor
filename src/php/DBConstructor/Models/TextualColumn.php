@@ -269,11 +269,11 @@ class TextualColumn extends Column
 
         foreach ($validator->rules as $rule) {
             if ($rule->result == Rule::RESULT_VALID) {
-                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-check"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
             } else if ($rule->result == Rule::RESULT_INVALID) {
-                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-x"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
             } else {
-                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash-lg"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
+                $html .= '<div class="validation-step"><div class="validation-step-icon"><span class="bi bi-dash"></span></div><p class="validation-step-description">'.$rule->description.'</p></div>';
             }
         }
 

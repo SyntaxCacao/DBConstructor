@@ -9,7 +9,7 @@ use DBConstructor\Models\Project;
 
 ?>
 <main class="blankslate">
-  <span class="blankslate-icon bi bi-check-lg"></span>
+  <span class="blankslate-icon bi bi-check"></span>
   <h1 class="blankslate-heading">Der Export ist abgeschlossen.</h1>
   <p class="blankslate-text">Die Exportdaten können nun heruntergeladen werden.</p>
   <div class="blankslate-buttons">

@@ -142,14 +142,14 @@ class TableGenerator
 
             // ## icons
             echo '<td class="table-cell page-table-view-icons">';
-            echo '<span class="validation-step-icon" title="'.($row->valid ? 'Gültig' : 'Ungültig').'"><span class="bi '.($row->valid ? 'bi-check-lg' : 'bi-x-lg').'"></span></span>';
+            echo '<span class="validation-step-icon" title="'.($row->valid ? 'Gültig' : 'Ungültig').'"><span class="bi '.($row->valid ? 'bi-check' : 'bi-x').'"></span></span>';
 
             if ($row->flagged) {
                 echo '<span class="validation-step-icon" title="Zur Nachverfolgung gekennzeichnet"><span class="bi bi-flag-fill"></span></span>';
             }
 
             if ($row->deleted) {
-                echo '<span class="validation-step-icon" title="Gelöscht"><span class="bi bi-trash"></span></span>';
+                echo '<span class="validation-step-icon" title="Gelöscht"><span class="bi bi-trash3"></span></span>';
             }
 
             echo '</td>';

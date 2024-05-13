@@ -22,11 +22,25 @@
   @include one-line-text;
 }
 
-.upload-list-error,
-.upload-list-progress .bi-x-lg {
-  color: $color-text-danger;
+.upload-list-progress {
+  .bi-check, .bi-x { // Super-specific positioning necessary since bootstrap-icons update
+    display: inline-block;
+    font-size: 26px;
+    line-height: 14px;
+    vertical-align: bottom;
+    width: 22px;
+
+    &::before {
+      line-height: inherit;
+    }
+  }
+
+  .bi-check {
+    color: $color-text-success;
+  }
 }
 
-.upload-list-progress .bi-check-lg {
-  color: $color-text-success;
+.upload-list-error,
+.upload-list-progress .bi-x {
+  color: $color-text-danger;
 }

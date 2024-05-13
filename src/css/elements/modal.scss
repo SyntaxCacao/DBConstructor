@@ -36,6 +36,18 @@
 
 .modal-dialog-lg {
   max-width: 800px;
+
+  .bi-x { // Super-specific positioning necessary since bootstrap-icons update
+    display: inline-block;
+    font-size: 32px;
+    line-height: 14px;
+    vertical-align: bottom;
+    width: 24px;
+
+    &::before {
+      line-height: inherit;
+    }
+  }
 }
 
 .modal-dialog-xl {

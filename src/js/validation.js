@@ -84,13 +84,13 @@ document.addEventListener("change", event => {
 });
 
 function setFailed(element) {
-  element.querySelector(".bi").className = "bi bi-x-lg";
+  element.querySelector(".bi").className = "bi bi-x";
 }
 
 function setSkipped(element) {
-  element.querySelector(".bi").className = "bi bi-dash-lg";
+  element.querySelector(".bi").className = "bi bi-dash";
 }
 
 function setSuccess(element) {
-  element.querySelector(".bi").className = "bi bi-check-lg";
+  element.querySelector(".bi").className = "bi bi-check";
 }

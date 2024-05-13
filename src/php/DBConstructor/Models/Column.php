@@ -89,7 +89,7 @@ abstract class Column
                 $modal .= '<div class="modal-dialog modal-dialog-lg">';
                 $modal .= '<header class="modal-header">';
                 $modal .= '<h3>Erläuterung</h3>';
-                $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+                $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x"></span></a>';
                 $modal .= '</header>';
                 $modal .= '<div class="modal-content markdown">';
                 $modal .= MarkdownParser::parse($this->instructions);

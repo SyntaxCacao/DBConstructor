@@ -15,7 +15,7 @@ use DBConstructor\Util\MarkdownParser;
 ?>
 <main class="container">
 <?php $header = new HeaderGenerator('<span class="hide-down-sm">Datensatz </span>#'.$data["row"]->id.($data["row"]->deleted ? " (gelöscht)" : ""));
-      $header->title .= ' <div class="validation-step-icon"><span class="bi-'.($data["row"]->valid ? "check-lg" : "x-lg").'"></span></div>';
+      $header->title .= ' <div class="validation-step-icon"><span class="bi-'.($data["row"]->valid ? "check" : "x").'"></span></div>';
       $header->escapeTitle = false;
       $header->subtitle = "Zuletzt bearbeitet von ".$data["row"]->lastEditorFirstName." ".$data["row"]->lastEditorLastName." am ".date("d.m.Y \u\m H:i", strtotime($data["row"]->lastUpdated))." Uhr";
 
@@ -71,7 +71,7 @@ use DBConstructor\Util\MarkdownParser;
         if ($data["isManager"]) {
           $header->dropdownActions[] = [
             "href" => "?deletePerm",
-            "icon" => "trash",
+            "icon" => "trash3",
             "text" => "Endgültig löschen",
             "confirm" => "Sind Sie sicher? Nach der endgültigen Löschung kann der Datensatz NICHT wiederhergestellt werden. Felder, die diesen Datensatz noch referenzieren, werden auf NULL gesetzt."
           ];
@@ -79,7 +79,7 @@ use DBConstructor\Util\MarkdownParser;
       } else {
         $header->dropdownActions[] = [
           "href" => "?delete",
-          "icon" => "trash",
+          "icon" => "trash3",
           "text" => "Löschen",
           "confirm" => "Sind Sie sicher? Der Datensatz kann nach der Löschung wiederhergestellt werden."
         ];
@@ -109,7 +109,7 @@ use DBConstructor\Util\MarkdownParser;
 <?php     } ?>
             <a class="button button-smallest" href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/attachments/download/".htmlentities($attachment->fileName) ?>" title="Datei herunterladen" download><span class="bi bi-download no-margin"></span></a>
 <?php     if ($data["isManager"] || $attachment->uploaderId === $data["user"]->id) { ?>
-            <a class="button button-smallest js-confirm" href="?deleteAttachment=<?= $attachment->id ?>" title="Datei löschen" data-confirm-message="Sind Sie sicher, dass Sie die Datei <?= htmlentities($attachment->fileName) ?> löschen wollen?"><span class="bi bi-trash no-margin"></span></a>
+            <a class="button button-smallest js-confirm" href="?deleteAttachment=<?= $attachment->id ?>" title="Datei löschen" data-confirm-message="Sind Sie sicher, dass Sie die Datei <?= htmlentities($attachment->fileName) ?> löschen wollen?"><span class="bi bi-trash3 no-margin"></span></a>
 <?php     } ?>
           </div>
         </div>
@@ -172,12 +172,12 @@ use DBConstructor\Util\MarkdownParser;
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_CREATION) { ?>
         <div class="timeline-item">
-          <div class="timeline-item-icon"><span class="bi bi-plus-lg"></span></div>
+          <div class="timeline-item-icon"><span class="bi bi-plus"></span></div>
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat den Datensatz angelegt&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_DELETION) { ?>
         <div class="timeline-item">
-          <div class="timeline-item-icon"><span class="bi bi-trash"></span></div>
+          <div class="timeline-item-icon"><span class="bi bi-trash3"></span></div>
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat den Datensatz gelöscht&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_FLAG) { ?>

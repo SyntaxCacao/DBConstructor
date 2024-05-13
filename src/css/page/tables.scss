@@ -14,11 +14,15 @@
   border-radius: 50%;
   display: flex;
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: 14px;
   height: 24px;
   justify-content: center;
   margin-right: 8px;
   width: 24px;
+
+  .bi-check, .bi-dash, .bi-x {
+    font-size: 24px;
+  }
 }
 
 .main-header .validation-step-icon {
@@ -102,6 +106,7 @@
 
   .validation-step-icon {
     display: inline-flex;
+    vertical-align: bottom; // since bootstrap-icons update; for when "check" and "trash3" are in the same line
 
     &:last-child {
       margin-right: 0;

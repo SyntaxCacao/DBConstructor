@@ -28,7 +28,7 @@ use DBConstructor\Util\MarkdownParser;
 
       $header->dropdownActions[] = [
         "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/{$data["row"]->id}/?deleteAttachment={$data["attachment"]->id}",
-        "icon" => "trash",
+        "icon" => "trash3",
         "text" => "Löschen",
         "confirm" => "Sind Sie sicher?"
       ];

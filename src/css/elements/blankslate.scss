@@ -10,6 +10,15 @@
   display: inline-block;
   font-size: 32px;
   margin-bottom: $spacer-5;
+
+  &.bi-check {
+    font-size: 64px;
+    line-height: 32px;
+
+    &::before {
+      line-height: inherit;
+    }
+  }
 }
 
 .blankslate-heading {

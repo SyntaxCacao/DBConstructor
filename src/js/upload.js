@@ -28,9 +28,9 @@ function upload(upload, files) {
       const element = document.getElementById("js-upload-" + event.target._dbc_upload);
 
       if (event.target.status === 200) {
-        element.querySelector(".upload-list-progress").innerHTML = '<span class="bi bi-check-lg"></span>';
+        element.querySelector(".upload-list-progress").innerHTML = '<span class="bi bi-check"></span>';
       } else {
-        element.querySelector(".upload-list-progress").innerHTML = '<span class="bi bi-x-lg"></span>';
+        element.querySelector(".upload-list-progress").innerHTML = '<span class="bi bi-x"></span>';
 
         try {
           const response = JSON.parse(event.target.responseText);

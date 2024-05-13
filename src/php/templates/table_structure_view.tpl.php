@@ -157,7 +157,7 @@ use DBConstructor\Validation\Types\TextType;
             $modal .= '<div class="modal-dialog modal-dialog-lg">';
             $modal .= '<header class="modal-header">';
             $modal .= '<h3>'.$optionsText.'</h3>';
-            $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x-lg"></span></a>';
+            $modal .= '<a class="modal-x js-close-modal" href="#"><span class="bi bi-x"></span></a>';
             $modal .= '</header>';
             $modal .= '<div class="modal-content">';
             $modal .= '<div class="table-wrapper" style="margin-right: 0">';
