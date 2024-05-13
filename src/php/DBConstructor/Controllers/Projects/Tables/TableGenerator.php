@@ -148,6 +148,10 @@ class TableGenerator
                 echo '<span class="validation-step-icon" title="Zur Nachverfolgung gekennzeichnet"><span class="bi bi-flag-fill"></span></span>';
             }
 
+            if ($row->assigneeId === Application::$instance->user->id) {
+                echo '<span class="validation-step-icon" title="Ihnen zugewiesen"><span class="bi bi-bell-fill"></span></span>';
+            }
+
             if ($row->deleted) {
                 echo '<span class="validation-step-icon" title="Gelöscht"><span class="bi bi-trash3"></span></span>';
             }
