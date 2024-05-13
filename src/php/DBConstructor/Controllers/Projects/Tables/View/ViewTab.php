@@ -333,11 +333,7 @@ class ViewTab extends TabController
 
         $commentForm = new CommentForm();
         $commentForm->init($data["row"]);
-        if ($commentForm->process()) {
-            // reset textarea after saving comment
-            $commentForm = new CommentForm();
-            $commentForm->init($data["row"]);
-        }
+        $commentForm->process();
         $data["commentForm"] = $commentForm;
 
         $participants = Participant::loadList($data["project"]->id);

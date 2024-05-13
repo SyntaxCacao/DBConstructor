@@ -136,9 +136,10 @@ class RowAction
         RowAction::log(RowAction::ACTION_CHANGE, $rowId, $userId, $api, json_encode($array));
     }
 
-    public static function logComment(string $rowId, string $userId, bool $api, string $comment)
+    public static function logComment(string $rowId, string $userId, bool $api, string $comment): string
     {
         RowAction::log(RowAction::ACTION_COMMENT, $rowId, $userId, $api, $comment);
+        return MySQLConnection::$instance->getLastInsertId();
     }
 
     public static function logCreation(string $rowId, string $userId, bool $api)

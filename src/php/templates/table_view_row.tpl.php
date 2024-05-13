@@ -164,7 +164,7 @@ use DBConstructor\Util\MarkdownParser;
           <div class="timeline-item-body"><p><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> hat das Feld <span class="timeline-item-body-emphasis"><?= htmlentities($column) ?></span> von <span class="timeline-item-body-emphasis"><?= htmlentities($previous) ?></span> auf <span class="timeline-item-body-emphasis"><?= htmlentities($new) ?></span> gesetzt&nbsp;· <span title="<?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr"><?= htmlentities(date("d.m.Y", strtotime($action->created))) ?></span></p></div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_COMMENT) { ?>
-        <div class="timeline-comment">
+        <div id="comment-<?= $action->id ?>" class="timeline-comment">
           <div class="box">
             <div class="box-row box-row-header"><p><span class="hide-down-md">Kommentar von </span><span class="timeline-item-body-emphasis"><?= htmlentities($action->userFirstName." ".$action->userLastName) ?></span> am <?= htmlentities(date("d.m.Y \u\m H:i", strtotime($action->created))) ?> Uhr</p></div>
             <div class="box-row markdown"><?= MarkdownParser::parse($action->data) ?></div>

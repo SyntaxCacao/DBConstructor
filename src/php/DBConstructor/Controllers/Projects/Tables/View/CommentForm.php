@@ -34,6 +34,8 @@ class CommentForm extends Form
 
     public function perform(array $data)
     {
-        $this->row->comment(Application::$instance->user->id, false, $data["comment"]);
+        $id = $this->row->comment(Application::$instance->user->id, false, $data["comment"]);
+        header("Location: #comment-$id");
+        exit;
     }
 }

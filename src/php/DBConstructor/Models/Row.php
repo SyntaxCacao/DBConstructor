@@ -248,11 +248,11 @@ class Row
         RowAction::logAssignment($this->id, $userId, $api, $assigneeId);
     }
 
-    public function comment(string $userId, bool $api, string $comment)
+    public function comment(string $userId, bool $api, string $comment): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_row` SET `lasteditor_id`=?, `lastupdated`=CURRENT_TIMESTAMP WHERE `id`=?", [$userId, $this->id]);
         $this->updateLastUpdated();
-        RowAction::logComment($this->id, $userId, $api, $comment);
+        return RowAction::logComment($this->id, $userId, $api, $comment);
     }
 
     public function delete(string $userId, bool $api)
