@@ -32,10 +32,6 @@
   margin: $spacer-3;
   max-width: 500px;
   min-width: 200px;
-}
-
-.modal-dialog-lg {
-  max-width: 800px;
 
   .bi-x { // Super-specific positioning necessary since bootstrap-icons update
     display: inline-block;
@@ -48,6 +44,10 @@
       line-height: inherit;
     }
   }
+}
+
+.modal-dialog-lg {
+  max-width: 800px;
 }
 
 .modal-dialog-xl {
