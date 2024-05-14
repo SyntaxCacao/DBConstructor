@@ -73,10 +73,34 @@
   font-weight: $font-weight-bold;
 }
 
-.timeline-comment .box-row-header {
-  color: $color-text-secondary;
+.timeline-comment {
+  scroll-margin-top: 38px;
 
-  p {
-    @include one-line-text;
+  .box-row-header {
+    color: $color-text-secondary;
+    display: flex;
+
+    p {
+      flex-grow: 1;
+
+      @include one-line-text;
+    }
+  }
+}
+
+.timeline-comment-dropdown {
+  summary {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    margin-left: 6px;
+
+    &:hover {
+      color: $color-text-primary;
+    }
+  }
+
+  .dropdown-menu {
+    right: -10px;
   }
 }

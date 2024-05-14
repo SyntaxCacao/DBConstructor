@@ -47,6 +47,12 @@ button {
   margin-right: 0;
 }
 
+@media (max-width: $breakpoint-md) {
+  .button .bi.no-margin-down-md {
+    margin-right: 0;
+  }
+}
+
 // button-danger //
 
 .button-danger {

@@ -147,6 +147,10 @@ class HeaderGenerator
             echo '<li class="dropdown-item">';
             echo '<a class="dropdown-link';
 
+            if (isset($action["danger"]) && $action["danger"] === true) {
+                echo ' dropdown-link-danger';
+            }
+
             if (! $always) {
                 echo ' hide-up-sm';
             }

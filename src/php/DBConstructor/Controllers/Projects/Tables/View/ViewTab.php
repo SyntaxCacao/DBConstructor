@@ -127,6 +127,25 @@ class ViewTab extends TabController
 
         $data["title"] = "#".$data["row"]->id;
 
+        if (count($path) === 8 && $path[6] === "comments" && intval($path[7]) !== 0 &&
+            ($data["action"] = RowAction::load($path[7])) !== null &&
+            $data["action"]->rowId === $data["row"]->id) {
+            // Edit comment
+
+            if (! $data["action"]->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) {
+                (new ForbiddenController())->request($path);
+                return false;
+            }
+
+            $data["form"] = new CommentEditForm();
+            $data["form"]->init($data["action"], $data["table"]->id);
+            $data["form"]->process();
+
+            $data["tabpage"] = "row_comments_edit";
+            $data["title"] = "Kommentar bearbeiten";
+            return true;
+        }
+
         if (count($path) === 7 && $path[6] === "raw") {
             // raw/debug view
 
@@ -324,6 +343,14 @@ class ViewTab extends TabController
         } else if (isset($_GET["deletePerm"]) && $data["row"]->deleted && $data["isManager"]) {
             $data["row"]->deletePermanently(Application::$instance->user->id, $data["project"]->id);
             Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
+        }
+
+        if (isset($_GET["deleteComment"]) && intval($_GET["deleteComment"]) !== 0 &&
+            ($action = RowAction::load($_GET["deleteComment"])) !== null &&
+            $action->rowId === $data["row"]->id &&
+            $action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) {
+            $action->delete();
+            $data["alert"] = "comment-deleted";
         }
 
         $editForm = new EditForm();

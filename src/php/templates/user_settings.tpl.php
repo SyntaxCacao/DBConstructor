@@ -23,7 +23,7 @@ use DBConstructor\Util\HeaderGenerator;
       if ($data["user"]->isAdmin || $data["user"]->hasApiAccess) {
         $header->dropdownActions[] = [
           "href" => $data["baseurl"]."/settings/tokens/",
-          "icon" => "key",
+          "icon" => "robot",
           "text" => "API-Zugriff verwalten"
         ];
       }

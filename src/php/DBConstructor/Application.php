@@ -204,16 +204,20 @@ class Application
         return isset($this->user) && $this->user->isAdmin;
     }
 
-    public function redirect(string $page = null, string $get = "")
+    public function redirect(string $page = null, string $get = "", string $hash = "")
     {
         if (! empty($get)) {
             $get = "?$get";
         }
 
+        if (! empty($hash)) {
+            $hash = "#$hash";
+        }
+
         if ($page == null) {
-            header("Location: ".$this->config["baseurl"]."/$get");
+            header("Location: ".$this->config["baseurl"]."/$get$hash");
         } else {
-            header("Location: ".$this->config["baseurl"]."/$page/$get");
+            header("Location: ".$this->config["baseurl"]."/$page/$get$hash");
         }
 
         exit;

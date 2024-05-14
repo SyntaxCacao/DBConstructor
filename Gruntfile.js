@@ -105,6 +105,7 @@ module.exports = function(grunt) {
       main: {
         files: {
           'dist/assets/build-main.min.js': [
+            'src/js/clipboard.js',
             'src/js/dropdowns.js',
             'src/js/forms.js',
             'src/js/links.js',

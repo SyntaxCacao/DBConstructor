@@ -48,6 +48,18 @@ class RowAction
         MySQLConnection::$instance->execute("DELETE FROM `dbc_row_action` WHERE `row_id`=?", [$rowId]);
     }
 
+    public static function load(string $id)
+    {
+        MySQLConnection::$instance->execute("SELECT a.*, u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname` FROM `dbc_row_action` a LEFT JOIN `dbc_user` u ON a.`user_id`=u.`id` WHERE a.`id`=?", [$id]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        if (count($result) !== 1) {
+            return null;
+        }
+
+        return new RowAction($result[0]);
+    }
+
     /**
      * @return array<RowAction>
      */
@@ -201,6 +213,9 @@ class RowAction
     public $id;
 
     /** @var string */
+    public $rowId;
+
+    /** @var string */
     public $userId;
 
     /** @var string */
@@ -227,6 +242,7 @@ class RowAction
     public function __construct(array $data)
     {
         $this->id = $data["id"];
+        $this->rowId = $data["row_id"];
         $this->userId = $data["user_id"];
         $this->userFirstName = $data["user_firstname"];
         $this->userLastName = $data["user_lastname"];
@@ -239,5 +255,21 @@ class RowAction
         } else {
             $this->data = $data["data"];
         }
+    }
+
+    public function delete()
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_row_action` WHERE `id`=?", [$this->id]);
+    }
+
+    public function edit(string $text)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_row_action` SET `data`=? WHERE `id`=?", [$text, $this->id]);
+        $this->data = $text;
+    }
+
+    public function permitCommentEdit(string $userId, bool $isManager): bool
+    {
+        return $isManager || $userId === $this->userId;
     }
 }
