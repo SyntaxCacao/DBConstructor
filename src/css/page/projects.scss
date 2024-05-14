@@ -35,6 +35,33 @@ a.page-project-list-box:hover .page-project-list-label {
 
 // //
 
+.page-project-tables-counter-cell {
+  &:not(:last-child) {
+    border-right: 0;
+  }
+
+  &:not(.page-project-tables-counter-cell-first) {
+    border-left: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-top: 0;
+  }
+
+  a {
+    align-items: center;
+    display: inline-flex;
+  }
+
+  .validation-step-icon {
+    margin-right: 6px;
+  }
+}
+
+.page-project-tables-counter-cell-danger {
+  color: $color-text-danger;
+  font-weight: $font-weight-bold;
+}
+
 .page-project-tables-created {
   color: $color-text-secondary;
   font-style: italic;

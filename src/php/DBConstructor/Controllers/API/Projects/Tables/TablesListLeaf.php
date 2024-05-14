@@ -18,11 +18,13 @@ class TablesListLeaf extends LeafNode
 
         foreach ($tables as $table) {
             $result[] = [
-                "id" => intval($table->id),
+                "id" => (int) $table->id,
                 "name" => $table->name,
                 "label" => $table->label,
-                "records" => intval($table->rowCount),
-                "assignedRecords" => intval($table->assignedCount),
+                "records" => $table->rowCount,
+                "invalidRecords" => $table->invalidCount,
+                "flaggedRecords" => $table->flaggedCount,
+                "assignedRecords" => $table->assignedCount,
                 "created" => $table->created
             ];
         }

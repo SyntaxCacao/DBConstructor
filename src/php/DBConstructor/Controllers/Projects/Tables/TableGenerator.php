@@ -149,7 +149,7 @@ class TableGenerator
             }
 
             if ($row->assigneeId === Application::$instance->user->id) {
-                echo '<span class="validation-step-icon" title="Ihnen zugewiesen"><span class="bi bi-bell-fill"></span></span>';
+                echo '<span class="validation-step-icon validation-step-icon-danger" title="Ihnen zugewiesen"><span class="bi bi-bell-fill"></span></span>';
             }
 
             if ($row->deleted) {

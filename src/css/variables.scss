@@ -113,6 +113,8 @@ $table-header-font-weight: $font-weight-bold;
 $table-row-hover-background-color: lighten($color-background-gray, 1%);
 
 $table-cell-border: 1px solid $color-border-primary;
+$table-cell-padding-x: $spacer-3;
+$table-cell-padding-y: $spacer-2;
 
 // timeline //
 

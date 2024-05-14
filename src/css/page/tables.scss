@@ -31,19 +31,13 @@
   vertical-align: bottom;
 }
 
-.validation-step-description {
-  margin-top: 2px;
+.validation-step-icon-danger {
+  background-color: #fbe8e9; // 90%
+  color: $color-text-danger;
 }
 
-// //
-
-.page-table-list-assigned-counter {
-  color: #cf222e; // Primer --color-danger-fg
-  text-decoration: none !important;
-
-  .bi {
-    vertical-align: 0;
-  }
+.validation-step-description {
+  margin-top: 2px;
 }
 
 // //

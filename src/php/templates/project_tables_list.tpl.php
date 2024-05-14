@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
+use DBConstructor\Models\Project;
 use DBConstructor\Models\RowLoader;
+use DBConstructor\Models\Table;
+use DBConstructor\Models\User;
 use DBConstructor\Util\MarkdownParser;
 
-/** @var array $data */
+/** @var array{project: Project, table: Table, tables: array<Table>, user: User} $data */
 
 ?>
 <main class="container">
@@ -31,13 +34,23 @@ use DBConstructor\Util\MarkdownParser;
         </div>
 <?php } ?>
       </header>
-<?php if (count($data["tables"]) > 0) { ?>
+<?php $hasAssigned = false;
+      $hasFlagged = false;
+      $hasInvalid = false;
+
+      foreach ($data["tables"] as $table) {
+        if ($table->assignedCount > 0) $hasAssigned = true;
+        if ($table->flaggedCount > 0) $hasFlagged = true;
+        if ($table->invalidCount > 0) $hasInvalid = true;
+      }
+
+      if (count($data["tables"]) > 0) { ?>
       <div class="table-wrapper">
         <table class="table">
           <tr class="table-heading">
             <th class="table-cell">Bezeichnung</th>
             <th class="table-cell">Technischer Name</th>
-            <th class="table-cell" title="Zahl der nicht als gelöscht markierten Datensätze in der Tabelle">Datensätze</th>
+            <th class="table-cell" colspan="<?= 1 + ($hasAssigned ? 1 : 0) + ($hasFlagged ? 1 : 0) + ($hasInvalid ? 1 : 0) ?>">Datensätze</th>
 <?php   if ($data["isManager"]) { ?>
             <th class="table-cell"></th>
 <?php   } ?>
@@ -49,8 +62,29 @@ use DBConstructor\Util\MarkdownParser;
           <tr class="table-row">
             <td class="table-cell"><a class="main-link" href="<?php echo $data["baseurl"]; ?>/projects/<?php echo $data["project"]->id; ?>/tables/<?php echo $table->id ?>/"><?php echo htmlentities($table->label); ?></a></td>
             <td class="table-cell table-cell-code"><?php echo htmlentities($table->name); ?></td>
-            <td class="table-cell"><?php echo number_format(intval($table->rowCount), 0, ",", "."); if (intval($table->assignedCount) > 0) echo '&nbsp; <a class="main-link page-table-list-assigned-counter" href="'.$data["baseurl"].'/projects/'.$data["project"]->id.'/tables/'.$table->id.'/view/?field-assignee='.$data["user"]->id.'&field-deleted='.RowLoader::FILTER_DELETED_INCLUDE.'" title="Mir zugewiesene Datensätze"><span class="bi bi-bell-fill"></span> <strong>'.number_format(intval($table->assignedCount), 0, ",", ".").'</strong>'; ?></td>
-<?php     if ($data["isManager"]) { ?>
+            <td class="table-cell page-project-tables-counter-cell page-project-tables-counter-cell-first" title="Zahl der nicht als gelöscht markierten Datensätze"><?= number_format($table->rowCount, 0, ",", ".") ?></td>
+<?php     if ($hasAssigned) { ?>
+            <td class="table-cell page-project-tables-counter-cell page-project-tables-counter-cell-danger">
+<?php       if ($table->assignedCount > 0) { ?>
+              <a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/view/?field-assignee=<?= $data["user"]->id ?>&field-deleted=<?= RowLoader::FILTER_DELETED_INCLUDE ?>" title="Ihnen zugewiesene Datensätze"><span class="validation-step-icon validation-step-icon-danger"><span class="bi bi-bell-fill"></span></span><span><?= number_format($table->assignedCount, 0, ",", ".") ?></span></a>
+<?php       } ?>
+            </td>
+<?php     }
+          if ($hasFlagged) { ?>
+            <td class="table-cell page-project-tables-counter-cell">
+<?php       if ($table->flaggedCount > 0) { ?>
+              <a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/view/?field-flagged=<?= RowLoader::FILTER_FLAGGED ?>&field-deleted=<?= RowLoader::FILTER_DELETED_INCLUDE ?>" title="Zur Nachverfolgung gekennzeichnete Datensätze"><span class="validation-step-icon"><span class="bi bi-flag-fill"></span></span><span><?= number_format($table->flaggedCount, 0, ",", ".") ?></span></a>
+<?php       } ?>
+            </td>
+<?php     }
+          if ($hasInvalid) { ?>
+            <td class="table-cell page-project-tables-counter-cell">
+<?php       if ($table->invalidCount > 0) { ?>
+              <a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/view/?field-validity=<?= RowLoader::FILTER_VALIDITY_INVALID ?>" title="Ungültige Datensätze"><span class="validation-step-icon"><span class="bi bi-x"></span></span><span><?= number_format($table->invalidCount, 0, ",", ".") ?></span></a>
+<?php       } ?>
+            </td>
+<?php     }
+          if ($data["isManager"]) { ?>
             <td class="table-cell table-cell-actions">
               <a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $table->id ?>/settings/"><span class="bi bi-pencil"></span>Bearbeiten</a><!--
 --><?php    if ($data["project"]->manualOrder) { ?><!--

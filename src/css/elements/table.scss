@@ -17,7 +17,7 @@
 
 .table-cell {
   border: $table-cell-border;
-  padding: $spacer-2 $spacer-3;
+  padding: $table-cell-padding-y $table-cell-padding-x;
   text-align: left; // reset th
 
   &:not(.table-cell-actions) {
