@@ -147,6 +147,13 @@ class Table
         }
     }
 
+    public function delete()
+    {
+        RelationalColumn::deleteAll($this->id);
+        TextualColumn::deleteAll($this->id);
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_table` WHERE `id`=?", [$this->id]);
+    }
+
     public function edit(string $name, string $label, string $instructions = null)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_table` SET `label`=?, `name`=?, `instructions`=? WHERE `id`=?", [$label, $name, $instructions, $this->id]);

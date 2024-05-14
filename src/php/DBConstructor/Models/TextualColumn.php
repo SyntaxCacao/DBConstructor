@@ -78,6 +78,11 @@ class TextualColumn extends Column
         return $array;
     }
 
+    public static function deleteAll(string $tableId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_column_textual` WHERE `table_id`=?", [$tableId]);
+    }
+
     /**
      * For {@code SelectionType} with {@code allowMultiple === true}.
      *

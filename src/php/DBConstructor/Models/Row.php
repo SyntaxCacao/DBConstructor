@@ -12,6 +12,12 @@ class Row
 {
     const MAX_COMMENT_LENGTH = 2000;
 
+    public static function count(string $tableId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_row` WHERE `table_id`=?", [$tableId]);
+        return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
+    }
+
     public static function create(string $tableId, string $creatorId, bool $api, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`, `api`) VALUES (?, ?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged), intval($api)]);

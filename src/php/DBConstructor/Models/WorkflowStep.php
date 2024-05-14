@@ -37,6 +37,12 @@ class WorkflowStep
         WorkflowStep::DATA_TYPE_STATIC => "Statischer Wert",
     ];
 
+    public static function countTableReferences(string $tableId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_workflow_step` WHERE `table_id`=?", [$tableId]);
+        return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
+    }
+
     public static function create(Workflow $workflow, string $userId, string $tableId): string
     {
         MySQLConnection::$instance->execute("SELECT IFNULL(MAX(`position`), 0)+1 AS `position` FROM `dbc_workflow_step` WHERE `workflow_id`=?", [$workflow->id]);

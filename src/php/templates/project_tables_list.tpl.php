@@ -20,6 +20,10 @@ use DBConstructor\Util\MarkdownParser;
   <div class="alerts">
     <div class="alert"><p>Sie sind dem Projekt beigetreten.</p></div>
   </div>
+<?php } else if (isset($_GET["tableDeleted"])) { ?>
+  <div class="alerts">
+    <div class="alert"><p>Die Tabelle wurde gelöscht.</p></div>
+  </div>
 <?php } ?>
   <div class="row break-md">
     <div class="column width-9">

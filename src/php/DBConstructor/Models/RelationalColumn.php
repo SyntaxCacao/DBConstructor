@@ -10,6 +10,12 @@ use DBConstructor\SQL\MySQLConnection;
 
 class RelationalColumn extends Column
 {
+    public static function countTableReferencesFromOtherTables(string $tableId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_column_relational` WHERE `target_table_id` = ? AND `table_id` != ?", [$tableId, $tableId]);
+        return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
+    }
+
     public static function create(string $tableId, string $targetTableId, /*string $labelColumnId, */ string $name, string $label, string $instructions = null, string $position, bool $nullable, bool $hide): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_relational` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
@@ -17,6 +23,11 @@ class RelationalColumn extends Column
         MySQLConnection::$instance->execute("INSERT INTO `dbc_column_relational` (`table_id`, `target_table_id`, /*`label_column_id`, */`name`, `label`, `instructions`, `position`, `nullable`, `hide`) VALUES (?, ?, /*?, */?, ?, ?, ?, ?, ?)", [$tableId, $targetTableId, /*$labelColumnId, */ $name, $label, $instructions, $position, intval($nullable), intval($hide)]);
 
         return MySQLConnection::$instance->getLastInsertId();
+    }
+
+    public static function deleteAll(string $tableId)
+    {
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_column_relational` WHERE `table_id`=?", [$tableId]);
     }
 
     /**
