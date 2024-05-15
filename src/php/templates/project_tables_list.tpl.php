@@ -135,10 +135,12 @@ use DBConstructor\Util\MarkdownParser;
         $diff = $data["rowsCreatedThisWeek"] - $data["rowsCreatedLastWeek"];
         if ($diff === 0) {
           echo ' (±0)';
-        } else if ($diff > 0) {
-          echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
-        } else {
-          echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
+        } else if ($data["rowsCreatedLastWeek"] > 0) {
+          if ($diff > 0) {
+            echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
+          } else {
+            echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedLastWeek"])*100, 0, ",", ".").'%)</span>';
+          }
         }
         ?></p>
 <?php   if ($data["rowsCreatedUserAllTime"] > 0) { ?>
@@ -146,14 +148,16 @@ use DBConstructor\Util\MarkdownParser;
         <p>Insgesamt: <strong><?= number_format($data["rowsCreatedUserAllTime"], 0, ",", ".") ?></strong><br>
            Letzte Woche: <strong><?= number_format($data["rowsCreatedUserLastWeek"], 0, ",", ".") ?></strong><br>
            Laufende Woche: <strong><?= number_format($data["rowsCreatedUserThisWeek"], 0, ",", ".") ?></strong><?php
-        $diff = $data["rowsCreatedUserThisWeek"] - $data["rowsCreatedUserLastWeek"];
-        if ($diff === 0) {
-          echo ' (±0)';
-        } else if ($diff > 0) {
-          echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
-        } else {
-          echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
-        }
+          $diff = $data["rowsCreatedUserThisWeek"] - $data["rowsCreatedUserLastWeek"];
+          if ($diff === 0) {
+            echo ' (±0)';
+          } else if ($data["rowsCreatedUserLastWeek"] > 0) {
+            if ($diff > 0) {
+              echo ' <span class="page-project-tables-progress-more">(+'.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
+            } else {
+              echo ' <span class="page-project-tables-progress-less">('.number_format(($diff/$data["rowsCreatedUserLastWeek"])*100, 0, ",", ".").'%)</span>';
+            }
+          }
         ?></p>
 <?php   } ?>
         <p><a href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/progress/">Mehr...</a></p>
