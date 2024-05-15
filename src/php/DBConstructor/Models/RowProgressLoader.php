@@ -269,9 +269,9 @@ class RowProgressLoader
         }
 
         if ($period === self::TOTAL_THIS_WEEK) {
-            $sql .= "AND YEARWEEK(`created`, 7) >= YEARWEEK(CURRENT_DATE) ";
+            $sql .= "AND YEARWEEK(`created`, 7) >= YEARWEEK(CURRENT_DATE, 7) ";
         } else if ($period === self::TOTAL_LAST_WEEK) {
-            $sql .= "AND YEARWEEK(`created`, 7) = YEARWEEK(DATE_ADD(CURRENT_DATE, INTERVAL -7 DAY)) ";
+            $sql .= "AND YEARWEEK(`created`, 7) = YEARWEEK(DATE_ADD(CURRENT_DATE, INTERVAL -7 DAY), 7) ";
         }
 
         $sql .= "AND `deleted` IS FALSE";
