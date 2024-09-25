@@ -139,9 +139,6 @@ class RowAction
         RowAction::log(RowAction::ACTION_ASSIGNMENT, $rowId, $userId, $api, $assigneeId);
     }
 
-    /**
-     * @throws JsonException
-     */
     public static function logChange(string $rowId, string $userId, bool $api, bool $isRelational, string $columnId, string $prevValue = null, string $newValue = null)
     {
         $array = [
@@ -189,9 +186,6 @@ class RowAction
         RowAction::log(RowAction::ACTION_FLAG, $rowId, $userId, $api);
     }
 
-    /**
-     * @throws JsonException
-     */
     public static function logRedirection(string $userId, bool $api, string $originId, string $destinationId, int $count)
     {
         // origin

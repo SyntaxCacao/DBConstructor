@@ -12,7 +12,6 @@ use DBConstructor\Forms\Form;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\RowAction;
-use DBConstructor\Util\JsonException;
 use Exception;
 
 class RedirectForm extends Form
@@ -64,9 +63,6 @@ class RedirectForm extends Form
         $this->buttonLabel = "Umleiten";
     }
 
-    /**
-     * @throws JsonException
-     */
     public function perform(array $data)
     {
         $row = Row::loadReferencing($this->originRowId);

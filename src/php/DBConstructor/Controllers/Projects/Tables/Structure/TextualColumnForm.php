@@ -14,7 +14,6 @@ use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\DateType;
 use DBConstructor\Validation\Types\DecimalType;
@@ -44,7 +43,6 @@ class TextualColumnForm extends Form
 
     /**
      * @param TextualColumn|null $column null on creation
-     * @throws JsonException
      */
     public function init(string $projectId, string $tableId, bool $tableEmpty, TextualColumn $column = null)
     {

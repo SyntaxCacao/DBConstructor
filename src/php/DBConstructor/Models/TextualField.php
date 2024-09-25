@@ -217,9 +217,6 @@ class TextualField
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function edit(string $userId, bool $api, Row $row, string $value = null, bool $valid)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_textual` SET `value`=?, `valid`=? WHERE `id`=?", [$value, intval($valid), $this->id]);

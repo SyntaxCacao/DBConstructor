@@ -16,9 +16,6 @@ abstract class Type
 
     public abstract function buildValidator(): Validator;
 
-    /**
-     * @throws JsonException
-     */
     public function fromJson($json = null)
     {
         if ($json == null) {
@@ -60,7 +57,6 @@ abstract class Type
 
     /**
      * @return string|null null if object is empty
-     * @throws JsonException
      */
     public function toJson()
     {

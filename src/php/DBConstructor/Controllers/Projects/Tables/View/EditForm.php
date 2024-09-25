@@ -11,7 +11,6 @@ use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\SelectionType;
 
 class EditForm extends RowForm
@@ -40,7 +39,6 @@ class EditForm extends RowForm
      * @param array<string, RelationalField> $relationalFields
      * @param array<TextualColumn> $textualColumns
      * @param array<string, TextualField> $textualFields
-     * @throws JsonException
      */
     public function init(Row &$row, array $relationalColumns, array $relationalFields, array $textualColumns, array $textualFields)
     {
@@ -74,9 +72,6 @@ class EditForm extends RowForm
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function perform(array $data)
     {
         foreach ($this->relationalColumns as $column) {

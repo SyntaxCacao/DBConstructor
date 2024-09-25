@@ -12,7 +12,6 @@ use DBConstructor\Forms\Form;
 use DBConstructor\Models\Column;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Validation\Types\BooleanType;
 use DBConstructor\Validation\Types\SelectionType;
 use DBConstructor\Validation\Types\TextType;
@@ -59,7 +58,6 @@ abstract class RowForm extends Form
     /**
      * @param string|array $storedValue
      * @throws Exception
-     * @throws JsonException
      */
     public function addTextualField(TextualColumn $column, $storedValue = null, string $stepId = null): string
     {

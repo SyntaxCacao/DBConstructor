@@ -14,7 +14,6 @@ use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\Workflow;
 use DBConstructor\Models\WorkflowStep;
-use DBConstructor\Util\JsonException;
 
 class StepEditForm extends Form
 {
@@ -39,7 +38,6 @@ class StepEditForm extends Form
      * @param array<WorkflowStep> $steps
      * @param array<RelationalColumn> $relationalColumns
      * @param array<TextualColumn> $textualColumns
-     * @throws JsonException
      */
     public function init(Workflow $workflow, array $steps, WorkflowStep $step, array $relationalColumns, array $textualColumns)
     {
@@ -176,9 +174,6 @@ class StepEditForm extends Form
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function perform(array $data)
     {
         $relationalColumnData = WorkflowStep::writeRelationalColumnData($this->relationalColumns, $data);

@@ -14,16 +14,12 @@ use DBConstructor\Models\RowAttachment;
 use DBConstructor\Models\RowLoader;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
 use DBConstructor\Validation\Types\SelectionType;
 use Throwable;
 
 class XHRController extends Controller
 {
-    /**
-     * @throws JsonException
-     */
     public function request(array $path)
     {
         // validation

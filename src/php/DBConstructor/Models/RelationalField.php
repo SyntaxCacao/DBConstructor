@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
-use DBConstructor\Util\JsonException;
 use Exception;
 use PDOStatement;
 
@@ -142,9 +141,6 @@ class RelationalField
         return $table;
     }
 
-    /**
-     * @throws JsonException
-     */
     public static function nullifyReferencing(string $userId, Row $row)
     {
         $fields = RelationalField::loadReferencingFields($row->id);
@@ -298,9 +294,6 @@ class RelationalField
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function edit(string $userId, bool $api, Row $row, string $targetRowId = null, bool $nullable)
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_field_relational` SET `target_row_id`=? WHERE `id`=?", [$targetRowId, $this->id]);

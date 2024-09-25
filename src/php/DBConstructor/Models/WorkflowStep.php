@@ -101,7 +101,6 @@ class WorkflowStep
 
     /**
      * @param array<RelationalColumn> $relationalColumns
-     * @throws JsonException
      */
     public static function readRelationalColumnData(array $relationalColumns, string $data = null): array
     {
@@ -143,7 +142,6 @@ class WorkflowStep
 
     /**
      * @param array<TextualColumn> $textualColumns
-     * @throws JsonException
      */
     public static function readTextualColumnData(array $textualColumns, string $data = null): array
     {
@@ -198,7 +196,6 @@ class WorkflowStep
      * @param array<RelationalColumn> $relationalColumns
      * @param array<string, mixed> $formData
      * @return string|null
-     * @throws JsonException
      */
     public static function writeRelationalColumnData(array $relationalColumns, array $formData)
     {
@@ -233,7 +230,6 @@ class WorkflowStep
     /**
      * @param array<TextualColumn> $textualColumns
      * @param array<string, mixed> $formData
-     * @throws JsonException
      */
     public static function writeTextualColumnData(array $textualColumns, array $formData)
     {

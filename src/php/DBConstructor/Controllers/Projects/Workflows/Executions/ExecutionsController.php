@@ -11,13 +11,9 @@ use DBConstructor\Models\Workflow;
 use DBConstructor\Models\WorkflowExecution;
 use DBConstructor\Models\WorkflowExecutionRow;
 use DBConstructor\Models\WorkflowStep;
-use DBConstructor\Util\JsonException;
 
 class ExecutionsController
 {
-    /**
-     * @throws JsonException
-     */
     public function request(array $path, Workflow $workflow, array &$data): bool
     {
         if (count($path) === 4) {

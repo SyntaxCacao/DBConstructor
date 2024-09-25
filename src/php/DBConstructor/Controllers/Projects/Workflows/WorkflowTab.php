@@ -10,7 +10,6 @@ use DBConstructor\Controllers\Projects\Workflows\Executions\ExecutionsController
 use DBConstructor\Controllers\Projects\Workflows\Steps\StepsController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Workflow;
-use DBConstructor\Util\JsonException;
 
 class WorkflowTab extends TabController
 {
@@ -19,9 +18,6 @@ class WorkflowTab extends TabController
         parent::__construct("Eingaberoutinen", "workflows", "pencil");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function request(array $path, array &$data): bool
     {
         if (count($path) === 3) {

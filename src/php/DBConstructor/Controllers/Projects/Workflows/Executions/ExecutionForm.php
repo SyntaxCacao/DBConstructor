@@ -18,7 +18,6 @@ use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
 use DBConstructor\Models\WorkflowExecution;
 use DBConstructor\Models\WorkflowStep;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
 use DBConstructor\Validation\Types\SelectionType;
 
@@ -57,7 +56,6 @@ class ExecutionForm extends RowForm
      * @param array<WorkflowStep> $steps
      * @param array<string, array<string, RelationalColumn>> $relationalColumns
      * @param array<string, array<string, TextualColumn>> $textualColumns
-     * @throws JsonException
      */
     public function init(string $workflowId, array $steps, array $relationalColumns, array $textualColumns)
     {
@@ -195,9 +193,6 @@ class ExecutionForm extends RowForm
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function perform(array $data)
     {
         $ids = [];

@@ -8,7 +8,6 @@ use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
-use DBConstructor\Util\JsonException;
 
 class InsertTab extends TabController
 {
@@ -17,9 +16,6 @@ class InsertTab extends TabController
         parent::__construct("Daten erfassen", "insert", "pencil");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function request(array $path, array &$data): bool
     {
         if (count($path) !== 5) {

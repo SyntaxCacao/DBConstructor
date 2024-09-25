@@ -41,9 +41,6 @@ class TextualColumn extends Column
         TextualColumn::TYPE_BOOLEAN => "Boolsches Feld"
     ];
 
-    /**
-     * @throws JsonException
-     */
     public static function create(string $tableId, string $name, string $label, string $instructions = null, string $position, string $type, Type $validationType, bool $hide): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);
@@ -57,7 +54,6 @@ class TextualColumn extends Column
      * For {@code SelectionType} with {@code allowMultiple === true}.
      *
      * @return array|null
-     * @throws JsonException
      */
     public static function decodeOptions(string $json = null)
     {
@@ -87,7 +83,6 @@ class TextualColumn extends Column
      * For {@code SelectionType} with {@code allowMultiple === true}.
      *
      * @return string|null
-     * @throws JsonException
      */
     public static function encodeOptions(array $array = null)
     {
@@ -175,9 +170,6 @@ class TextualColumn extends Column
         Row::revalidateAllInvalid($this->tableId);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function edit(string $name, string $label, string $instructions = null, string $type, Type $validationType, bool $hide)
     {
         $rules = $validationType->toJson();
@@ -195,7 +187,6 @@ class TextualColumn extends Column
 
     /**
      * @param TextualField $field field->value must not be null
-     * @throws JsonException
      */
     public function generateCellValue(TextualField $field = null): string
     {
@@ -285,9 +276,6 @@ class TextualColumn extends Column
         return $html;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function generateInput(Field $field, array $errorMessages, bool $edit = false)
     {
         $type = $this->getValidationType();
@@ -304,9 +292,6 @@ class TextualColumn extends Column
         parent::generateInput_internal($field, $errorMessages, $edit, $valid, $this->generateIndicator($validator, $valid), true, $insertLabel, 'data-column-id="'.htmlentities($this->id).'"');
     }
 
-    /**
-     * @throws JsonException
-     */
     public function generatePrintableValue(string $value = null)
     {
         if ($value === null) {
@@ -381,7 +366,6 @@ class TextualColumn extends Column
 
     /**
      * @throws Exception
-     * @throws JsonException
      */
     public function getValidationType(): Type
     {
@@ -422,9 +406,6 @@ class TextualColumn extends Column
         parent::move_internal("dbc_column_textual", $newPosition);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function revalidate()
     {
         // TODO Don't load everything at once

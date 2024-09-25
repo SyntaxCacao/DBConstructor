@@ -17,7 +17,6 @@ use DBConstructor\Models\Row;
 use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\TextualField;
-use DBConstructor\Util\JsonException;
 use DBConstructor\Util\MarkdownParser;
 use DBConstructor\Validation\Types\SelectionType;
 use Exception;
@@ -45,7 +44,6 @@ class InsertForm extends RowForm
      * @param array<RelationalColumn> $relationalColumns
      * @param array<TextualColumn> $textualColumns
      * @throws Exception
-     * @throws JsonException
      */
     public function init(Table $table, array $relationalColumns, array $textualColumns, bool $nextNew = false)
     {
@@ -108,9 +106,6 @@ class InsertForm extends RowForm
         $this->addField($field);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function perform(array $data)
     {
         // Assemble fields and perform validation for textual fields

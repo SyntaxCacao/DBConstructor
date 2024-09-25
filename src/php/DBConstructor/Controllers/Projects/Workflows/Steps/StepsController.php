@@ -11,13 +11,9 @@ use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\TextualColumn;
 use DBConstructor\Models\Workflow;
 use DBConstructor\Models\WorkflowStep;
-use DBConstructor\Util\JsonException;
 
 class StepsController
 {
-    /**
-     * @throws JsonException
-     */
     public function request(array $path, Workflow $workflow, array &$data): bool
     {
         if (! $data["isManager"]) {

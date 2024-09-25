@@ -13,7 +13,6 @@ use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\Row;
 use DBConstructor\Models\Table;
 use DBConstructor\Models\TextualColumn;
-use DBConstructor\Util\JsonException;
 
 class StructureTab extends TabController
 {
@@ -24,7 +23,6 @@ class StructureTab extends TabController
 
     /**
      * @param array{project: Project, table: Table} $data
-     * @throws JsonException
      */
     public function request(array $path, array &$data): bool
     {
