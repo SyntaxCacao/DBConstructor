@@ -126,8 +126,10 @@ class RecordsElementLeaf extends LeafNode
 
                 if ($action->action === RowAction::ACTION_COMMENT) {
                     $element["data"] = [
-                        "markdown" => $action->data,
-                        "html" => MarkdownParser::parse($action->data)
+                        "markdown" => $action->data[RowAction::COMMENT_DATA_TEXT],
+                        "html" => MarkdownParser::parse($action->data[RowAction::COMMENT_DATA_TEXT]),
+                        "edited" => $action->isCommentEdited(),
+                        "exportExcluded" => $action->isCommentExportExcluded()
                     ];
                 }
 

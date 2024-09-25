@@ -6,6 +6,7 @@ namespace DBConstructor\Controllers\Projects\Tables\View;
 
 use DBConstructor\Application;
 use DBConstructor\Controllers\Projects\ProjectsController;
+use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\MarkdownField;
 use DBConstructor\Forms\Form;
 use DBConstructor\Models\Row;
@@ -30,16 +31,29 @@ class CommentEditForm extends Form
         $this->tableId = $tableId;
 
         $field = new MarkdownField("text");
-        $field->defaultValue = $this->action->data;
+        $field->defaultValue = $this->action->data[RowAction::COMMENT_DATA_TEXT];
         $field->larger = false;
         $field->maxLength = Row::MAX_COMMENT_LENGTH;
+
+        $this->addField($field);
+
+        $field = new CheckboxField("exportExcluded", "Diesen Kommentar nicht exportieren");
+        $field->defaultValue = $this->action->isCommentExportExcluded();
+        $field->description = "Umfasst der Export auch die Kommentare, bleibt der Kommentar mit dieser Option unberücksichtigt.";
 
         $this->addField($field);
     }
 
     public function perform(array $data)
     {
-        $this->action->edit($data["text"]);
+        if ($data["text"] !== $this->action->data[RowAction::COMMENT_DATA_TEXT]) {
+            $this->action->editComment($data["text"]);
+        }
+
+        if ($data["exportExcluded"] !== $this->action->isCommentExportExcluded()) {
+            $this->action->setCommentExportExcluded($data["exportExcluded"]);
+        }
+
         Application::$instance->redirect("projects/".ProjectsController::$projectId."/tables/$this->tableId/view/{$this->action->rowId}", "", "comment-{$this->action->id}");
         exit;
     }

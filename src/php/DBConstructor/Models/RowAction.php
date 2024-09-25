@@ -37,6 +37,18 @@ class RowAction
 
     const CHANGE_DATA_PREVIOUS_VALUE = "prev";
 
+    const COMMENT_DATA_TEXT = "text";
+
+    /**
+     * Optional. Assumed to be `false` if not set.
+     */
+    const COMMENT_DATA_EDITED = "edit";
+
+    /**
+     * Optional. Assumed to be `false` if not set.
+     */
+    const COMMENT_DATA_EXCLUDE_EXPORT = "excludeExport";
+
     const REDIRECTION_DATA_COUNT = "count";
 
     const REDIRECTION_DATA_DESTINATION = "dest";
@@ -150,7 +162,15 @@ class RowAction
 
     public static function logComment(string $rowId, string $userId, bool $api, string $comment): string
     {
-        RowAction::log(RowAction::ACTION_COMMENT, $rowId, $userId, $api, $comment);
+        $data = json_encode([
+            RowAction::COMMENT_DATA_TEXT => $comment
+        ]);
+
+        if ($data === false) {
+            throw new JsonException();
+        }
+
+        RowAction::log(RowAction::ACTION_COMMENT, $rowId, $userId, $api, $data);
         return MySQLConnection::$instance->getLastInsertId();
     }
 
@@ -227,7 +247,7 @@ class RowAction
     /** @var string */
     public $action;
 
-    /** @var string|null */
+    /** @var array|string|null */
     public $data;
 
     /** @var bool */
@@ -250,8 +270,15 @@ class RowAction
         $this->api = $data["api"] === "1";
         $this->created = $data["created"];
 
-        if ($this->action == RowAction::ACTION_CHANGE || $this->action == RowAction::ACTION_REDIRECTION_DESTINATION || $this->action == RowAction::ACTION_REDIRECTION_ORIGIN) {
+        if ($this->action == RowAction::ACTION_CHANGE ||
+            $this->action == RowAction::ACTION_COMMENT ||
+            $this->action == RowAction::ACTION_REDIRECTION_DESTINATION ||
+            $this->action == RowAction::ACTION_REDIRECTION_ORIGIN) {
             $this->data = json_decode($data["data"], true);
+
+            if ($this->data === false) {
+                throw new JsonException();
+            }
         } else {
             $this->data = $data["data"];
         }
@@ -262,14 +289,55 @@ class RowAction
         MySQLConnection::$instance->execute("DELETE FROM `dbc_row_action` WHERE `id`=?", [$this->id]);
     }
 
-    public function edit(string $text)
+    public function editComment(string $text)
     {
-        MySQLConnection::$instance->execute("UPDATE `dbc_row_action` SET `data`=? WHERE `id`=?", [$text, $this->id]);
-        $this->data = $text;
+        $data = $this->data;
+        $data[RowAction::COMMENT_DATA_TEXT] = $text;
+        $data[RowAction::COMMENT_DATA_EDITED] = true;
+        $json = json_encode($data);
+
+        if ($json === false) {
+            throw new JsonException();
+        }
+
+        MySQLConnection::$instance->execute("UPDATE `dbc_row_action` SET `data`=? WHERE `id`=?", [$json, $this->id]);
+        $this->data = $data;
+    }
+
+    public function isCommentEdited(): bool
+    {
+        return $this->data[RowAction::COMMENT_DATA_EDITED] ?? false;
+    }
+
+    public function isCommentExportExcluded(): bool
+    {
+        return $this->data[RowAction::COMMENT_DATA_EXCLUDE_EXPORT] ?? false;
     }
 
     public function permitCommentEdit(string $userId, bool $isManager): bool
     {
         return $isManager || $userId === $this->userId;
+    }
+
+    public function setCommentExportExcluded(bool $excluded)
+    {
+        $data = $this->data;
+
+        if ($excluded) {
+            $data[RowAction::COMMENT_DATA_EXCLUDE_EXPORT] = true;
+        } else {
+            if (isset($data[RowAction::COMMENT_DATA_EXCLUDE_EXPORT])) {
+                unset($data[RowAction::COMMENT_DATA_EXCLUDE_EXPORT]);
+            }
+        }
+
+        $json = json_encode($data);
+
+        if ($json === false) {
+            throw new JsonException();
+        }
+
+        MySQLConnection::$instance->execute("UPDATE `dbc_row_action` SET `data`=? WHERE `id`=?", [$json, $this->id]);
+        $this->data = $data;
     }
 }

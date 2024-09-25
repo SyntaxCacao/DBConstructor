@@ -181,25 +181,40 @@ use DBConstructor\Util\MarkdownParser;
           <div class="box">
             <div class="box-row box-row-header">
               <p><?= $name ?> <span class="hide-up-sm">·</span><span class="hide-down-sm">am</span> <?= date("d.m.Y", strtotime($action->created)) ?> <span class="hide-down-sm">um </span><?= date("H:i", strtotime($action->created)) ?><span class="hide-down-sm"> Uhr</span></p>
-              <details class="dropdown timeline-comment-dropdown">
-                <summary><span class="bi bi-three-dots"></span></summary>
-                <ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">
-                  <li class="dropdown-item">
-                    <a class="dropdown-link js-clipboard-write js-dropdown-close" href="#comment-<?= $action->id ?>" data-clipboard="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/#comment-<?= $action->id ?>"><span class="bi bi-link"></span>Link kopieren</a>
-                  </li>
-<?php     if ($action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) { ?>
-                  <li><hr class="dropdown-divider"></li>
-                  <li class="dropdown-item">
-                    <a class="dropdown-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/comments/<?= $action->id ?>/"><span class="bi bi-pencil"></span>Bearbeiten</a>
-                  </li>
-                  <li class="dropdown-item">
-                    <a class="dropdown-link dropdown-link-danger js-confirm" href="?deleteComment=<?= $action->id ?>" data-confirm-message="Sind Sie sicher?"><span class="bi bi-trash3"></span>Löschen</a>
-                  </li>
+              <div class="timeline-comment-header-toolbar">
+<?php     if ($action->isCommentExportExcluded()) { ?>
+                <span class="timeline-comment-header-toolbar-tool bi bi-eye-slash" title="Dieser Kommentar wird beim Export nicht übernommen."></span>
+<?php     }
+          if ($action->isCommentEdited()) { ?>
+                <span class="timeline-comment-header-toolbar-tool bi bi-pencil" title="Dieser Kommentar wurde nachträglich verändert."></span>
 <?php     } ?>
-                </ul>
-              </details>
+                <details class="dropdown timeline-comment-dropdown">
+                  <summary class="timeline-comment-header-toolbar-tool"><span class="bi bi-three-dots"></span></summary>
+                  <ul class="dropdown-menu dropdown-menu-down dropdown-menu-left">
+                    <li class="dropdown-item">
+                      <a class="dropdown-link js-clipboard-write js-dropdown-close" href="#comment-<?= $action->id ?>" data-clipboard="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/#comment-<?= $action->id ?>"><span class="bi bi-link"></span>Link kopieren</a>
+                    </li>
+<?php     if ($action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) { ?>
+                    <li class="dropdown-item">
+<?php       if ($action->isCommentExportExcluded()) { ?>
+                      <a class="dropdown-link" href="?includeCommentExport=<?= $action->id ?>"><span class="bi bi-eye-slash-fill"></span>Nicht ausblenden</a>
+<?php       } else { ?>
+                      <a class="dropdown-link" href="?excludeCommentExport=<?= $action->id ?>"><span class="bi bi-eye-slash"></span>Beim Export ausblenden</a>
+<?php       } ?>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="dropdown-item">
+                      <a class="dropdown-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/comments/<?= $action->id ?>/"><span class="bi bi-pencil"></span>Bearbeiten</a>
+                    </li>
+                    <li class="dropdown-item">
+                      <a class="dropdown-link dropdown-link-danger js-confirm" href="?deleteComment=<?= $action->id ?>" data-confirm-message="Sind Sie sicher?"><span class="bi bi-trash3"></span>Löschen</a>
+                    </li>
+<?php     } ?>
+                  </ul>
+                </details>
+              </div>
             </div>
-            <div class="box-row markdown"><?= MarkdownParser::parse($action->data) ?></div>
+            <div class="box-row markdown"><?= MarkdownParser::parse($action->data[RowAction::COMMENT_DATA_TEXT]) ?></div>
           </div>
         </div>
 <?php   } else if ($action->action === RowAction::ACTION_CREATION) { ?>

@@ -345,10 +345,29 @@ class ViewTab extends TabController
             Application::$instance->redirect("projects/".$data["project"]->id."/tables/".$data["table"]->id."/view");
         }
 
+        if (isset($_GET["includeCommentExport"]) && intval($_GET["includeCommentExport"]) !== 0 &&
+            ($action = RowAction::load($_GET["includeCommentExport"])) !== null &&
+            $action->rowId === $data["row"]->id &&
+            $action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) {
+            // Include comment on export
+            $action->setCommentExportExcluded(false);
+            Application::$instance->redirect("projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/$action->rowId", "", "comment-$action->id");
+        }
+
+        if (isset($_GET["excludeCommentExport"]) && intval($_GET["excludeCommentExport"]) !== 0 &&
+            ($action = RowAction::load($_GET["excludeCommentExport"])) !== null &&
+            $action->rowId === $data["row"]->id &&
+            $action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) {
+            // Exclude comment on export
+            $action->setCommentExportExcluded(true);
+            Application::$instance->redirect("projects/{$data["project"]->id}/tables/{$data["table"]->id}/view/$action->rowId", "", "comment-$action->id");
+        }
+
         if (isset($_GET["deleteComment"]) && intval($_GET["deleteComment"]) !== 0 &&
             ($action = RowAction::load($_GET["deleteComment"])) !== null &&
             $action->rowId === $data["row"]->id &&
             $action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) {
+            // Delete comment
             $action->delete();
             $data["alert"] = "comment-deleted";
         }

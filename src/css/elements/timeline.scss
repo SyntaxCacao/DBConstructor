@@ -88,12 +88,22 @@
   }
 }
 
+.timeline-comment-header-toolbar {
+  align-items: stretch; // So that children will have 100% height
+  display: flex;
+}
+
+.timeline-comment-header-toolbar-tool {
+  align-items: center; // So that icons will be vertically centered
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 .timeline-comment-dropdown {
-  summary {
-    align-items: center;
-    display: flex;
-    height: 100%;
-    margin-left: 6px;
+  .timeline-comment-header-toolbar-tool { // = summary element
+    height: 100%; // align-items: stretch applies only directly to details element, so summary needs to inherit that height
+    padding-right: 0;
 
     &:hover {
       color: $color-text-primary;
