@@ -6,6 +6,7 @@ namespace DBConstructor\Models;
 
 use DBConstructor\SQL\MySQLConnection;
 use DBConstructor\Util\JsonException;
+use PDOStatement;
 
 class RowAction
 {
@@ -223,6 +224,32 @@ class RowAction
         RowAction::log(RowAction::ACTION_UNFLAG, $rowId, $userId, $api);
     }
 
+    public static function selectCommentsInTableForExport(string $tableId, bool $anonymize, bool $excludeAPI): PDOStatement
+    {
+        $sql = "SELECT a.*";
+
+        if (! $anonymize) {
+            $sql .= ", u.`firstname` AS `user_firstname`, u.`lastname` AS `user_lastname`";
+        }
+
+        $sql .= " FROM `dbc_row_action` AS a";
+        $sql .= " LEFT JOIN `dbc_row` r ON a.`row_id`=r.`id`";
+
+        if (! $anonymize) {
+            $sql .= " LEFT JOIN `dbc_user` u ON a.`user_id`=u.`id`";
+        }
+
+        $sql .= " WHERE r.`table_id`=? AND r.`exportid` IS NOT NULL AND a.`action`='".RowAction::ACTION_COMMENT."'";
+
+        if ($excludeAPI) {
+            $sql .= " AND a.`api` IS FALSE";
+        }
+
+        $sql .= " ORDER BY r.`exportid`, a.`id`";
+
+        return MySQLConnection::$instance->executeSeparately($sql, [$tableId]);
+    }
+
     /** @var string */
     public $id;
 
@@ -258,8 +285,8 @@ class RowAction
         $this->id = $data["id"];
         $this->rowId = $data["row_id"];
         $this->userId = $data["user_id"];
-        $this->userFirstName = $data["user_firstname"];
-        $this->userLastName = $data["user_lastname"];
+        $this->userFirstName = $data["user_firstname"] ?? null;
+        $this->userLastName = $data["user_lastname"] ?? null;
         $this->action = $data["action"];
         $this->api = $data["api"] === "1";
         $this->created = $data["created"];

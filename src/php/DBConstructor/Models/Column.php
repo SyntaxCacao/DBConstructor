@@ -26,6 +26,20 @@ abstract class Column
         return $result[0]["count"] === "0";
     }
 
+    public static function isNameAvailableInProject(string $projectId, string $name): bool
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) = 0 AS `available` FROM `dbc_column_relational` WHERE `table_id` IN (SELECT `id` FROM `dbc_table` WHERE `project_id`=?) AND `name`=?", [$projectId, $name]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+
+        if ($result[0]["available"] === "0") {
+            return false;
+        }
+
+        MySQLConnection::$instance->execute("SELECT COUNT(*) = 0 AS `available` FROM `dbc_column_textual` WHERE `table_id` IN (SELECT `id` FROM `dbc_table` WHERE `project_id`=?) AND `name`=?", [$projectId, $name]);
+        $result = MySQLConnection::$instance->getSelectedRows();
+        return $result[0]["available"] === "1";
+    }
+
     /** @var string */
     public $id;
 
