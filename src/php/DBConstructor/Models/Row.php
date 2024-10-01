@@ -18,6 +18,18 @@ class Row
         return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
     }
 
+    public static function countInvalidInProject(string $projectId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_row` WHERE `table_id` IN (SELECT id FROM `dbc_table` WHERE `project_id`=?) AND `valid` IS FALSE AND `deleted` IS FALSE", [$projectId]);
+        return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
+    }
+
+    public static function countValidInProject(string $projectId): int
+    {
+        MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_row` WHERE `table_id` IN (SELECT id FROM `dbc_table` WHERE `project_id`=?) AND `valid` IS TRUE AND `deleted` IS FALSE", [$projectId]);
+        return (int) MySQLConnection::$instance->getSelectedRows()[0]["count"];
+    }
+
     public static function create(string $tableId, string $creatorId, bool $api, string $comment = null, bool $flagged, string $assigneeId = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_row` (`table_id`, `creator_id`, `lasteditor_id`, `assignee_id`, `flagged`, `api`) VALUES (?, ?, ?, ?, ?, ?)", [$tableId, $creatorId, $creatorId, $assigneeId, intval($flagged), intval($api)]);

@@ -7,6 +7,7 @@ namespace DBConstructor\Controllers\Projects\Exports;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Export;
+use DBConstructor\Models\Row;
 
 class ExportsTab extends TabController
 {
@@ -41,6 +42,8 @@ class ExportsTab extends TabController
                 $data["title"] = "Export erfolgreich";
             } else {
                 $data["form"] = $form;
+                $data["validCount"] = Row::countValidInProject($data["project"]->id);
+                $data["invalidCount"] = Row::countInvalidInProject($data["project"]->id);
                 $data["tabpage"] = "form";
                 $data["title"] = "Export durchführen";
             }
