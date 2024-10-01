@@ -195,6 +195,7 @@ use DBConstructor\Util\MarkdownParser;
                       <a class="dropdown-link js-clipboard-write js-dropdown-close" href="#comment-<?= $action->id ?>" data-clipboard="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/#comment-<?= $action->id ?>"><span class="bi bi-link"></span>Link kopieren</a>
                     </li>
 <?php     if ($action->permitCommentEdit(Application::$instance->user->id, $data["isManager"])) { ?>
+                    <li><hr class="dropdown-divider"></li>
                     <li class="dropdown-item">
 <?php       if ($action->isCommentExportExcluded()) { ?>
                       <a class="dropdown-link" href="?includeCommentExport=<?= $action->id ?>"><span class="bi bi-eye-slash-fill"></span>Nicht ausblenden</a>
@@ -202,7 +203,6 @@ use DBConstructor\Util\MarkdownParser;
                       <a class="dropdown-link" href="?excludeCommentExport=<?= $action->id ?>"><span class="bi bi-eye-slash"></span>Beim Export ausblenden</a>
 <?php       } ?>
                     </li>
-                    <li><hr class="dropdown-divider"></li>
                     <li class="dropdown-item">
                       <a class="dropdown-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/view/<?= $data["row"]->id ?>/comments/<?= $action->id ?>/"><span class="bi bi-pencil"></span>Bearbeiten</a>
                     </li>
