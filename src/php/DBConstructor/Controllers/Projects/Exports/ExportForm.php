@@ -28,6 +28,10 @@ use ZipArchive;
 
 class ExportForm extends Form
 {
+    const COMMENTS_FORMAT_JSON = "json";
+
+    const COMMENTS_FORMAT_TEXT = "text";
+
     /** @var string|null */
     public $exportId;
 
@@ -70,6 +74,13 @@ class ExportForm extends Form
         $field->validationClosures[] = new ValidationClosure(function ($value) {
             return Column::isNameAvailableInProject($this->project->id, $value);
         }, "Dieser Spaltenname wird in diesem Projekt bereits verwendet");
+        $this->addField($field);
+
+        $field = new SelectField("commentsFormat", "Ausgabeformat");
+        $field->dependsOn = "comments";
+        $field->dependsOnValue = CheckboxField::VALUE;
+        $field->addOption(self::COMMENTS_FORMAT_JSON, "JSON (maschinenlesbar)");
+        $field->addOption(self::COMMENTS_FORMAT_TEXT, "Einfaches Textformat");
         $this->addField($field);
 
         $field = new CheckboxField("commentsAnonymize", "Verfasser anonymisieren");
@@ -265,31 +276,50 @@ class ExportForm extends Form
                         }
 
                         // Add comments to export array
-                        $commentsExport = [];
+                        if ($data["commentsFormat"] === self::COMMENTS_FORMAT_JSON) {
+                            // JSON Format
+                            $commentsExport = [];
 
-                        foreach ($comments as $comment) {
-                            if ($comment->isCommentExportExcluded()) continue;
+                            foreach ($comments as $comment) {
+                                if ($comment->isCommentExportExcluded()) continue;
 
-                            $commentExport = [
-                                "user" => (int) $comment->userId,
-                                "time" => $comment->created,
-                                "text" => $comment->data[RowAction::COMMENT_DATA_TEXT]
-                            ];
-
-                            if (! $data["commentsAnonymize"]) {
-                                $commentExport["user"] = [
-                                    "id" => (int) $comment->userId,
-                                    "name" => "$comment->userFirstName $comment->userLastName"
+                                $commentExport = [
+                                    "user" => (int) $comment->userId,
+                                    "time" => $comment->created,
+                                    "text" => $comment->data[RowAction::COMMENT_DATA_TEXT]
                                 ];
+
+                                if (! $data["commentsAnonymize"]) {
+                                    $commentExport["user"] = [
+                                        "id" => (int) $comment->userId,
+                                        "name" => "$comment->userFirstName $comment->userLastName"
+                                    ];
+                                }
+
+                                $commentsExport[] = $commentExport;
                             }
 
-                            $commentsExport[] = $commentExport;
-                        }
-
-                        if (count($commentsExport) > 0) {
-                            $rowExport[] = json_encode($commentsExport);
+                            if (count($commentsExport) > 0) {
+                                $rowExport[] = json_encode($commentsExport);
+                            } else {
+                                $rowExport[] = "";
+                            }
                         } else {
-                            $rowExport[] = "";
+                            // Human-readable format
+                            $commentsExport = "";
+
+                            foreach ($comments as $comment) {
+                                if ($data["commentsAnonymize"]) {
+                                    $commentsExport .= "User #$comment->userId";
+                                } else {
+                                    $commentsExport .= "$comment->userFirstName $comment->userLastName (#$comment->userId)";
+                                }
+
+                                $commentsExport .= " on ".date("M j, Y \a\\t h:i A", strtotime($comment->created))."\n";
+                                $commentsExport .= $comment->data[RowAction::COMMENT_DATA_TEXT]."\n\n";
+                            }
+
+                            $rowExport[] = rtrim($commentsExport, "\n");
                         }
                     }
 
