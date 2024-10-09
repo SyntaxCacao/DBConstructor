@@ -89,6 +89,7 @@ class FilterForm extends Form
         $field->required = false;
         $field->nullLabel = "Kennzeichnung: –";
         $field->addOption(RowLoader::FILTER_FLAGGED, "Nur gekennzeichnete Datensätze");
+        $field->addOption(RowLoader::FILTER_FLAGGED_COMMENTED, "Nur kommentierte Datensätze");
 
         $this->addField($field);
         $this->rows[0][] = $field->name;

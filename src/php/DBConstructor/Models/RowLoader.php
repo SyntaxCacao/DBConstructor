@@ -18,6 +18,8 @@ class RowLoader
 
     const FILTER_FLAGGED = "0";
 
+    const FILTER_FLAGGED_COMMENTED = "1";
+
     const FILTER_VALIDITY_INVALID = "0";
 
     const FILTER_VALIDITY_VALID = "1";
@@ -231,6 +233,8 @@ class RowLoader
         // flagged
         if ($this->flagged === self::FILTER_FLAGGED) {
             $sql .= " AND r.`flagged`=TRUE";
+        } else if ($this->flagged === self::FILTER_FLAGGED_COMMENTED) {
+            $sql .= " AND (SELECT COUNT(*) FROM `dbc_row_action` ac WHERE ac.`row_id` = r.`id` AND ac.`action`='".RowAction::ACTION_COMMENT."') > 0";
         }
 
         // assignee
@@ -274,7 +278,7 @@ class RowLoader
 
         // updated by
         if (intval($this->updatedBy) > 0) {
-            $sql .= " AND (SELECT COUNT(*) FROM `dbc_row_action` ac WHERE ac.`row_id` = r.`id` AND ac.`action`='change' AND ac.`user_id`=?) > 0";
+            $sql .= " AND (SELECT COUNT(*) FROM `dbc_row_action` ac WHERE ac.`row_id` = r.`id` AND ac.`action`='".RowAction::ACTION_CHANGE."' AND ac.`user_id`=?) > 0";
             $params[] = $this->updatedBy;
         }
 
