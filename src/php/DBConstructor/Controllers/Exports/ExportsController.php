@@ -60,8 +60,7 @@ class ExportsController extends Controller
             return;
         }
 
-        // TODO: Use const for directory name
-        $filePath = "../tmp/exports/export-$export->id.zip";
+        $filePath = Export::getLocalArchiveName($export->id);
 
         if (! file_exists($filePath)) {
             http_response_code(404);

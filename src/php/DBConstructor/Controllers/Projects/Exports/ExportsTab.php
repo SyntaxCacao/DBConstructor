@@ -11,7 +11,8 @@ use DBConstructor\Models\Row;
 
 class ExportsTab extends TabController
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct("Export", "exports", "box-seam", true);
     }
 
@@ -49,6 +50,30 @@ class ExportsTab extends TabController
             }
 
             return true;
+        }
+
+        if (count($path) >= 4 && preg_match("/^\d+$/D", $path[3]) === 1 &&
+            ($data["export"] = Export::load($path[3])) !== null &&
+            Export::existsLocalDirectory($data["export"]->id)) {
+
+            if (count($path) === 4) {
+                $data["archiveExists"] = Export::existsLocalArchive($data["export"]->id);
+                $data["directory"] = Export::getLocalDirectoryName($data["export"]->id);
+
+                $data["tabpage"] = "view_dir";
+                $data["title"] = "Export #{$data["export"]->id}";
+                return true;
+            }
+
+            if (count($path) === 5 &&
+                preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $path[4]) !== null &&
+                Export::existsLocalFile($data["export"]->id, $path[4])) {
+                $data["fileName"] = $path[4];
+
+                $data["tabpage"] = "view_table";
+                $data["title"] = $data["fileName"];
+                return true;
+            }
         }
 
         (new NotFoundController())->request($path);

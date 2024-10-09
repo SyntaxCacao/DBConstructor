@@ -352,7 +352,7 @@ class ExportForm extends Form
             $this->exportId = Export::create($this->project->id, Application::$instance->user->id, $data["format"], $data["note"]);
 
             $zip = new ZipArchive();
-            $zipName = "../tmp/exports/export-$this->exportId.zip";
+            $zipName = Export::getLocalArchiveName($this->exportId);
 
             if (! $zip->open($zipName, ZipArchive::CREATE)) {
                 throw new Exception("Failed to open $zipName");
@@ -364,6 +364,7 @@ class ExportForm extends Form
 
             $zip->close();
 
+            rename($tmpDir, Export::getLocalDirectoryName($this->exportId));
         } else {
             throw new Exception("Unimplemented export format: ".$data["format"]);
         }

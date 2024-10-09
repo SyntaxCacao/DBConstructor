@@ -29,14 +29,15 @@ use DBConstructor\Util\HeaderGenerator;
       <th class="table-cell">Bemerkung</th>
       <th class="table-cell"></th>
     </tr>
-<?php foreach ($data["exports"] as $export) { ?>
+<?php foreach ($data["exports"] as $export) {
+        $existsLocalDir = Export::existsLocalDirectory($export->id); ?>
     <tr class="table-row">
       <td class="table-cell table-cell-numeric"><?php echo $export->id; ?></td>
       <td class="table-cell"><?= htmlentities($export->getFormatLabel()) ?></td>
       <td class="table-cell"><?= htmlentities(date("d.m.Y H:i", strtotime($export->created))) ?></td>
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?></td>
       <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
-      <td class="table-cell table-cell-actions"><a class="button <?= $export->deleted ? "button-disabled " : "" ?>button-smallest"<?php if (! $export->deleted) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><?php if (! $export->deleted) { ?><a class="button button-smallest button-disabled"><span class="bi bi-trash3"></span>Löschen</span></a><?php } ?></td>
+      <td class="table-cell table-cell-actions"><a class="button <?= $export->deleted ? "button-disabled " : "" ?>button-smallest"<?php if (! $export->deleted) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>" <?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><?php if (! $export->deleted) { ?><a class="button button-smallest button-disabled"><span class="bi bi-trash3"></span>Löschen</span></a><?php } ?></td>
     </tr>
 <?php } ?>
   </table>

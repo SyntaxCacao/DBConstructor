@@ -19,21 +19,21 @@ class HeaderGenerator
     /**
      * Actions that will be shown as buttons on wide screens and inside a dropdown menu on smaller screens
      *
-     * @var array<array{confirm: string|null, danger: bool|null, divider: bool|null, href: string, icon: string|null, text: string}>
+     * @var array<array{confirm: string|null, danger: bool|null, divider: bool|null, download: bool|null, href: string, icon: string|null, text: string}>
      */
     public $autoActions = [];
 
     /**
      * Action that will always be shown as button
      *
-     * @var array<array{confirm: string|null, danger: bool|null, href: string, icon: string|null, text: string}>
+     * @var array<array{confirm: string|null, danger: bool|null, download: bool|null, href: string, icon: string|null, text: string}>
      */
     public $buttonActions = [];
 
     /**
      * Action that will always be shown inside a dropdown menu
      *
-     * @var array<array{confirm: string|null, danger: bool|null, divider: bool|null, href: string, icon: string|null, text: string}>
+     * @var array<array{confirm: string|null, danger: bool|null, divider: bool|null, download: bool|null, href: string, icon: string|null, text: string}>
      */
     public $dropdownActions = [];
 

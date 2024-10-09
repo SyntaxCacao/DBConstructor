@@ -76,6 +76,16 @@
   font-style: italic;
 }
 
+.table-cell-paragraph {
+  line-height: $line-height-paragraph;
+  max-width: 500px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  vertical-align: top;
+  white-space: initial; // to make word-break work
+  word-break: break-word;
+}
+
 .table-cell-tabular {
   font-feature-settings: "tnum";
 }

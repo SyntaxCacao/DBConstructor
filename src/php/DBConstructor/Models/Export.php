@@ -15,6 +15,34 @@ class Export
         Export::FORMAT_CSV => "CSV"/*"CSV (Comma-separated values)"*/
     ];
 
+    public static function existsLocalArchive(string $id): bool
+    {
+        $fileName = self::getLocalArchiveName($id);
+        return file_exists($fileName) && is_readable($fileName);
+    }
+
+    public static function existsLocalDirectory(string $id): bool
+    {
+        $fileName = self::getLocalDirectoryName($id);
+        return file_exists($fileName) && is_dir($fileName) && is_readable($fileName);
+    }
+
+    public static function existsLocalFile(string $id, string $fileName): bool
+    {
+        $fileName = self::getLocalDirectoryName($id)."/".$fileName;
+        return file_exists($fileName) && is_file($fileName) && is_readable($fileName);
+    }
+
+    public static function getLocalArchiveName(string $id): string
+    {
+        return "../tmp/exports/export-$id.zip";
+    }
+
+    public static function getLocalDirectoryName(string $id): string
+    {
+        return "../tmp/exports/export-$id";
+    }
+
     public static function create(string $projectId, string $userId, string $format, string $note = null): string
     {
         MySQLConnection::$instance->execute("INSERT INTO `dbc_export` (`project_id`, `user_id`, `format`, `note`) VALUES (?, ?, ?, ?)", [$projectId, $userId, $format, $note]);
