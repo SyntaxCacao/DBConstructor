@@ -14,6 +14,7 @@ use DBConstructor\Models\Project;
   <p class="blankslate-text">Die Exportdaten können nun heruntergeladen werden.</p>
   <div class="blankslate-buttons">
     <a class="button" href="<?= $data["baseurl"] ?>/exports/<?= $data["export"]->id ?>/<?= $data["export"]->getFileName() ?>.zip"><span class="bi bi-download"></span>Herunterladen</a><!--
+ --><a class="button" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/exports/<?= $data["export"]->id ?>/"><span class="bi bi-folder2-open"></span>Öffnen</a><!--
  --><a class="button" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/exports/"><span class="bi bi-list"></span>Zur Übersicht</a>
   </div>
 </main>
