@@ -83,8 +83,12 @@ use DBConstructor\Validation\Types\TextType;
       <tr class="table-row">
         <td class="table-cell"><?= htmlentities($column->position) ?></td>
         <td class="table-cell"><?= htmlentities($column->label) ?> <span class="table-cell-code-addition"><?= htmlentities($column->name) ?></span></td>
+<?php     if ($column->targetTableId === $data["table"]->id) { ?>
+        <td class="table-cell">Diese Tabelle</td>
+<?php     } else { ?>
         <td class="table-cell"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $column->targetTableId ?>/"><?= htmlentities($column->targetTableLabel) ?></a> <span class="table-cell-code-addition"><?= htmlentities($column->targetTableName) ?></span></td>
-<?php     if ($data["isManager"]) { ?>
+<?php     }
+          if ($data["isManager"]) { ?>
         <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/tables/<?= $data["table"]->id ?>/structure/relational/<?= $column->id ?>/edit/"><span class="bi bi-pencil"></span>Bearbeiten</a></td>
 <?php     } ?>
       </tr>
