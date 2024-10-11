@@ -49,7 +49,7 @@ use DBConstructor\Util\HeaderGenerator;
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?></td>
       <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
       <td class="table-cell table-cell-actions">
-        <a class="button <?= $existsArchive ? "" : "button-disabled " ?>button-smallest"<?php if ($existsArchive) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getArchiveDownloadName()}.zip" ?>" download<?php } else { ?> title="Die Exportdatei ist auf dem Server nicht mehr vorhanden oder nicht lesbar."<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><!--
+        <a class="button <?= $existsArchive ? "" : "button-disabled " ?>button-smallest"<?php if ($existsArchive) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getArchiveDownloadName()}" ?>" download<?php } else { ?> title="Die Exportdatei ist auf dem Server nicht mehr vorhanden oder nicht lesbar."<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><!--
      --><a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>" <?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><!--
      --><a class="button button-smallest js-confirm" data-confirm-message="Sind Sie sicher?" href="?delete=<?= $export->id ?>"><span class="bi bi-trash3"></span>Löschen</a>
       </td>

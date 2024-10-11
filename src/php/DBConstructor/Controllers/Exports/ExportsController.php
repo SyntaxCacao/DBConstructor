@@ -14,22 +14,8 @@ class ExportsController extends Controller
 {
     public function request(array $path)
     {
-        if (count($path) != 3) {
-            (new NotFoundController())->request($path);
-            return;
-        }
-
-        $exportId = intval($path[1]);
-
-        if ($exportId == 0) {
-            // => not int
-            (new NotFoundController())->request($path);
-            return;
-        }
-
-        $export = Export::load($path[1]);
-
-        if ($export == null) {
+        if (count($path) !== 3 || ! ctype_digit($path[1]) ||
+            ($export = Export::load($path[1])) === null) {
             (new NotFoundController())->request($path);
             return;
         }
@@ -44,39 +30,56 @@ class ExportsController extends Controller
             return;
         }
 
-        $fileName = $export->getArchiveDownloadName().".zip";
+        if ($path[2] === ($archiveDownloadName = $export->getArchiveDownloadName())) {
+            // Archive download
 
-        if (! $path[2] == $fileName) {
-            (new NotFoundController())->request($path);
-            return;
+            $archivePath = $export->getLocalArchivePath();
+
+            if (! file_exists($archivePath)) {
+                http_response_code(404);
+                $data["page"] = "export_error";
+                $data["title"] = "Fehler";
+                $data["error"] = "Diese Exportdatei existiert auf dem Server nicht mehr.";
+                Application::$instance->callTemplate($data);
+                return;
+            }
+
+            if (! is_readable($archivePath)) {
+                http_response_code(404);
+                $data["page"] = "export_error";
+                $data["title"] = "Fehler";
+                $data["error"] = "Die Exportdatei kann nicht gelesen werden.";
+                Application::$instance->callTemplate($data);
+                return;
+            }
+
+            $this->readFile($archivePath, $archiveDownloadName, "application/zip");
+        } else if (Export::isPossibleFileName($path[2]) && ($fileName = $export->lookUpLocalFile($path[2])) !== null) {
+            // Single file download
+
+            $filePath = $export->getLocalDirectoryPath()."/".$fileName;
+
+            if (preg_match("/\.csv$/", $fileName) !== null) {
+                // CSV
+                $this->readFile($filePath, $fileName, "text/csv");
+            }
         }
 
-        $filePath = $export->getLocalArchivePath();
+        http_response_code(404);
+        $data["page"] = "export_error";
+        $data["title"] = "Fehler";
+        $data["error"] = "Die angeforderte Datei ist nicht vorhanden oder nicht lesbar.";
+        Application::$instance->callTemplate($data);
+    }
 
-        if (! file_exists($filePath)) {
-            http_response_code(404);
-            $data["page"] = "export_error";
-            $data["title"] = "Fehler";
-            $data["error"] = "Diese Exportdatei existiert auf dem Server nicht mehr.";
-            Application::$instance->callTemplate($data);
-            return;
-        }
-
-        if (! is_readable($filePath)) {
-            http_response_code(404);
-            $data["page"] = "export_error";
-            $data["title"] = "Fehler";
-            $data["error"] = "Die Exportdatei kann nicht gelesen werden.";
-            Application::$instance->callTemplate($data);
-            return;
-        }
-
+    public function readFile(string $path, string $downloadName, string $contentType)
+    {
         header("Content-Description: File Transfer");
-        header("Content-Type: application/zip");
-        header("Content-Disposition: attachment; filename=\"$fileName\"");
-        header("Content-Length: ".filesize($filePath));
+        header("Content-Type: $contentType");
+        header("Content-Disposition: attachment; filename=\"$downloadName\"");
+        header("Content-Length: ".filesize($path));
 
-        readfile($filePath);
+        readfile($path);
         exit;
     }
 }

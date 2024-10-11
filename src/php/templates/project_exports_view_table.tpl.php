@@ -13,6 +13,13 @@ use DBConstructor\Util\HeaderGenerator;
 <?php $header = new HeaderGenerator($data["fileName"]);
       $header->subtitle = "Export #{$data["export"]->id}";
 
+      $header->autoActions[] = [
+        "download" => true,
+        "href" => "{$data["baseurl"]}/exports/{$data["export"]->id}/{$data["fileName"]}",
+        "icon" => "download",
+        "text" => "Herunterladen"
+      ];
+
       $header->buttonActions[] = [
         "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}",
         "icon" => "arrow-left",

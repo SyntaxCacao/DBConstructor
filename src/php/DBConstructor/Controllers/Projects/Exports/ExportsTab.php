@@ -73,8 +73,7 @@ class ExportsTab extends TabController
                 return true;
             }
 
-            if (count($path) === 5 &&
-                preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $path[4]) !== null &&
+            if (count($path) === 5 && Export::isPossibleFileName($path[4]) &&
                 ($data["fileName"] = $data["export"]->lookUpLocalFile($path[4])) !== null) {
                 // View export file
                 $data["currentPage"] = 1;

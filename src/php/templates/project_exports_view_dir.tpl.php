@@ -16,7 +16,7 @@ use DBConstructor\Util\HeaderGenerator;
       if ($data["archiveExists"]) {
         $header->autoActions[] = [
           "download" => true,
-          "href" => "{$data["baseurl"]}/exports/{$data["export"]->id}/{$data["export"]->getArchiveDownloadName()}.zip",
+          "href" => "{$data["baseurl"]}/exports/{$data["export"]->id}/{$data["export"]->getArchiveDownloadName()}",
           "icon" => "download",
           "text" => "Herunterladen"
         ];
@@ -42,6 +42,7 @@ use DBConstructor\Util\HeaderGenerator;
       <tr class="table-heading">
         <th class="table-cell">Dateiname</th>
         <th class="table-cell">Dateigröße</th>
+        <th class="table-cell"></th>
       </tr>
 <?php $files = scandir($data["directory"]);
 
@@ -61,8 +62,9 @@ use DBConstructor\Util\HeaderGenerator;
           continue;
         } ?>
       <tr class="table-row">
-        <td class="table-cell"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/exports/<?= $data["export"]->id ?>/<?= htmlspecialchars($file) ?>"><?= $file ?></a></td>
+        <td class="table-cell"><a class="main-link" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/exports/<?= $data["export"]->id ?>/<?= htmlspecialchars($file) ?>"><?= htmlspecialchars($file) ?></a></td>
         <td class="table-cell table-cell-numeric"><?= readableBytes(filesize($data["directory"]."/".$file)) ?></td>
+        <td class="table-cell table-cell-actions"><a class="button button-smallest" href="<?= $data["baseurl"] ?>/exports/<?= $data["export"]->id ?>/<?= htmlspecialchars($file) ?>"><span class="bi bi-download"></span>Herunterladen</a></td>
       </tr>
 <?php } ?>
     </table>

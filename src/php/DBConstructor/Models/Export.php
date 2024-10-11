@@ -24,6 +24,11 @@ class Export
         return MySQLConnection::$instance->getLastInsertId();
     }
 
+    public static function isPossibleFileName(string $name): bool
+    {
+        return preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $name) !== null;
+    }
+
     /**
      * @return Export|null
      */
@@ -152,7 +157,7 @@ class Export
 
     public function getArchiveDownloadName(): string
     {
-        return StringSanitizer::toFileName($this->projectLabel)."-export-".$this->id;
+        return StringSanitizer::toFileName($this->projectLabel)."-export-$this->id.zip";
     }
 
     public function getFormatLabel(): string
