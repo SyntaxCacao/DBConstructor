@@ -51,15 +51,6 @@ class ExportsController extends Controller
             return;
         }
 
-        if ($export->deleted) {
-            http_response_code(404);
-            $data["page"] = "export_error";
-            $data["title"] = "Exportdatei gelöscht";
-            $data["error"] = "Diese Exportdatei wurde gelöscht.";
-            Application::$instance->callTemplate($data);
-            return;
-        }
-
         $filePath = Export::getLocalArchiveName($export->id);
 
         if (! file_exists($filePath)) {

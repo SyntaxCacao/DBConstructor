@@ -22,10 +22,18 @@ use DBConstructor\Util\HeaderGenerator;
         ];
       }
 
-      $header->autoActions[] = [
+      $header->buttonActions[] = [
         "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/",
         "icon" => "arrow-left",
         "text" => "Zurück"
+      ];
+
+      $header->dropdownActions[] = [
+        "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/?delete={$data["export"]->id}",
+        "icon" => "trash3",
+        "text" => "Löschen",
+        "confirm" => "Sind Sie sicher?",
+        "danger" => true,
       ];
 
       $header->generate(); ?>

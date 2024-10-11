@@ -105,9 +105,6 @@ class Export
     /** @var string|null */
     public $note;
 
-    /** @var bool */
-    public $deleted;
-
     /** @var string */
     public $created;
 
@@ -124,8 +121,47 @@ class Export
         $this->userLastName = $data["user_lastname"];
         $this->format = $data["format"];
         $this->note = $data["note"];
-        $this->deleted = $data["deleted"] == "1";
         $this->created = $data["created"];
+    }
+
+    public function delete(): bool
+    {
+        $dir = self::getLocalDirectoryName($this->id);
+
+        if (file_exists($dir)) {
+            if (! is_dir($dir)) {
+                return false;
+            }
+
+            $files = scandir($dir);
+
+            foreach ($files as $file) {
+                if ($file === "." || $file === "..") {
+                    continue;
+                }
+
+                $file = "$dir/$file";
+
+                if (! is_file($file) || ! unlink($file)) {
+                    return false;
+                }
+            }
+
+            if (! rmdir($dir)) {
+                return false;
+            }
+        }
+
+        $archive = self::getLocalArchiveName($this->id);
+
+        if (file_exists($archive)) {
+            if (! unlink($archive)) {
+                return false;
+            }
+        }
+
+        MySQLConnection::$instance->execute("DELETE FROM `dbc_export` WHERE `id`=?", [$this->id]);
+        return true;
     }
 
     public function getFileName(): string

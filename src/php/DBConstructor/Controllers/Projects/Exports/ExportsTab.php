@@ -19,6 +19,12 @@ class ExportsTab extends TabController
     public function request(array $path, array &$data): bool
     {
         if (count($path) === 3) {
+            if (isset($_REQUEST["delete"]) && ctype_digit($_REQUEST["delete"]) &&
+                ($export = Export::load($_REQUEST["delete"])) !== null &&
+                $export->projectId == $data["project"]->id) {
+                $data["deleteSuccess"] = $export->delete();
+            }
+
             // List exports
             $data["exports"] = Export::loadList($data["project"]->id);
 
@@ -54,6 +60,7 @@ class ExportsTab extends TabController
 
         if (count($path) >= 4 && preg_match("/^\d+$/D", $path[3]) === 1 &&
             ($data["export"] = Export::load($path[3])) !== null &&
+            $data["export"]->projectId === $data["project"]->id &&
             Export::existsLocalDirectory($data["export"]->id)) {
 
             if (count($path) === 4) {

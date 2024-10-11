@@ -10,8 +10,18 @@ use DBConstructor\Util\HeaderGenerator;
 
 ?>
 <main class="container">
-<?php $header = new HeaderGenerator("Bisherige Exporte");
-      $header->subtitle = count($data["exports"])." mal exportiert";
+<?php if (isset($data["deleteSuccess"])) { ?>
+  <div class="alerts">
+<?php   if ($data["deleteSuccess"]) { ?>
+    <div class="alert"><p>Die Exportdaten wurden gelöscht.</p></div>
+<?php   } else { ?>
+    <div class="alert alert-error"><p>Das Löschen der Exportdaten ist fehlgeschlagen.</p></div>
+<?php   } ?>
+  </div>
+<?php }
+
+      $header = new HeaderGenerator("Export");
+      $header->subtitle = count($data["exports"])." Exportdatei".(count($data["exports"]) === 1 ? "" : "en")." vorhanden";
 
       $header->buttonActions[] = [
         "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/run/",
@@ -30,6 +40,7 @@ use DBConstructor\Util\HeaderGenerator;
       <th class="table-cell"></th>
     </tr>
 <?php foreach ($data["exports"] as $export) {
+        $existsArchive = Export::existsLocalArchive($export->id);
         $existsLocalDir = Export::existsLocalDirectory($export->id); ?>
     <tr class="table-row">
       <td class="table-cell table-cell-numeric"><?php echo $export->id; ?></td>
@@ -37,7 +48,11 @@ use DBConstructor\Util\HeaderGenerator;
       <td class="table-cell"><?= htmlentities(date("d.m.Y H:i", strtotime($export->created))) ?></td>
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?></td>
       <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
-      <td class="table-cell table-cell-actions"><a class="button <?= $export->deleted ? "button-disabled " : "" ?>button-smallest"<?php if (! $export->deleted) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>" <?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><?php if (! $export->deleted) { ?><a class="button button-smallest button-disabled"><span class="bi bi-trash3"></span>Löschen</span></a><?php } ?></td>
+      <td class="table-cell table-cell-actions">
+        <a class="button <?= $existsArchive ? "" : "button-disabled " ?>button-smallest"<?php if ($existsArchive) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getFileName()}.zip" ?>" download<?php } else { ?> title="Die Exportdatei ist auf dem Server nicht mehr vorhanden oder nicht lesbar."<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><!--
+     --><a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>" <?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><!--
+     --><a class="button button-smallest js-confirm" data-confirm-message="Sind Sie sicher?" href="?delete=<?= $export->id ?>"><span class="bi bi-trash3"></span>Löschen</a>
+      </td>
     </tr>
 <?php } ?>
   </table>

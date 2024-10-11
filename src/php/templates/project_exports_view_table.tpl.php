@@ -13,7 +13,7 @@ use DBConstructor\Util\HeaderGenerator;
   <?php $header = new HeaderGenerator($data["fileName"]);
   $header->subtitle = "Export #{$data["export"]->id}";
 
-  $header->autoActions[] = [
+  $header->buttonActions[] = [
     "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}",
     "icon" => "arrow-left",
     "text" => "Zurück"
