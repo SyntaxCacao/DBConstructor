@@ -42,7 +42,11 @@ use DBConstructor\Util\HeaderGenerator;
       while (($row = fgetcsv($file)) !== false) {
         $i += 1;
 
-        if ($i > 500) {
+        if ($i <= $data["rowsPerPage"] * ($data["currentPage"] - 1)) {
+          continue;
+        }
+
+        if ($i > $data["rowsPerPage"] * $data["currentPage"]) {
           $more = true;
           break;
         } ?>
@@ -62,8 +66,17 @@ use DBConstructor\Util\HeaderGenerator;
     </table>
   </div>
 </div>
-<?php if ($more) { ?>
-<div class="container">
-  <p style="margin-top: 24px">Die Tabelle enthält weitere Zeilen; es werden nur die ersten 500 gezeigt.</p>
-</div>
+<?php if ($data["currentPage"] !== 1 || $more) { ?>
+<nav class="pagination-container">
+<?php   if ($data["currentPage"] === 1) { ?>
+  <span class="pagination-link pagination-link-disabled"><span class="bi bi-chevron-left"></span> Zurück</span>
+<?php   } else { ?>
+  <a class="pagination-link" href="?page=<?= $data["currentPage"]-1 ?>"><span class="bi bi-chevron-left"></span> Zurück</a>
+<?php   }
+        if ($more) { ?>
+  <a class="pagination-link" href="?page=<?= $data["currentPage"]+1 ?>">Weiter <span class="bi bi-chevron-right"></span></a>
+<?php   } else { ?>
+  <span class="pagination-link pagination-link-disabled">Weiter <span class="bi bi-chevron-right"></span></span>
+<?php   } ?>
+</nav>
 <?php } ?>

@@ -69,6 +69,12 @@ class ExportsTab extends TabController
                 preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $path[4]) !== null &&
                 Export::existsLocalFile($data["export"]->id, $path[4])) {
                 $data["fileName"] = $path[4];
+                $data["currentPage"] = 1;
+                $data["rowsPerPage"] = 500;
+
+                if (isset($_REQUEST["page"]) && ctype_digit($_REQUEST["page"])) {
+                    $data["currentPage"] = (int) $_REQUEST["page"];
+                }
 
                 $data["tabpage"] = "view_table";
                 $data["title"] = $data["fileName"];
