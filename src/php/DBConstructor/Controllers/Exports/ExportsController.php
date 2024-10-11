@@ -44,14 +44,14 @@ class ExportsController extends Controller
             return;
         }
 
-        $fileName = $export->getFileName().".zip";
+        $fileName = $export->getArchiveDownloadName().".zip";
 
         if (! $path[2] == $fileName) {
             (new NotFoundController())->request($path);
             return;
         }
 
-        $filePath = Export::getLocalArchiveName($export->id);
+        $filePath = $export->getLocalArchivePath();
 
         if (! file_exists($filePath)) {
             http_response_code(404);

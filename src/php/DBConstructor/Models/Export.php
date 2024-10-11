@@ -15,27 +15,7 @@ class Export
         Export::FORMAT_CSV => "CSV"/*"CSV (Comma-separated values)"*/
     ];
 
-    public static function existsLocalArchive(string $id): bool
-    {
-        $fileName = self::getLocalArchiveName($id);
-        return file_exists($fileName) && is_readable($fileName);
-    }
-
-    public static function existsLocalDirectory(string $id): bool
-    {
-        $fileName = self::getLocalDirectoryName($id);
-        return file_exists($fileName) && is_dir($fileName) && is_readable($fileName);
-    }
-
-    public static function getLocalArchiveName(string $id): string
-    {
-        return "../tmp/exports/export-$id.zip";
-    }
-
-    public static function getLocalDirectoryName(string $id): string
-    {
-        return "../tmp/exports/export-$id";
-    }
+    const TMP_DIR_EXPORTS = "../tmp/exports";
 
     public static function create(string $projectId, string $userId, string $format, string $note = null): string
     {
@@ -120,7 +100,7 @@ class Export
 
     public function delete(): bool
     {
-        $dir = self::getLocalDirectoryName($this->id);
+        $dir = $this->getLocalDirectoryPath();
 
         if (file_exists($dir)) {
             if (! is_dir($dir)) {
@@ -146,7 +126,7 @@ class Export
             }
         }
 
-        $archive = self::getLocalArchiveName($this->id);
+        $archive = $this->getLocalArchivePath();
 
         if (file_exists($archive)) {
             if (! unlink($archive)) {
@@ -158,7 +138,19 @@ class Export
         return true;
     }
 
-    public function getFileName(): string
+    public function existsLocalArchive(): bool
+    {
+        $path = $this->getLocalArchivePath();
+        return file_exists($path) && is_readable($path);
+    }
+
+    public function existsLocalDirectory(): bool
+    {
+        $path = $this->getLocalDirectoryPath();
+        return file_exists($path) && is_dir($path) && is_readable($path);
+    }
+
+    public function getArchiveDownloadName(): string
     {
         return StringSanitizer::toFileName($this->projectLabel)."-export-".$this->id;
     }
@@ -168,12 +160,22 @@ class Export
         return Export::FORMATS[$this->format];
     }
 
+    public function getLocalArchivePath(): string
+    {
+        return Export::TMP_DIR_EXPORTS."/export-$this->id.zip";
+    }
+
+    public function getLocalDirectoryPath(): string
+    {
+        return Export::TMP_DIR_EXPORTS."/export-$this->id";
+    }
+
     /**
      * @return null|string Real-case file name if found, null if not found
      */
     public function lookUpLocalFile(string $search)
     {
-        $dir = self::getLocalDirectoryName($this->id);
+        $dir = $this->getLocalDirectoryPath();
         $files = scandir($dir);
 
         foreach ($files as $file) {

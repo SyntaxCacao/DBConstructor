@@ -44,7 +44,7 @@ class ExportsTab extends TabController
             $success = $form->process();
 
             if ($success) {
-                $data["export"] = Export::load($form->exportId);
+                $data["export"] = $form->export;
                 $data["tabpage"] = "success";
                 $data["title"] = "Export erfolgreich";
             } else {
@@ -58,14 +58,15 @@ class ExportsTab extends TabController
             return true;
         }
 
-        if (count($path) >= 4 && preg_match("/^\d+$/D", $path[3]) === 1 &&
+        if (count($path) >= 4 && ctype_digit($path[3]) &&
             ($data["export"] = Export::load($path[3])) !== null &&
             $data["export"]->projectId === $data["project"]->id &&
-            Export::existsLocalDirectory($data["export"]->id)) {
+            $data["export"]->existsLocalDirectory()) {
 
             if (count($path) === 4) {
-                $data["archiveExists"] = Export::existsLocalArchive($data["export"]->id);
-                $data["directory"] = Export::getLocalDirectoryName($data["export"]->id);
+                // List export files
+                $data["archiveExists"] = $data["export"]->existsLocalArchive();
+                $data["directory"] = $data["export"]->getLocalDirectoryPath();
 
                 $data["tabpage"] = "view_dir";
                 $data["title"] = "Export #{$data["export"]->id}";
@@ -74,7 +75,6 @@ class ExportsTab extends TabController
 
             if (count($path) === 5 &&
                 preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $path[4]) !== null &&
-                Export::existsLocalDirectory($data["export"]->id) &&
                 ($data["fileName"] = $data["export"]->lookUpLocalFile($path[4])) !== null) {
                 // View export file
                 $data["currentPage"] = 1;

@@ -10,18 +10,18 @@ use DBConstructor\Util\HeaderGenerator;
 
 ?>
 <div class="container">
-  <?php $header = new HeaderGenerator($data["fileName"]);
-  $header->subtitle = "Export #{$data["export"]->id}";
+<?php $header = new HeaderGenerator($data["fileName"]);
+      $header->subtitle = "Export #{$data["export"]->id}";
 
-  $header->buttonActions[] = [
-    "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}",
-    "icon" => "arrow-left",
-    "text" => "Zurück"
-  ];
+      $header->buttonActions[] = [
+        "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}",
+        "icon" => "arrow-left",
+        "text" => "Zurück"
+      ];
 
-  $header->generate(); ?>
+      $header->generate(); ?>
 </div>
-<?php $file = fopen(Export::getLocalDirectoryName($data["export"]->id)."/".$data["fileName"], "r"); ?>
+<?php $file = fopen($data["export"]->getLocalDirectoryPath()."/".$data["fileName"], "r"); ?>
 <div class="container-expandable-outer">
   <div class="container-expandable-inner-centered">
     <table class="table">

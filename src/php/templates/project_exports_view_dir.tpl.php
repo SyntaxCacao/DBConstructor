@@ -16,7 +16,7 @@ use DBConstructor\Util\HeaderGenerator;
       if ($data["archiveExists"]) {
         $header->autoActions[] = [
           "download" => true,
-          "href" => "{$data["baseurl"]}/exports/{$data["export"]->id}/{$data["export"]->getFileName()}.zip",
+          "href" => "{$data["baseurl"]}/exports/{$data["export"]->id}/{$data["export"]->getArchiveDownloadName()}.zip",
           "icon" => "download",
           "text" => "Herunterladen"
         ];
