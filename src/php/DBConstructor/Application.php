@@ -87,7 +87,7 @@ class Application
             $path = "projects";
         }
 
-        //$path = strtolower($path);
+        $path = strtolower($path);
         $path = trim($path, "/");
         $path = explode("/", $path);
         $this->path = $path;

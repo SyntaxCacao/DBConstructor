@@ -27,12 +27,6 @@ class Export
         return file_exists($fileName) && is_dir($fileName) && is_readable($fileName);
     }
 
-    public static function existsLocalFile(string $id, string $fileName): bool
-    {
-        $fileName = self::getLocalDirectoryName($id)."/".$fileName;
-        return file_exists($fileName) && is_file($fileName) && is_readable($fileName);
-    }
-
     public static function getLocalArchiveName(string $id): string
     {
         return "../tmp/exports/export-$id.zip";
@@ -172,5 +166,26 @@ class Export
     public function getFormatLabel(): string
     {
         return Export::FORMATS[$this->format];
+    }
+
+    /**
+     * @return null|string Real-case file name if found, null if not found
+     */
+    public function lookUpLocalFile(string $search)
+    {
+        $dir = self::getLocalDirectoryName($this->id);
+        $files = scandir($dir);
+
+        foreach ($files as $file) {
+            if ($file === "." || $file === "..") {
+                continue;
+            }
+
+            if (strtolower($search) === strtolower($file) && is_file("$dir/$file") && is_readable("$dir/$file")) {
+                return $file;
+            }
+        }
+
+        return null;
     }
 }
