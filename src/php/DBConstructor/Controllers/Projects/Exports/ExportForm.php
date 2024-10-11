@@ -79,8 +79,8 @@ class ExportForm extends Form
         $field = new SelectField("commentsFormat", "Ausgabeformat");
         $field->dependsOn = "comments";
         $field->dependsOnValue = CheckboxField::VALUE;
-        $field->addOption(self::COMMENTS_FORMAT_JSON, "JSON (maschinenlesbar)");
         $field->addOption(self::COMMENTS_FORMAT_TEXT, "Einfaches Textformat");
+        $field->addOption(self::COMMENTS_FORMAT_JSON, "JSON (maschinenlesbar)");
         $this->addField($field);
 
         $field = new CheckboxField("commentsAnonymize", "Verfasser anonymisieren");
