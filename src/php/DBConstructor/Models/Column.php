@@ -12,6 +12,12 @@ use DBConstructor\Util\MarkdownParser;
 
 abstract class Column
 {
+    const RESERVED_NAME_ID = "id";
+
+    const RESERVED_NAME_INT_ID = "_intid";
+
+    const RESERVED_NAMES = [Column::RESERVED_NAME_ID, Column::RESERVED_NAME_INT_ID];
+
     public static function isNameAvailable(string $tableId, string $name): bool
     {
         MySQLConnection::$instance->execute("SELECT COUNT(*) AS `count` FROM `dbc_column_relational` WHERE `table_id`=? AND `name`=?", [$tableId, $name]);

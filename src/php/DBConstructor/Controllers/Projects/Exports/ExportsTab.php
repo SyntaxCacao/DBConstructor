@@ -76,16 +76,24 @@ class ExportsTab extends TabController
             if (count($path) === 5 && Export::isPossibleFileName($path[4]) &&
                 ($data["fileName"] = $data["export"]->lookUpLocalFile($path[4])) !== null) {
                 // View export file
-                $data["currentPage"] = 1;
-                $data["rowsPerPage"] = 500;
 
-                if (isset($_REQUEST["page"]) && ctype_digit($_REQUEST["page"])) {
-                    $data["currentPage"] = (int) $_REQUEST["page"];
+                if (preg_match("/\.csv$/", $data["fileName"]) === 1) {
+                    // CSV
+                    $data["currentPage"] = 1;
+                    $data["rowsPerPage"] = 500;
+
+                    if (isset($_REQUEST["page"]) && ctype_digit($_REQUEST["page"])) {
+                        $data["currentPage"] = (int) $_REQUEST["page"];
+                    }
+
+                    $data["tabpage"] = "view_table";
+                    $data["title"] = $data["fileName"];
+                    return true;
+                } else if (preg_match("/\.html$/", $data["fileName"]) === 1) {
+                    // HTML
+                    readfile($data["export"]->getLocalDirectoryPath()."/".$data["fileName"]);
+                    return false;
                 }
-
-                $data["tabpage"] = "view_table";
-                $data["title"] = $data["fileName"];
-                return true;
             }
         }
 

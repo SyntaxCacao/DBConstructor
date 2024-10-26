@@ -55,6 +55,8 @@ abstract class Type
         return $array;
     }
 
+    public abstract function toHTML(): string;
+
     /**
      * @return string|null null if object is empty
      */

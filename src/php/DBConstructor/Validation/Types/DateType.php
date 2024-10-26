@@ -24,4 +24,12 @@ class DateType extends Type
 
         return $validator;
     }
+
+    public function toHTML(): string
+    {
+        $html = "<p><span class='descriptor'>Data type:</span> Date</p>";
+        $html .= "<p><span class='descriptor'>Nullable:</span> ".($this->nullable ? "True" : "False")."</p>";
+
+        return $html;
+    }
 }

@@ -59,9 +59,12 @@ class ExportsController extends Controller
 
             $filePath = $export->getLocalDirectoryPath()."/".$fileName;
 
-            if (preg_match("/\.csv$/", $fileName) !== null) {
+            if (preg_match("/\.csv$/", $fileName) === 1) {
                 // CSV
                 $this->readFile($filePath, $fileName, "text/csv");
+            } else if (preg_match("/\.html$/", $fileName) === 1) {
+                // HTML
+                $this->readFile($filePath, $fileName, "text/html");
             }
         }
 

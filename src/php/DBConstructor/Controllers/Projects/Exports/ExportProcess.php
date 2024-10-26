@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace DBConstructor\Controllers\Projects\Exports;
 
 use DBConstructor\Application;
+use DBConstructor\Models\Column;
 use DBConstructor\Models\Export;
+use DBConstructor\Models\Project;
 use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\RelationalField;
 use DBConstructor\Models\Row;
@@ -36,6 +38,9 @@ class ExportProcess
     public $commentsFormat = ExportProcess::COMMENTS_FORMAT_TEXT;
 
     /** @var bool */
+    public $generateSchemeDocs = false;
+
+    /** @var bool */
     public $includeComments = false;
 
     /** @var bool */
@@ -44,12 +49,12 @@ class ExportProcess
     /** @var string|null */
     public $note;
 
-    /** @var string */
-    public $projectId;
+    /** @var Project */
+    public $project;
 
-    public function __construct(string $projectId)
+    public function __construct(Project $project)
     {
-        $this->projectId = $projectId;
+        $this->project = $project;
     }
 
     /**
@@ -64,25 +69,33 @@ class ExportProcess
             throw new Exception("Could not create tmp dir");
         }
 
-        $tables = Table::loadList($this->projectId);
+        $tables = Table::loadList($this->project->id, $this->project->manualOrder);
+
+        if ($this->generateSchemeDocs) {
+            $schemeWriter = new SchemeWriter($this->includeInternalIds ? Column::RESERVED_NAME_INT_ID : null, $this->commentsColumnName);
+            $schemeWriter->open($tmpDir);
+            $schemeWriter->writeHead($this->project, $tables);
+        }
 
         foreach ($tables as $table) {
             Row::setExportId($table->id);
         }
 
         $files = [];
+        $recordCount = [];
 
         foreach ($tables as $table) {
+            $recordCount[$table->id] = 0;
             $tableFile = fopen("$tmpDir/$table->name.csv", "c");
 
             if (! $tableFile) {
                 throw new Exception("Could not create file for table $table->name");
             }
 
-            $headings = ["id"];
+            $headings = [Column::RESERVED_NAME_ID];
 
             if ($this->includeInternalIds) {
-                $headings[] = "_intid";
+                $headings[] = Column::RESERVED_NAME_INT_ID;
             }
 
             // headings relational
@@ -118,6 +131,8 @@ class ExportProcess
             $nextComment = null;
 
             while ($rowData = $rowsStatement->fetch()) {
+                $recordCount[$table->id] += 1;
+
                 $row = new Row($rowData);
                 $rowExport = [$row->exportId];
 
@@ -295,8 +310,21 @@ class ExportProcess
             $relationalFieldsStatement = null;
             $textualFieldsStatement = null;
             $commentsStatement = null;
+
+            // Write table docs
+            if (isset($schemeWriter)) {
+                $schemeWriter->writeTableDocs($table, $relationalColumns, $textualColumns, $recordCount[$table->id]);
+            }
         }
 
+        // Close scheme writer
+        if (isset($schemeWriter)) {
+            $schemeWriter->writeEnd();
+            $schemeWriter->close();
+            $files[] = SchemeWriter::FILE_NAME;
+        }
+
+        // Create ZIP archive
         $zip = new ZipArchive();
         $tmpZipName = Export::TMP_DIR_EXPORTS."/export-$uniquid.zip";
 
@@ -314,9 +342,11 @@ class ExportProcess
             throw new Exception("$tmpZipName could not be closed");
         }
 
-        $exportId = Export::create($this->projectId, Application::$instance->user->id, Export::FORMAT_CSV, $this->note);
+        // Register export in database
+        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->note);
         $export = Export::load($exportId);
 
+        // Rename files to include new Export ID
         if (! rename($tmpDir, $export->getLocalDirectoryPath())) {
             throw new Exception("Could not rename $tmpDir to ".$export->getLocalDirectoryPath());
         }

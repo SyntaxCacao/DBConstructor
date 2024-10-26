@@ -65,4 +65,24 @@ class TextType extends Type
 
         return $validator;
     }
+
+    public function toHTML(): string
+    {
+        $html = "<p><span class='descriptor'>Data type:</span> Text</p>";
+        $html .= "<p><span class='descriptor'>Nullable:</span> ".($this->nullable ? "True" : "False")."</p>";
+
+        if (isset($this->minLength)) {
+            $html .= "<p><span class='descriptor'>Minimum length:</span> ".$this->minLength." character(s)</p>";
+        }
+
+        if (isset($this->maxLength)) {
+            $html .= "<p><span class='descriptor'>Maximum length:</span> ".$this->maxLength." character(s)</p>";
+        }
+
+        if (isset($this->regEx)) {
+            $html .= "<p><span class='descriptor'>Conforms to regular expression:</span> <code>".htmlspecialchars($this->regEx)."</code></p>";
+        }
+
+        return $html;
+    }
 }

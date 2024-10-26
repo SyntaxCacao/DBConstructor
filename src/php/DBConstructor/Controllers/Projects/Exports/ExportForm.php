@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DBConstructor\Controllers\Projects\Exports;
 
-use DBConstructor\Controllers\Projects\Tables\Structure\ColumnNameField;
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\SelectField;
 use DBConstructor\Forms\Fields\TextareaField;
@@ -52,7 +51,7 @@ class ExportForm extends Form
         // See ColumnNameField
         $field->maxLength = 64;
         $field->validationClosures[] = new ValidationClosure(static function ($value) {
-            return ! in_array(strtolower($value), ColumnNameField::RESERVED_NAMES);
+            return ! in_array(strtolower($value), Column::RESERVED_NAMES);
         }, "Der eingegebene Name ist reserviert", true);
         $field->validationClosures[] = new ValidationClosure(static function ($value) {
             return preg_match("/^[A-Za-z0-9-_]+$/D", $value);
@@ -82,6 +81,11 @@ class ExportForm extends Form
         $field->defaultValue = true;
         $this->addField($field);
 
+        $field = new CheckboxField("generateSchemeDocs", "Dokumentation zur Datenstruktur generieren");
+        $field->description = "Den Exportdateien wird eine automatisch generierte HTML-Datei mit Strukturinformationen beigefügt";
+        $field->defaultValue = true;
+        $this->addField($field);
+
         $field = new TextareaField("note", "Bemerkung");
         $field->required = false;
         $field->maxLength = 1000;
@@ -95,7 +99,7 @@ class ExportForm extends Form
      */
     public function perform(array $data)
     {
-        $process = new ExportProcess($this->project->id);
+        $process = new ExportProcess($this->project);
         $process->includeInternalIds = $data["internalid"];
         $process->includeComments = $data["comments"];
 
@@ -106,6 +110,7 @@ class ExportForm extends Form
             $process->commentsExcludeAPI = $data["commentsExcludeAPI"];
         }
 
+        $process->generateSchemeDocs = $data["generateSchemeDocs"];
         $process->note = $data["note"];
 
         $this->export = $process->run();

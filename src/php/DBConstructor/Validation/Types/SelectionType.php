@@ -43,4 +43,19 @@ class SelectionType extends Type
 
         return $validator;
     }
+
+    public function toHTML(): string
+    {
+        $html = "<p><span class='descriptor'>Data type:</span> Selection</p>";
+        $html .= "<p><span class='descriptor'>Nullable:</span> ".($this->nullable ? "True" : "False")."</p>";
+        $html .= "<p><span class='descriptor'>Multiple selection permitted:</span> ".($this->allowMultiple ? "True" : "False")."</p>";
+
+        if ($this->allowMultiple) {
+            $html .= "<p><span class='descriptor'>Separator:</span> <code>".$this->separator."</code></p>";
+        }
+
+        $html .= "<p><span class='descriptor'>Options:</span> <code>".implode("</code>, <code>", array_keys($this->options))."</code></p>";
+
+        return $html;
+    }
 }

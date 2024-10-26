@@ -41,6 +41,16 @@ class TextualColumn extends Column
         TextualColumn::TYPE_BOOLEAN => "Boolsches Feld"
     ];
 
+    /* TODO */
+    const TYPES_EN = [
+        TextualColumn::TYPE_TEXT => "Text",
+        TextualColumn::TYPE_SELECTION => "Selection",
+        TextualColumn::TYPE_DATE => "Date",
+        TextualColumn::TYPE_INTEGER => "Integer",
+        TextualColumn::TYPE_DECIMAL => "Decimal",
+        TextualColumn::TYPE_BOOLEAN => "Boolean"
+    ];
+
     public static function create(string $tableId, string $name, string $label, string $instructions = null, string $position, string $type, Type $validationType, bool $hide): string
     {
         MySQLConnection::$instance->execute("UPDATE `dbc_column_textual` SET `position`=`position`+1 WHERE `table_id`=? AND `position`>=?", [$tableId, $position]);

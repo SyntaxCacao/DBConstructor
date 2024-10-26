@@ -10,8 +10,6 @@ use DBConstructor\Models\Column;
 
 class ColumnNameField extends TextField
 {
-    const RESERVED_NAMES = ["id", "_intid"];
-
     /** @var Column|null */
     public $column;
 
@@ -29,7 +27,7 @@ class ColumnNameField extends TextField
         $this->monospace = true;
 
         $this->validationClosures[] = new ValidationClosure(static function ($value) {
-            return ! in_array(strtolower($value), ColumnNameField::RESERVED_NAMES);
+            return ! in_array(strtolower($value), Column::RESERVED_NAMES);
         }, "Der eingegebene Name ist reserviert.", true);
         $this->validationClosures[] = new ValidationClosure(static function ($value) {
             return preg_match("/^[A-Za-z0-9-_]+$/D", $value);

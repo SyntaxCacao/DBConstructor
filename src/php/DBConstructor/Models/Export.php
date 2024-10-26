@@ -26,7 +26,7 @@ class Export
 
     public static function isPossibleFileName(string $name): bool
     {
-        return preg_match("/^[A-Za-z0-9-_]+\.csv$/D", $name) !== null;
+        return preg_match("/^[A-Za-z0-9-_]+\.(?:csv|html)$/D", $name) !== null;
     }
 
     /**
