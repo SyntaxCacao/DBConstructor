@@ -14,9 +14,7 @@ abstract class Column
 {
     const RESERVED_NAME_ID = "id";
 
-    const RESERVED_NAME_INT_ID = "_intid";
-
-    const RESERVED_NAMES = [Column::RESERVED_NAME_ID, Column::RESERVED_NAME_INT_ID];
+    const RESERVED_NAMES = [Column::RESERVED_NAME_ID];
 
     public static function isNameAvailable(string $tableId, string $name): bool
     {

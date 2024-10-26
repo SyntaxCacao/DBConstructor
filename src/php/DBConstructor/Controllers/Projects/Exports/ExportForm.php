@@ -23,6 +23,9 @@ class ExportForm extends Form
     /** @var Project */
     public $project;
 
+    /** @var string|null */
+    public $internalIdColumnName;
+
     public function __construct()
     {
         parent::__construct("export");
@@ -36,8 +39,26 @@ class ExportForm extends Form
         $field->addOptions(Export::FORMATS);
         $this->addField($field);
 
-        $field = new CheckboxField("internalid", "Interne ID mit ausgeben");
+        $field = new CheckboxField("internalId", "Interne ID mit ausgeben");
         $field->description = "Kann die Auffindbarkeit exportierter Datensätze auf dieser Plattform verbessern";
+        $this->addField($field);
+
+        $field = new TextField("internalIdColumnName", "Spaltenname");
+        $field->dependsOn = "internalId";
+        $field->dependsOnValue = CheckboxField::VALUE;
+        $field->defaultValue = "_intid";
+        // See ColumnNameField
+        $field->maxLength = 64;
+        $field->validationClosures[] = new ValidationClosure(static function ($value) {
+            return ! in_array(strtolower($value), Column::RESERVED_NAMES);
+        }, "Der eingegebene Name ist reserviert", true);
+        $field->validationClosures[] = new ValidationClosure(static function ($value) {
+            return preg_match("/^[A-Za-z0-9-_]+$/D", $value);
+        }, "Spaltennamen dürfen nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.", true);
+        $field->validationClosures[] = new ValidationClosure(function ($value) {
+            $this->internalIdColumnName = $value; // For check in ValidationClosure for comments column
+            return Column::isNameAvailableInProject($this->project->id, $value);
+        }, "Dieser Spaltenname wird in diesem Projekt bereits verwendet");
         $this->addField($field);
 
         $field = new CheckboxField("comments", "Kommentare mit ausgeben");
@@ -57,7 +78,7 @@ class ExportForm extends Form
             return preg_match("/^[A-Za-z0-9-_]+$/D", $value);
         }, "Spaltennamen dürfen nur alphanumerische Zeichen, Bindestriche und Unterstriche enthalten.", true);
         $field->validationClosures[] = new ValidationClosure(function ($value) {
-            return Column::isNameAvailableInProject($this->project->id, $value);
+            return Column::isNameAvailableInProject($this->project->id, $value) && $this->internalIdColumnName !== $value;
         }, "Dieser Spaltenname wird in diesem Projekt bereits verwendet");
         $this->addField($field);
 
@@ -100,7 +121,12 @@ class ExportForm extends Form
     public function perform(array $data)
     {
         $process = new ExportProcess($this->project);
-        $process->includeInternalIds = $data["internalid"];
+        $process->includeInternalIds = $data["internalId"];
+
+        if ($process->includeInternalIds) {
+            $process->internalIdColumnName = $data["internalIdColumnName"];
+        }
+
         $process->includeComments = $data["comments"];
 
         if ($process->includeComments) {

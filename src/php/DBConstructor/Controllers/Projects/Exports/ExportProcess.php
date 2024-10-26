@@ -47,6 +47,9 @@ class ExportProcess
     public $includeInternalIds = false;
 
     /** @var string|null */
+    public $internalIdColumnName;
+
+    /** @var string|null */
     public $note;
 
     /** @var Project */
@@ -72,7 +75,7 @@ class ExportProcess
         $tables = Table::loadList($this->project->id, $this->project->manualOrder);
 
         if ($this->generateSchemeDocs) {
-            $schemeWriter = new SchemeWriter($this->includeInternalIds ? Column::RESERVED_NAME_INT_ID : null, $this->commentsColumnName);
+            $schemeWriter = new SchemeWriter($this->internalIdColumnName, $this->commentsColumnName);
             $schemeWriter->open($tmpDir);
             $schemeWriter->writeHead($this->project, $tables);
         }
@@ -95,7 +98,7 @@ class ExportProcess
             $headings = [Column::RESERVED_NAME_ID];
 
             if ($this->includeInternalIds) {
-                $headings[] = Column::RESERVED_NAME_INT_ID;
+                $headings[] = $this->internalIdColumnName;
             }
 
             // headings relational
