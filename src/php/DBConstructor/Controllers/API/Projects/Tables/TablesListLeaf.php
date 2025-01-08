@@ -13,7 +13,7 @@ class TablesListLeaf extends LeafNode
 {
     public function get(array $path): array
     {
-        $tables = Table::loadList(ProjectsNode::$project->id, ProjectsNode::$project->manualOrder, true, true, Application::$instance->user->id);
+        $tables = Table::loadList(ProjectsNode::$project->id, ProjectsNode::$project->manualOrder, true, true, false, Application::$instance->user->id);
         $result = [];
 
         foreach ($tables as $table) {

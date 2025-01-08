@@ -49,11 +49,12 @@ class Table
     /**
      * @param bool $manualOrder Tables will be ordered by (manually assigned) position if true, by names/labels if false.
      * @param bool $orderByLabel If $manualOrder is false, tables will be ordered by labels if true, by names if false.
-     * @param bool $rowCounts If true, number of rows (not deleted; invalid but not deleted; flagged) for each table will be included.
+     * @param bool $rowCounts If true, number of rows (not deleted; invalid but not deleted; flagged) will be included for each table.
+     * @param bool $exportableCount If true, number of exportable rows (not invalid and not deleted) will be included for each table .
      * @param string|null $assigneeId If not null, number of rows assigned to the given user will be included for each table.
      * @return array<string, Table>
      */
-    public static function loadList(string $projectId, bool $manualOrder = false, bool $orderByLabel = false, bool $rowCounts = false, string $assigneeId = null): array
+    public static function loadList(string $projectId, bool $manualOrder = false, bool $orderByLabel = false, bool $rowCounts = false, bool $exportableCount = false, string $assigneeId = null): array
     {
         $sql = "SELECT t.*";
         $params = [];
@@ -62,6 +63,10 @@ class Table
             $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`deleted` IS FALSE) AS `rowCount`";
             $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`valid` IS FALSE AND r.`deleted` IS FALSE) AS `invalidCount`";
             $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`flagged` IS TRUE) AS `flaggedCount`";
+        }
+
+        if ($exportableCount) {
+            $sql .= ", (SELECT COUNT(*) FROM `dbc_row` r WHERE r.`table_id` = t.`id` AND r.`valid` IS TRUE AND r.`deleted` IS FALSE) AS `exportableCount`";
         }
 
         if ($assigneeId !== null) {
@@ -115,6 +120,9 @@ class Table
     public $flaggedCount;
 
     /** @var int|null */
+    public $exportableCount;
+
+    /** @var int|null */
     public $assignedCount;
 
     /**
@@ -140,6 +148,10 @@ class Table
 
         if (isset($data["flaggedCount"])) {
             $this->flaggedCount = (int) $data["flaggedCount"];
+        }
+
+        if (isset($data["exportableCount"])) {
+            $this->exportableCount = (int) $data["exportableCount"];
         }
 
         if (isset($data["assignedCount"])) {

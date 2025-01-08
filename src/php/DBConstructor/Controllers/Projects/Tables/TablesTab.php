@@ -26,14 +26,14 @@ class TablesTab extends TabController
     public function request(array $path, array &$data): bool
     {
         if (count($path) <= 3) { // <= because this can be access with /projects/x/ and /projects/x/tables
-            $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true, true, Application::$instance->user->id);
+            $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true, true, false, Application::$instance->user->id);
             $data["tabpage"] = "list";
 
             if (isset($_REQUEST["move"]) && isset($_REQUEST["position"]) &&
                 intval($_REQUEST["move"]) !== 0 && intval($_REQUEST["position"]) !== 0 &&
                 intval($_REQUEST["position"]) <= count($data["tables"])) {
                 $data["tables"][$_REQUEST["move"]]->move(intval($_REQUEST["position"]));
-                $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true, true, Application::$instance->user->id);
+                $data["tables"] = Table::loadList($data["project"]->id, $data["project"]->manualOrder, true, true, false, Application::$instance->user->id);
             }
 
             $data["rowsCreatedAllTime"] = RowProgressLoader::loadTotal($data["project"]->id);

@@ -36,9 +36,13 @@ class SchemeWriter
         fclose($this->handle);
     }
 
-    public function open(string $dir)
+    public function open(string $dir = null)
     {
-        $this->handle = fopen($dir."/".SchemeWriter::FILE_NAME, "w");
+        if ($dir === null) {
+            $this->handle = fopen("php://output", "w");
+        } else {
+            $this->handle = fopen($dir."/".SchemeWriter::FILE_NAME, "w");
+        }
     }
 
     /**

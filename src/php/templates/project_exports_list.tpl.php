@@ -29,6 +29,12 @@ use DBConstructor\Util\HeaderGenerator;
         "text" => "Export durchführen"
       ];
 
+      $header->dropdownActions[] = [
+        "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/docs/",
+        "icon" => "file-earmark-text",
+        "text" => "Strukturdokumentation"
+      ];
+
       $header->generate(); ?>
   <table class="table">
     <tr class="table-heading">

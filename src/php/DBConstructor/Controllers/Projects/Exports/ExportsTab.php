@@ -7,7 +7,10 @@ namespace DBConstructor\Controllers\Projects\Exports;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Controllers\TabController;
 use DBConstructor\Models\Export;
+use DBConstructor\Models\RelationalColumn;
 use DBConstructor\Models\Row;
+use DBConstructor\Models\Table;
+use DBConstructor\Models\TextualColumn;
 
 class ExportsTab extends TabController
 {
@@ -56,6 +59,27 @@ class ExportsTab extends TabController
             }
 
             return true;
+        }
+
+        if (count($path) === 4 && $path[3] === "docs") {
+            // Show scheme docs
+
+            $writer = new SchemeWriter();
+            $writer->open();
+
+            $tables = Table::loadList($data["project"]->id, $data["project"]->manualOrder, false, false, true);
+            $writer->writeHead($data["project"], $tables);
+
+            foreach ($tables as $table) {
+                $writer->writeTableDocs($table,
+                    RelationalColumn::loadList($table->id),
+                    TextualColumn::loadList($table->id),
+                    $table->exportableCount);
+            }
+
+            $writer->writeEnd();
+            $writer->close();
+            return false;
         }
 
         if (count($path) >= 4 && ctype_digit($path[3]) &&
