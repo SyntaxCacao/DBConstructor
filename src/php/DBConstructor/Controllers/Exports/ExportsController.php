@@ -9,9 +9,33 @@ use DBConstructor\Controllers\Controller;
 use DBConstructor\Controllers\NotFoundController;
 use DBConstructor\Models\Export;
 use DBConstructor\Models\Participant;
+use Exception;
 
 class ExportsController extends Controller
 {
+    public static function readFile(string $path, string $downloadName)
+    {
+        header("Content-Description: File Transfer");
+
+        if (preg_match("/\.csv$/", $downloadName) === 1) {
+            $contentType = "text/csv; charset=utf-8";
+        } else if (preg_match("/\.html$/", $downloadName) === 1) {
+            $contentType = "text/html; charset=utf-8";
+        } else if (preg_match("/\.zip$/", $downloadName) === 1) {
+            $contentType = "application/zip";
+        }
+
+        if (isset($contentType)) {
+            header("Content-Type: $contentType");
+        }
+
+        header("Content-Disposition: attachment; filename=\"$downloadName\"");
+        header("Content-Length: ".filesize($path));
+
+        readfile($path);
+        exit;
+    }
+
     public function request(array $path)
     {
         if (count($path) !== 3 || ! ctype_digit($path[1]) ||
@@ -53,19 +77,10 @@ class ExportsController extends Controller
                 return;
             }
 
-            $this->readFile($archivePath, $archiveDownloadName, "application/zip");
+            self::readFile($archivePath, $archiveDownloadName);
         } else if (Export::isPossibleFileName($path[2]) && ($fileName = $export->lookUpLocalFile($path[2])) !== null) {
             // Single file download
-
-            $filePath = $export->getLocalDirectoryPath()."/".$fileName;
-
-            if (preg_match("/\.csv$/", $fileName) === 1) {
-                // CSV
-                $this->readFile($filePath, $fileName, "text/csv");
-            } else if (preg_match("/\.html$/", $fileName) === 1) {
-                // HTML
-                $this->readFile($filePath, $fileName, "text/html");
-            }
+            self::readFile($export->getLocalDirectoryPath()."/".$fileName, $fileName);
         }
 
         http_response_code(404);
@@ -73,16 +88,5 @@ class ExportsController extends Controller
         $data["title"] = "Fehler";
         $data["error"] = "Die angeforderte Datei ist nicht vorhanden oder nicht lesbar.";
         Application::$instance->callTemplate($data);
-    }
-
-    public function readFile(string $path, string $downloadName, string $contentType)
-    {
-        header("Content-Description: File Transfer");
-        header("Content-Type: $contentType");
-        header("Content-Disposition: attachment; filename=\"$downloadName\"");
-        header("Content-Length: ".filesize($path));
-
-        readfile($path);
-        exit;
     }
 }

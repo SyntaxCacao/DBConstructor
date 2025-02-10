@@ -26,6 +26,9 @@ class ExportProcess
     const COMMENTS_FORMAT_TEXT = "text";
 
     /** @var bool */
+    public $api = false;
+
+    /** @var bool */
     public $commentsAnonymize = false;
 
     /** @var string */
@@ -346,7 +349,7 @@ class ExportProcess
         }
 
         // Register export in database
-        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->note);
+        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->note, $this->api);
         $export = Export::load($exportId);
 
         // Rename files to include new Export ID

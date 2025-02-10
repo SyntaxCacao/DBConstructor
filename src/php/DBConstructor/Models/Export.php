@@ -17,9 +17,9 @@ class Export
 
     const TMP_DIR_EXPORTS = "../tmp/exports";
 
-    public static function create(string $projectId, string $userId, string $format, string $note = null): string
+    public static function create(string $projectId, string $userId, string $format, string $note = null, bool $api): string
     {
-        MySQLConnection::$instance->execute("INSERT INTO `dbc_export` (`project_id`, `user_id`, `format`, `note`) VALUES (?, ?, ?, ?)", [$projectId, $userId, $format, $note]);
+        MySQLConnection::$instance->execute("INSERT INTO `dbc_export` (`project_id`, `user_id`, `format`, `note`, `api`) VALUES (?, ?, ?, ?, ?)", [$projectId, $userId, $format, $note, intval($api)]);
 
         return MySQLConnection::$instance->getLastInsertId();
     }
@@ -84,6 +84,9 @@ class Export
     /** @var string|null */
     public $note;
 
+    /** @var bool */
+    public $api;
+
     /** @var string */
     public $created;
 
@@ -100,6 +103,7 @@ class Export
         $this->userLastName = $data["user_lastname"];
         $this->format = $data["format"];
         $this->note = $data["note"];
+        $this->api = (int) $data["api"];
         $this->created = $data["created"];
     }
 

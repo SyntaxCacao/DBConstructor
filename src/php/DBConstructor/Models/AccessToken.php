@@ -48,6 +48,8 @@ class AccessToken
 
     const SCOPE_PROJECT_DELETE = 2;
 
+    const SCOPE_PROJECT_EXPORT = 4;
+
     const SCOPE_PROJECT_STRUCTURE = 3;
 
     const SCOPE_PROJECT_UPLOAD = 1;

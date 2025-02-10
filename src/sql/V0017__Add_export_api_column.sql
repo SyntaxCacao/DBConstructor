@@ -1,0 +1,5 @@
+ALTER TABLE `dbc_export`
+  ADD `api` BOOLEAN NOT NULL DEFAULT FALSE AFTER `note`;
+
+ALTER TABLE `dbc_export`
+  CHANGE `api` `api` BOOLEAN NOT NULL;

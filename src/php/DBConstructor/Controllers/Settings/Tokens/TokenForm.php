@@ -119,6 +119,17 @@ abstract class TokenForm extends Form
 
             $this->addField($field);
 
+            $field = new CheckboxField($projectFieldName."-export", "Veranlassen des Datenbankexports und Zugriff auf Exportdateien");
+            $field->dependsOn = $projectFieldName;
+            $field->dependsOnValue = CheckboxField::VALUE;
+            $field->labelBold = false;
+
+            if ($token !== null) {
+                $field->defaultValue = isset($currentScope[$project->id]) && in_array(AccessToken::SCOPE_PROJECT_EXPORT, $currentScope[$project->id]);
+            }
+
+            $this->addField($field);
+
             $field = new CheckboxField($projectFieldName."-structure", "Verändern der Tabellenstrukturen");
             $field->dependsOn = $projectFieldName;
             $field->dependsOnValue = CheckboxField::VALUE;
@@ -176,6 +187,10 @@ abstract class TokenForm extends Form
 
             if ($data[$projectFieldName."-delete"] === true) {
                 $projectScope[] = AccessToken::SCOPE_PROJECT_DELETE;
+            }
+
+            if ($data[$projectFieldName."-export"] === true) {
+                $projectScope[] = AccessToken::SCOPE_PROJECT_EXPORT;
             }
 
             if ($data[$projectFieldName."-structure"] === true) {

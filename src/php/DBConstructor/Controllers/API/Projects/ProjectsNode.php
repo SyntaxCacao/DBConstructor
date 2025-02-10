@@ -8,6 +8,7 @@ use DBConstructor\Application;
 use DBConstructor\Controllers\API\APIController;
 use DBConstructor\Controllers\API\InternalNode;
 use DBConstructor\Controllers\API\NotFoundException;
+use DBConstructor\Controllers\API\Projects\Exports\ExportsNode;
 use DBConstructor\Controllers\API\Projects\Participants\ParticipantsNode;
 use DBConstructor\Controllers\API\Projects\Tables\TablesNode;
 use DBConstructor\Models\Participant;
@@ -39,6 +40,10 @@ class ProjectsNode extends InternalNode
 
         if (count($path) === 3) {
             return (new ProjectsElementLeaf())->process($path);
+        }
+
+        if ($path[3] === "exports") {
+            return (new ExportsNode())->process($path);
         }
 
         if ($path[3] === "participants") {
