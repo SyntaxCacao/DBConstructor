@@ -43,6 +43,7 @@ use DBConstructor\Util\HeaderGenerator;
       <th class="table-cell">Zeitpunkt</th>
       <th class="table-cell">Durchgeführt von</th>
       <th class="table-cell">Bemerkung</th>
+      <th class="table-cell">Dateigröße</th>
       <th class="table-cell"></th>
     </tr>
 <?php foreach ($data["exports"] as $export) {
@@ -54,6 +55,7 @@ use DBConstructor\Util\HeaderGenerator;
       <td class="table-cell"><?= htmlentities(date("d.m.Y H:i", strtotime($export->created))) ?></td>
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?><?php if ($export->api) { ?> <span class="table-cell-icon-inline bi bi-robot" title="Durch die API bewirkt"></span><?php } ?></td>
       <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
+      <td class="table-cell table-cell-numeric"><?= $existsArchive ? Export::getPrintableFileSize($export->getLocalArchivePath()) : "&ndash;" ?></td>
       <td class="table-cell table-cell-actions">
         <a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>"<?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><!--
      --><a class="button <?= $existsArchive ? "" : "button-disabled " ?>button-smallest"<?php if ($existsArchive) { ?> href="<?= "{$data["baseurl"]}/exports/$export->id/{$export->getArchiveDownloadName()}" ?>" download<?php } else { ?> title="Die Exportdatei ist auf dem Server nicht mehr vorhanden oder nicht lesbar."<?php } ?>><span class="bi bi-download"></span>Herunterladen</a><!--

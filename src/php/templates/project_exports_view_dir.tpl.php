@@ -46,24 +46,13 @@ use DBConstructor\Util\HeaderGenerator;
       </tr>
 <?php $files = scandir($data["directory"]);
 
-      /**
-       * Source: https://stackoverflow.com/a/49588464
-       * Using 1000 instead of 1024
-       */
-      function readableBytes($bytes): string
-      {
-        $i = floor(log($bytes) / log(1000));
-        $sizes = [" B", "KB", "MB", "GB", "TB"];
-        return sprintf('%.02F', $bytes / pow(1024, $i))." ".$sizes[$i];
-      }
-
       foreach ($files as $file) {
         if ($file == "." || $file == "..") {
           continue;
         } ?>
       <tr class="table-row">
         <td class="table-cell"><a class="main-link" href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}/".htmlspecialchars($file) ?>"><?= htmlspecialchars($file) ?></a></td>
-        <td class="table-cell table-cell-numeric"><?= readableBytes(filesize($data["directory"]."/".$file)) ?></td>
+        <td class="table-cell table-cell-numeric"><?= Export::getPrintableFileSize($data["directory"]."/".$file) ?></td>
         <td class="table-cell table-cell-actions">
           <a class="button button-smallest" href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}/".htmlspecialchars($file) ?>"><span class="bi bi-folder2-open"></span>Öffnen</a><!--
        --><a class="button button-smallest" href="<?= "{$data["baseurl"]}/exports/{$data["export"]->id}/".htmlspecialchars($file) ?>" download><span class="bi bi-download"></span>Herunterladen</a>

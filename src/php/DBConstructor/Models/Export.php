@@ -24,6 +24,17 @@ class Export
         return MySQLConnection::$instance->getLastInsertId();
     }
 
+    public static function getPrintableFileSize(string $path): string
+    {
+        $megaBytes = filesize($path)/1048576;
+
+        if ($megaBytes < 0.01) {
+            return "< 0,01 MB";
+        }
+
+        return number_format($megaBytes, 2, ",", " ")." MB";
+    }
+
     public static function isPossibleFileName(string $name): bool
     {
         return preg_match("/^[A-Za-z0-9-_]+\.(?:csv|html)$/D", $name) !== null;
