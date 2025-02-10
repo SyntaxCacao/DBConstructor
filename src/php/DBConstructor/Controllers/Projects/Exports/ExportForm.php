@@ -46,6 +46,8 @@ class ExportForm extends Form
         $field = new TextField("internalIdColumnName", "Spaltenname");
         $field->dependsOn = "internalId";
         $field->dependsOnValue = CheckboxField::VALUE;
+        // TODO: Disabled because CSV preview currently depends on this column having this name
+        $field->disabled = true;
         $field->defaultValue = "_intid";
         // See ColumnNameField
         $field->maxLength = 64;
