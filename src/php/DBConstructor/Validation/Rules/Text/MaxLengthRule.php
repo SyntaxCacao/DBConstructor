@@ -25,7 +25,7 @@ class MaxLengthRule extends Rule
     public function validate($value = null)
     {
         if ($value !== null) {
-            $this->setResult(strlen($value) <= $this->maxLength);
+            $this->setResult(mb_strlen($value) <= $this->maxLength);
         }
     }
 }

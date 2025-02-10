@@ -25,7 +25,7 @@ class MinLengthRule extends Rule
     public function validate($value = null)
     {
         if ($value !== null) {
-            $this->setResult(strlen($value) >= $this->minLength);
+            $this->setResult(mb_strlen($value) >= $this->minLength);
         }
     }
 }

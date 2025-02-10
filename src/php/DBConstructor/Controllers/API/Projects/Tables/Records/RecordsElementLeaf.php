@@ -323,7 +323,7 @@ class RecordsElementLeaf extends LeafNode
         // 5. Comment
         if (isset($payload["comment"])) {
             if (is_string($payload["comment"])) {
-                if (strlen($payload["comment"]) > Row::MAX_COMMENT_LENGTH) {
+                if (mb_strlen($payload["comment"]) > Row::MAX_COMMENT_LENGTH) {
                     $errors[] = "Comment may not be longer than ".Row::MAX_COMMENT_LENGTH.".";
                 } else {
                     $changes["comment"] = $payload["comment"];

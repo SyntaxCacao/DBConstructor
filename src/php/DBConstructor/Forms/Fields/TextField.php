@@ -88,11 +88,11 @@ class TextField extends GroupableField
             return $issues;
         }
 
-        if (isset($this->maxLength) && strlen($this->value) > $this->maxLength) {
+        if (isset($this->maxLength) && mb_strlen($this->value) > $this->maxLength) {
             $issues[] = "Geben Sie höchstens $this->maxLength Zeichen ein.";
         }
 
-        if (isset($this->minLength) && strlen($this->value) < $this->minLength) {
+        if (isset($this->minLength) && mb_strlen($this->value) < $this->minLength) {
             $issues[] = "Geben Sie wenigstens $this->minLength Zeichen ein.";
         }
 
