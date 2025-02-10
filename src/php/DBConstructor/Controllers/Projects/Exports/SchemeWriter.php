@@ -52,14 +52,14 @@ class SchemeWriter
     {
         fwrite($this->handle,
             "<!doctype html>\n".
-            "<html>\n". // TODO: Lang
+            "<html lang='en-US'>\n".
             "  <head>\n".
             "    <meta charset='utf-8'>\n".
-            "    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>".
+            "    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>\n".
             "    <title>".htmlspecialchars($project->label)." · Scheme</title>\n".
             "    <style>\n".
             "      * { box-sizing: border-box }\n".
-            "      body { font-family: -apple-system, BlinkMacSystemFontArial, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; margin: 32px 0 128px 0 }\n".
+            "      body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; margin: 32px 0 128px 0 }\n".
             "      .container { margin-left: auto; margin-right: auto; max-width: 900px; padding: 0 16px }\n".
             "      h1 { border-bottom: 1px solid #e1e4e8; font-size: 32px; margin-bottom: 24px; margin-top: 32px }\n".
             "      h2 { border-bottom: 1px solid #e1e4e8; font-size: 28px; margin-bottom: 24px; margin-top: 32px }\n".
@@ -86,7 +86,7 @@ class SchemeWriter
         );
 
         if ($project->notes !== null) {
-            fwrite($this->handle, "      <p class='descriptor'>Description</p>\n");
+            fwrite($this->handle, "      <p class='descriptor'>Description:</p>\n");
             fwrite($this->handle, "      <div class='markdown box'>".MarkdownParser::parse($project->notes)."</div>\n");
         }
 
@@ -112,7 +112,7 @@ class SchemeWriter
         fwrite($this->handle, "      <p><span class='descriptor'>Number of records:</span> ".number_format($recordCount)."</p>\n");
 
         if ($table->instructions !== null) {
-            fwrite($this->handle, "      <p class='descriptor'>Instructions</p>\n");
+            fwrite($this->handle, "      <p class='descriptor'>Instructions:</p>\n");
             fwrite($this->handle, "      <div class='markdown box'>".MarkdownParser::parse($table->instructions)."</div>\n");
         }
 
@@ -152,13 +152,13 @@ class SchemeWriter
                 fwrite($this->handle, "      <p><span class='descriptor'>Relating to table:</span> <a href='#table$column->targetTableId'>".htmlspecialchars($column->targetTableName)."</a></p>\n");
             } else if ($column instanceof TextualColumn) {
                 try {
-                    fwrite($this->handle, "      ".$column->getValidationType()->toHTML())."\n";
+                    fwrite($this->handle, "      ".$column->getValidationType()->toHTML()."\n");
                 } catch (Exception $e) {
                 }
             }
 
             if ($column->instructions !== null) {
-                fwrite($this->handle, "      <p class='descriptor'>Instructions</p>\n");
+                fwrite($this->handle, "      <p class='descriptor'>Instructions:</p>\n");
                 fwrite($this->handle, "      <div class='markdown box'>".MarkdownParser::parse($column->instructions)."</div>\n");
             }
         }
