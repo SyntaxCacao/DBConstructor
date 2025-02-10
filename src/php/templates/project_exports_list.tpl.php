@@ -54,7 +54,7 @@ use DBConstructor\Util\HeaderGenerator;
       <td class="table-cell"><?= htmlentities($export->getFormatLabel()) ?></td>
       <td class="table-cell"><?= htmlentities(date("d.m.Y H:i", strtotime($export->created))) ?></td>
       <td class="table-cell"><?= htmlentities($export->userFirstName." ".$export->userLastName) ?><?php if ($export->api) { ?> <span class="table-cell-icon-inline bi bi-robot" title="Durch die API bewirkt"></span><?php } ?></td>
-      <td class="table-cell"><?= is_null($export->note) ? "&ndash;" : htmlentities($export->note) ?></td>
+      <td class="table-cell"><a class="table-link-subtle" href="<?= $data["baseurl"] ?>/projects/<?= $data["project"]->id ?>/exports/<?= $export->id ?>/editnote/" title="Bemerkung bearbeiten"><?= is_null($export->note) ? "&ndash;" : htmlspecialchars($export->note) ?></a></td>
       <td class="table-cell table-cell-numeric"><?= $existsArchive ? Export::getPrintableFileSize($export->getLocalArchivePath()) : "&ndash;" ?></td>
       <td class="table-cell table-cell-actions">
         <a class="button <?= $existsLocalDir ? "" : "button-disabled " ?>button-smallest"<?php if ($existsLocalDir) { ?> href="<?= "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/$export->id/" ?>"<?php } ?>><span class="bi bi-folder2-open"></span>Öffnen</a><!--

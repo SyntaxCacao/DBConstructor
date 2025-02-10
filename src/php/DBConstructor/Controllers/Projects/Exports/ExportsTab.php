@@ -84,8 +84,23 @@ class ExportsTab extends TabController
 
         if (count($path) >= 4 && ctype_digit($path[3]) &&
             ($data["export"] = Export::load($path[3])) !== null &&
-            $data["export"]->projectId === $data["project"]->id &&
-            $data["export"]->existsLocalDirectory()) {
+            $data["export"]->projectId === $data["project"]->id) {
+
+            if (count($path) === 5 && $path[4] === "editnote") {
+                // Edit note
+                $data["editForm"] = new NoteEditForm();
+                $data["editForm"]->init($data["export"]);
+                $data["editForm"]->process();
+
+                $data["tabpage"] = "form_note";
+                $data["title"] = "Bemerkung bearbeiten";
+                return true;
+            }
+
+            if (! $data["export"]->existsLocalDirectory()) {
+                (new NotFoundController())->request($path);
+                return false;
+            }
 
             if (count($path) === 4) {
                 // List export files

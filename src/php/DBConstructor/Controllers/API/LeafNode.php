@@ -145,6 +145,12 @@ abstract class LeafNode
                             "message" => "Request failed to provide valid value for parameter $name of type {$options["type"]}"
                         ]);
                     }
+
+                    if (isset($options["maxLength"]) && mb_strlen($value) > $options["maxLength"]) {
+                        APIController::$instance->respond(422, [
+                            "message" => "Value for parameter $name of type {$options["type"]} must not be longer than {$options["maxLength"]} characters"
+                        ]);
+                    }
                 } else {
                     throw new Exception("Illegal type for parameter $name");
                 }

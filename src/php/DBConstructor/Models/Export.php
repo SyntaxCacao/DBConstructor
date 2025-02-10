@@ -15,6 +15,8 @@ class Export
         Export::FORMAT_CSV => "CSV"/*"CSV (Comma-separated values)"*/
     ];
 
+    const MAX_LENGTH_NOTE = 40;
+
     const TMP_DIR_EXPORTS = "../tmp/exports";
 
     public static function create(string $projectId, string $userId, string $format, string $note = null, bool $api): string
@@ -209,5 +211,11 @@ class Export
         }
 
         return null;
+    }
+
+    public function setNote(string $note)
+    {
+        MySQLConnection::$instance->execute("UPDATE `dbc_export` SET `note`=? WHERE `id`=?", [$note, $this->id]);
+        $this->note = $note;
     }
 }

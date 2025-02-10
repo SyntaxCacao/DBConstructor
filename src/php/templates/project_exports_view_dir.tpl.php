@@ -11,6 +11,11 @@ use DBConstructor\Util\HeaderGenerator;
 ?>
 <main class="container">
 <?php $header = new HeaderGenerator("Export #{$data["export"]->id}");
+
+      if ($data["export"]->note !== null) {
+        $header->title .= " ({$data["export"]->note})";
+      }
+
       $header->subtitle = "Durchgeführt von {$data["export"]->userFirstName} {$data["export"]->userLastName} am ".date("d.m.Y \u\m H:i", strtotime($data["export"]->created))." Uhr";
 
       if ($data["archiveExists"]) {
@@ -26,6 +31,12 @@ use DBConstructor\Util\HeaderGenerator;
         "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/",
         "icon" => "arrow-left",
         "text" => "Zurück"
+      ];
+
+      $header->dropdownActions[] = [
+        "href" => "{$data["baseurl"]}/projects/{$data["project"]->id}/exports/{$data["export"]->id}/editnote/",
+        "icon" => "pencil",
+        "text" => "Bemerkung bearbeiten",
       ];
 
       $header->dropdownActions[] = [

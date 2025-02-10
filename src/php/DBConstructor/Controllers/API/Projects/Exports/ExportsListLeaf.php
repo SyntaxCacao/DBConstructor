@@ -75,6 +75,7 @@ class ExportsListLeaf extends LeafNode
             ],
             "note" => [
                 "type" => "string",
+                "maxLength" => Export::MAX_LENGTH_NOTE,
                 "default" => null
             ]
         ]);

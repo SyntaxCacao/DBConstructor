@@ -6,7 +6,6 @@ namespace DBConstructor\Controllers\Projects\Exports;
 
 use DBConstructor\Forms\Fields\CheckboxField;
 use DBConstructor\Forms\Fields\SelectField;
-use DBConstructor\Forms\Fields\TextareaField;
 use DBConstructor\Forms\Fields\TextField;
 use DBConstructor\Forms\Fields\ValidationClosure;
 use DBConstructor\Forms\Form;
@@ -109,9 +108,9 @@ class ExportForm extends Form
         $field->defaultValue = true;
         $this->addField($field);
 
-        $field = new TextareaField("note", "Bemerkung");
+        $field = new TextField("note", "Bemerkung");
         $field->required = false;
-        $field->maxLength = 1000;
+        $field->maxLength = Export::MAX_LENGTH_NOTE;
         $this->addField($field);
 
         $this->buttonLabel = "Exportieren";
