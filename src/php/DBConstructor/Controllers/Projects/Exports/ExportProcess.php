@@ -349,7 +349,7 @@ class ExportProcess
         }
 
         // Register export in database
-        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->note, $this->api);
+        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->includeInternalIds ? $this->internalIdColumnName : null, $this->note, $this->api);
         $export = Export::load($exportId);
 
         // Rename files to include new Export ID

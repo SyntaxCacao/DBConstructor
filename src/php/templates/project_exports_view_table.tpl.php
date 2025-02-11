@@ -34,12 +34,12 @@ use DBConstructor\Util\HeaderGenerator;
     <table class="table">
 <?php $row = fgetcsv($file); ?>
       <tr class="table-heading">
-<?php $hasInternalId = false;
+<?php $internalIdColumn = null;
       $i = 0;
       foreach ($row as $cell) {
         $i += 1;
-        if ($i === 2 && $cell === "_intid") {
-          $hasInternalId = true;
+        if ($data["export"]->internalIdColumn === $cell) {
+          $internalIdColumn = $i;
         } ?>
         <th class="table-cell table-cell-paragraph"><?= htmlspecialchars($cell) ?></th>
 <?php } ?>
@@ -61,7 +61,7 @@ use DBConstructor\Util\HeaderGenerator;
 <?php   $cellIndex = 0;
         foreach ($row as $cell) {
           $cellIndex += 1;
-          if ($hasInternalId && $cellIndex === 2 && ctype_digit($cell)) { ?>
+          if ($internalIdColumn === $cellIndex && ctype_digit($cell)) { ?>
         <td class="table-cell table-cell-numeric table-cell-paragraph"><a class="main-link" href="<?= $data["baseurl"] ?>/find?id=<?= htmlspecialchars($cell) ?>"><?= htmlspecialchars($cell) ?></a></td>
 <?php     } else { ?>
         <td class="table-cell <?= $cellIndex === 1 ? "table-cell-numeric " : "" ?>table-cell-paragraph"><?= str_replace("\n", "<br>", htmlspecialchars($cell)) ?></td>
