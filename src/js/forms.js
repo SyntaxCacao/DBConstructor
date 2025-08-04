@@ -20,6 +20,10 @@ function updateDependingField(element) {
     show = document.querySelector('[name="field-' + element.dataset.dependsOn + '"]').value === element.dataset.dependsOnValue;
   }
 
+  if (dependency.matches("[data-depends-on]") && ! dependency.parentElement.classList.contains("form-group-depend-show")) {
+    show = false;
+  }
+
   if (show) {
     groupElement.classList.add("form-group-depend-show");
   } else if (groupElement.classList.contains("form-group-depend-show")) {
