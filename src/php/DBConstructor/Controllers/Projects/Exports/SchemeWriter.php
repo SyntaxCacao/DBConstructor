@@ -20,14 +20,14 @@ class SchemeWriter
     public $handle;
 
     /** @var string|null */
-    public $internalIdColumn;
+    public $internalIdColumnSuffix;
 
     /** @var string|null */
     public $commentsColumn;
 
-    public function __construct(string $internalIdColumn = null, string $commentsColumn = null)
+    public function __construct(string $internalIdColumnSuffix = null, string $commentsColumn = null)
     {
-        $this->internalIdColumn = $internalIdColumn;
+        $this->internalIdColumnSuffix = $internalIdColumnSuffix;
         $this->commentsColumn = $commentsColumn;
     }
 
@@ -120,8 +120,8 @@ class SchemeWriter
         fwrite($this->handle, "      <ul>\n");
         fwrite($this->handle, "        <li><em>".Column::RESERVED_NAME_ID."</em> (Primary key)</li>\n");
 
-        if ($this->internalIdColumn !== null) {
-            fwrite($this->handle, "        <li><em>".htmlspecialchars($this->internalIdColumn)."</em> (Record’s ID in DatabaseConstructor)</li>\n");
+        if ($this->internalIdColumnSuffix !== null) {
+            fwrite($this->handle, "        <li><em>".htmlspecialchars($this->internalIdColumnSuffix)."</em> (Record’s ID in DatabaseConstructor)</li>\n");
         }
 
         foreach ($columns as $column) {
@@ -134,6 +134,10 @@ class SchemeWriter
             }
 
             fwrite($this->handle, "</a></li>\n");
+
+            if ($column instanceof RelationalColumn && $this->internalIdColumnSuffix !== null) {
+                fwrite($this->handle, "        <li><em>".htmlspecialchars($column->name . $this->internalIdColumnSuffix)."</em> (Referenced record’s ID in DatabaseConstructor)</li>\n");
+            }
         }
 
         if ($this->commentsColumn !== null) {

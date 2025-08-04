@@ -38,14 +38,21 @@ class ExportForm extends Form
         $field->addOptions(Export::FORMATS);
         $this->addField($field);
 
-        $field = new CheckboxField("internalId", "Interne ID mit ausgeben");
+        $field = new CheckboxField("continuousId", "IDs fortlaufend nummerieren");
+        $field->description = "Die zu exportierenden Datensätze werden je Tabelle sauber von 1 an fortlaufend nummeriert";
+        $this->addField($field);
+
+        $field = new CheckboxField("internalId", "Zusätzlich interne ID ausgeben");
+        $field->dependsOn = "continuousId";
+        $field->dependsOnValue = CheckboxField::VALUE;
         $field->description = "Kann die Auffindbarkeit exportierter Datensätze auf dieser Plattform verbessern";
         $this->addField($field);
 
-        $field = new TextField("internalIdColumnName", "Spaltenname");
+        $field = new TextField("internalIdColumnSuffix", "Spaltenname und Spaltenendung");
         $field->dependsOn = "internalId";
         $field->dependsOnValue = CheckboxField::VALUE;
-        $field->defaultValue = "_intid";
+        $field->defaultValue = "_dbc";
+        $field->description = "Name der zusätzlichen Primärschlüssel-Spalte und Anhängsel für die zusätzlichen Fremdschlüssel-Spalten";
         // See ColumnNameField
         $field->maxLength = 64;
         $field->validationClosures[] = new ValidationClosure(static function ($value) {
@@ -120,10 +127,16 @@ class ExportForm extends Form
     public function perform(array $data)
     {
         $process = new ExportProcess($this->project);
-        $process->includeInternalIds = $data["internalId"];
 
-        if ($process->includeInternalIds) {
-            $process->internalIdColumnName = $data["internalIdColumnName"];
+        if ($data["continuousId"]) {
+            if ($data["internalId"]) {
+                $process->idMode = ExportProcess::ID_MODE_BOTH;
+                $process->internalIdColumnSuffix = $data["internalIdColumnSuffix"];
+            } else {
+                $process->idMode = ExportProcess::ID_MODE_CONTINUOUS;
+            }
+        } else {
+            $process->idMode = ExportProcess::ID_MODE_STABLE;
         }
 
         $process->includeComments = $data["comments"];

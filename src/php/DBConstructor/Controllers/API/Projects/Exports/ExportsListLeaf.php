@@ -16,6 +16,12 @@ class ExportsListLeaf extends LeafNode
         "text" => ExportProcess::COMMENTS_FORMAT_TEXT
     ];
 
+    const OPTIONS_ID_MODE = [
+        "both" => ExportProcess::ID_MODE_BOTH,
+        "continuous" => ExportProcess::ID_MODE_CONTINUOUS,
+        "stable" => ExportProcess::ID_MODE_STABLE
+    ];
+
     public function get(array $path): array
     {
         $exports = Export::loadList(ProjectsNode::$project->id);
@@ -40,10 +46,21 @@ class ExportsListLeaf extends LeafNode
     public function post(array $path): array
     {
         $params = $this->processPayloadParameters([
+            "idMode" => [
+                "type" => "options",
+                "default" => "stable",
+                "options" => self::OPTIONS_ID_MODE
+            ],
+            "internalIdColumnSuffix" => [
+                "type" => "string",
+                "default" => "_dbc"
+            ],
+            // Deprecated.
             "includeInternalIds" => [
                 "type" => "boolean",
                 "default" => false
             ],
+            // Deprecated.
             "internalIdColumnName" => [
                 "type" => "string",
                 "default" => "_intid",
@@ -82,9 +99,18 @@ class ExportsListLeaf extends LeafNode
 
         $process = new ExportProcess(ProjectsNode::$project);
         $process->api = true;
-        $process->includeInternalIds = $params["includeInternalIds"];
-        // TODO: Prüfungen, wie sie im ExportForm erfolgen
-        $process->internalIdColumnName = $params["internalIdColumnName"];
+
+        if ($params["includeInternalIds"]) {
+            // Deprecated.
+            $process->idMode = ExportProcess::ID_MODE_BOTH;
+            // TODO: Prüfungen, wie sie im ExportForm erfolgen
+            $process->internalIdColumnSuffix = $params["internalIdColumnName"];
+        } else {
+            $process->idMode = $params["idMode"];
+            // TODO: Prüfungen, wie sie im ExportForm erfolgen
+            $process->internalIdColumnSuffix = $params["internalIdColumnSuffix"];
+        }
+
         $process->includeComments = $params["includeComments"];
 
         if ($params["commentsColumnName"] !== null) {

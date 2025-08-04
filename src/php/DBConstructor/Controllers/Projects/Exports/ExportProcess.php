@@ -25,6 +25,12 @@ class ExportProcess
 
     const COMMENTS_FORMAT_TEXT = "text";
 
+    const ID_MODE_BOTH = "both";
+
+    const ID_MODE_CONTINUOUS = "continuous";
+
+    const ID_MODE_STABLE = "stable";
+
     /** @var bool */
     public $api = false;
 
@@ -43,14 +49,14 @@ class ExportProcess
     /** @var bool */
     public $generateSchemeDocs = false;
 
+    /** @var string */
+    public $idMode = ExportProcess::ID_MODE_STABLE;
+
     /** @var bool */
     public $includeComments = false;
 
-    /** @var bool */
-    public $includeInternalIds = false;
-
     /** @var string|null */
-    public $internalIdColumnName;
+    public $internalIdColumnSuffix;
 
     /** @var string|null */
     public $note;
@@ -78,7 +84,7 @@ class ExportProcess
         $tables = Table::loadList($this->project->id, $this->project->manualOrder);
 
         if ($this->generateSchemeDocs) {
-            $schemeWriter = new SchemeWriter($this->internalIdColumnName, $this->commentsColumnName);
+            $schemeWriter = new SchemeWriter($this->idMode === ExportProcess::ID_MODE_BOTH ? $this->internalIdColumnSuffix : null, $this->commentsColumnName);
             $schemeWriter->open($tmpDir);
             $schemeWriter->writeHead($this->project, $tables);
         }
@@ -100,8 +106,8 @@ class ExportProcess
 
             $headings = [Column::RESERVED_NAME_ID];
 
-            if ($this->includeInternalIds) {
-                $headings[] = $this->internalIdColumnName;
+            if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                $headings[] = $this->internalIdColumnSuffix;
             }
 
             // headings relational
@@ -109,6 +115,10 @@ class ExportProcess
 
             foreach ($relationalColumns as $column) {
                 $headings[] = $column->name;
+
+                if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                    $headings[] = $column->name . $this->internalIdColumnSuffix;
+                }
             }
 
             // headings textual
@@ -140,10 +150,15 @@ class ExportProcess
                 $recordCount[$table->id] += 1;
 
                 $row = new Row($rowData);
-                $rowExport = [$row->exportId];
 
-                if ($this->includeInternalIds) {
-                    $rowExport[] = $row->id;
+                if ($this->idMode === ExportProcess::ID_MODE_STABLE) {
+                    $rowExport = [$row->id];
+                } else {
+                    $rowExport = [$row->exportId];
+
+                    if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                        $rowExport[] = $row->id;
+                    }
                 }
 
                 if (count($relationalColumns) > 0) {
@@ -172,7 +187,15 @@ class ExportProcess
                     // Add relational fields to export array
                     foreach ($relationalColumns as $column) {
                         if (isset($relationalFields[$column->id])) {
-                            $rowExport[] = $relationalFields[$column->id]->targetRowExportId;
+                            if ($this->idMode === ExportProcess::ID_MODE_STABLE) {
+                                $rowExport[] = $relationalFields[$column->id]->targetRowId;
+                            } else {
+                                $rowExport[] = $relationalFields[$column->id]->targetRowExportId;
+
+                                if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                                    $rowExport[] = $relationalFields[$column->id]->targetRowId;
+                                }
+                            }
                         } else {
                             //echo "Table $table->id: Row $row->id: Missing value for relational column $column->id<br>";
                             $rowExport[] = "";
@@ -349,7 +372,15 @@ class ExportProcess
         }
 
         // Register export in database
-        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $this->includeInternalIds ? $this->internalIdColumnName : null, $this->note, $this->api);
+        $internalIdColumn = null;
+
+        if ($this->idMode === ExportProcess::ID_MODE_STABLE) {
+            $internalIdColumn = Column::RESERVED_NAME_ID;
+        } else if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+            $internalIdColumn = $this->internalIdColumnSuffix;
+        }
+
+        $exportId = Export::create($this->project->id, Application::$instance->user->id, Export::FORMAT_CSV, $internalIdColumn, $this->note, $this->api);
         $export = Export::load($exportId);
 
         // Rename files to include new Export ID
