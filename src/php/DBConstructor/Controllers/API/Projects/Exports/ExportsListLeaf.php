@@ -55,6 +55,11 @@ class ExportsListLeaf extends LeafNode
                 "type" => "string",
                 "default" => "_dbc"
             ],
+            // Deprecated. Exists solely for legacy support.
+            "internalIdForForeignKeys" => [
+                "type" => "boolean",
+                "default" => true
+            ],
             // Deprecated.
             "includeInternalIds" => [
                 "type" => "boolean",
@@ -110,6 +115,8 @@ class ExportsListLeaf extends LeafNode
             // TODO: Prüfungen, wie sie im ExportForm erfolgen
             $process->internalIdColumnSuffix = $params["internalIdColumnSuffix"];
         }
+
+        $process->internalIdForForeignKeys = $params["internalIdForForeignKeys"];
 
         $process->includeComments = $params["includeComments"];
 

@@ -58,6 +58,12 @@ class ExportProcess
     /** @var string|null */
     public $internalIdColumnSuffix;
 
+    /**
+     * To be removed. Exists solely for legacy support.
+     * @var bool
+     */
+    public $internalIdForForeignKeys = true;
+
     /** @var string|null */
     public $note;
 
@@ -116,7 +122,7 @@ class ExportProcess
             foreach ($relationalColumns as $column) {
                 $headings[] = $column->name;
 
-                if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                if ($this->idMode === ExportProcess::ID_MODE_BOTH && $this->internalIdForForeignKeys) {
                     $headings[] = $column->name . $this->internalIdColumnSuffix;
                 }
             }
@@ -192,7 +198,7 @@ class ExportProcess
                             } else {
                                 $rowExport[] = $relationalFields[$column->id]->targetRowExportId;
 
-                                if ($this->idMode === ExportProcess::ID_MODE_BOTH) {
+                                if ($this->idMode === ExportProcess::ID_MODE_BOTH && $this->internalIdForForeignKeys) {
                                     $rowExport[] = $relationalFields[$column->id]->targetRowId;
                                 }
                             }
