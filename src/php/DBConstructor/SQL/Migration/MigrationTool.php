@@ -25,7 +25,7 @@ class MigrationTool
 
             // Check whether database scheme is broken
             if ($last !== null && ! $last->success) {
-                echo "<p>Last migration failed; not going to continue. The database scheme requires manual fixing.</p>";
+                echo "<p>Last migration failed; not going to continue. The database scheme requires manual fixing.</p>\n";
                 exit;
             }
 
@@ -53,14 +53,14 @@ class MigrationTool
 
             if (count($sqlFiles) === 0) {
                 // There are no new sql files to migrate
-                echo "<p>No new sql files found. Last migration was #$lastId.</p>";
+                echo "<p>No new sql files found. Last migration was #$lastId.</p>\n";
                 exit;
             }
 
             // Sort list by ids and apply new migration
             ksort($sqlFiles);
 
-            echo "<p>Discovered ".count($sqlFiles)." new migration".(count($sqlFiles) === 1 ? "" : "s").".</p>";
+            echo "<p>Discovered ".count($sqlFiles)." new migration".(count($sqlFiles) === 1 ? "" : "s").".</p>\n";
 
             foreach ($sqlFiles as $id => $sqlFile) {
                 // Get migration description from file name
@@ -76,12 +76,12 @@ class MigrationTool
                 }
 
                 // Apply migration
-                echo "<p>Applying migration #".htmlentities((string) $id)." – ".htmlentities($description)."</p>";
+                echo "<p>Applying migration #".htmlentities((string) $id)." – ".htmlentities($description)."</p>\n";
                 Migration::apply((string) $id, $sql);
             }
 
             // Success!
-            echo "<p>Migration process completed successfully.</p>";
+            echo "<p>Migration process completed successfully.</p>\n";
         } catch (PDOException $exception) {
             throw new MigrationException("Something went wrong during migration process", $exception);
         }
