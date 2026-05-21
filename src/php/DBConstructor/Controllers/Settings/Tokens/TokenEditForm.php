@@ -26,7 +26,7 @@ class TokenEditForm extends TokenForm
         $this->projects = Project::loadParticipating(Application::$instance->user->id);
         $this->token = $token;
 
-        $this->addLabelField();
+        $this->addLabelField($token->label);
         $this->addExpirationField(true);
         $this->addScopeField($this->projects, $this->token);
         $this->addPasswordField();
